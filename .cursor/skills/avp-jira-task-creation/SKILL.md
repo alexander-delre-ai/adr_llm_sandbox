@@ -23,35 +23,6 @@ Include when available:
 - `labels` - comma-separated list
 - `story_points` - numeric estimate
 
-## Output format
-
-Produce a structured JIRA ticket payload as a fenced JSON block:
-
-```json
-{
-  "fields": {
-    "project": { "key": "AVP" },
-    "issuetype": { "name": "Task" },
-    "summary": "<name>",
-    "description": {
-      "type": "doc",
-      "version": 1,
-      "content": [
-        {
-          "type": "paragraph",
-          "content": [{ "type": "text", "text": "<description>" }]
-        }
-      ]
-    },
-    "priority": { "name": "<priority>" },
-    "customfield_epic_link": "<epic_id>",
-    "fixVersions": [{ "name": "<release>" }],
-    "labels": ["<label1>"],
-    "story_points": 0
-  }
-}
-```
-
 ## Validation rules
 
 - `summary` must be 10-255 characters
@@ -64,5 +35,49 @@ Produce a structured JIRA ticket payload as a fenced JSON block:
 1. Confirm all mandatory fields are present; prompt for any that are missing
 2. Reject any `epic_id` that does not start with `AVP-`
 3. Fill optional fields with defaults when absent
-4. Output the JSON payload
-5. Append a one-line summary: `Ticket ready: [<name>] under epic <epic_id> for release <release>`
+4. Get the cloud ID for the AVP project using the MCP server
+5. Create the actual JIRA ticket using the MCP server
+6. Report the created ticket details including the ticket key
+
+## Implementation
+
+Use the `user-atlassian-mcp-applied` MCP server to create tickets:
+
+1. **Get Cloud ID**: Call `getAccessibleAtlassianResources` to get the cloud ID for the AVP project
+2. **Create Ticket**: Call `createJiraIssue` with these parameters:
+   - `cloudId`: from step 1
+   - `projectKey`: "AVP"
+   - `issueTypeName`: "Task" (or "Story" if specified)
+   - `summary`: the ticket name
+   - `description`: the description in markdown format
+   - `additional_fields`: object containing:
+     - Epic link field (use appropriate custom field name)
+     - Priority field
+     - Fix versions for release
+     - Labels array
+     - Story points
+
+## MCP Tool Usage
+
+```javascript
+// Step 1: Get cloud ID
+CallMcpTool({
+  server: "user-atlassian-mcp-applied",
+  toolName: "getAccessibleAtlassianResources"
+})
+
+// Step 2: Create the issue
+CallMcpTool({
+  server: "user-atlassian-mcp-applied", 
+  toolName: "createJiraIssue",
+  arguments: {
+    cloudId: "<cloud_id_from_step_1>",
+    projectKey: "AVP",
+    issueTypeName: "Task",
+    summary: "<name>",
+    description: "<description>",
+    additional_fields: {
+      // Epic link, priority, fix versions, labels, story points
+    }
+  }
+})

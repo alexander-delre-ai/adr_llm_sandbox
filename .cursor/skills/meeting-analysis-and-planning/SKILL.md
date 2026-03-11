@@ -15,11 +15,46 @@ Work through each step in order. Use the checklist to track progress.
 - [ ] Step 3: Identify discussion themes
 - [ ] Step 4: Identify unresolved questions
 - [ ] Step 5: Extract actionable tasks
-- [ ] Step 6: Convert tasks to JIRA tickets
+- [ ] Step 6: Create JIRA tickets via MCP
 - [ ] Step 7: Build prioritized action plan
 - [ ] Step 8: Save workspace
 - [ ] Step 9: Compose Slack summary (optional)
 ```
+
+---
+
+## Meeting Room Recognition
+
+Applied uses well-known scientists and their associated work to identify conference rooms. When parsing attendee names, recognize these patterns:
+
+**Known Meeting Rooms:**
+- **Coulomb's Law** - Physics conference room
+- **Newton** - Physics conference room  
+- **Einstein** - Physics conference room
+- **Faraday** - Physics conference room
+- **Maxwell** - Physics conference room
+- **Planck** - Physics conference room
+- **Bohr** - Physics conference room
+- **Heisenberg** - Physics conference room
+
+**Recognition Pattern**: `<Scientist Name> (<Location Code>, <Building>)`
+- Example: "Coulomb's Law (SVL-WCAL-HQ, FL3)" = Meeting room, not attendee
+- If uncertain about a name, ask the user: "Is [Name] a meeting room or attendee?"
+
+---
+
+## Clarifying Questions Strategy
+
+Throughout the analysis, especially in Steps 4-6, ask clarifying questions when:
+
+- **Action items are vague**: "Research X" without clear deliverables
+- **Ownership is unclear**: Multiple people mentioned or no clear assignee
+- **Priorities conflict**: Everything seems urgent or no clear ranking
+- **Scope is ambiguous**: "Improve Y" without specific success criteria
+- **Dependencies are unclear**: Tasks that may block each other
+- **Timelines are missing**: No clear deadlines or milestones mentioned
+
+**Plan Mode Advantage**: Use this collaborative phase to resolve ambiguities before creating tickets.
 
 ---
 
@@ -31,8 +66,11 @@ Pull these fields from the transcript header or opening minutes:
 |-------|-----------------|
 | Meeting title | explicit title, recurring series name, or infer from agenda |
 | Date & time | timestamp in transcript metadata |
-| Participants | speaker names/handles listed or inferred from dialogue |
+| Participants | speaker names/handles listed or inferred from dialogue (exclude meeting rooms) |
+| Meeting location | identify conference room names (e.g., "Coulomb's Law (SVL-WCAL-HQ, FL3)") |
 | Stated objective | agenda items or opening statement of purpose |
+
+**Important**: Filter out meeting room names from participants list. Meeting rooms follow the pattern of scientist names with location codes.
 
 ---
 
@@ -75,65 +113,99 @@ For each action item extract:
 
 ---
 
-### Step 6 - Convert tasks to JIRA tickets
+### Step 6 - Plan JIRA tickets (Review Phase)
 
-First, ask the user which project space the tickets belong to:
-- **KATA** - invoke `kata-jira-task-creation` (`.cursor/skills/kata-jira-task-creation/SKILL.md`)
-- **AVP** - invoke `avp-jira-task-creation` (`.cursor/skills/avp-jira-task-creation/SKILL.md`)
+**Initial Mode**: Present proposed JIRA tickets for user review.
 
-If tickets belong to different spaces, ask per ticket or per group.
+**Important**: Before finalizing ticket proposals, ask clarifying questions about:
+- Unclear action items or vague requirements
+- Missing assignees or ownership
+- Ambiguous priorities or deadlines
+- Scope boundaries or acceptance criteria
+- Dependencies between tasks
 
-Read the relevant skill file before proceeding.
+For each action item, create a ticket proposal with:
+- **Summary**: Derived from the task's **What** field
+- **Description**: Task context from transcript
+- **Priority**: Mapped from task's Priority field (P0, P1, P2, P3)
+- **Assignee**: From task's Who field (ask if unclear)
+- **Theme**: From task's Theme field
+- **Ticket Type**: Identify if documentation/tutorial vs general task
 
-Gather mandatory fields:
-- `epic_id` - must match the chosen space prefix (`KATA-` or `AVP-`); ask the user if not found in transcript
-- `release` - ask the user if not found in transcript
-- `name` - derive from the task's **What** field
+Present tickets in a reviewable format:
+```
+## Proposed JIRA Tickets
 
-Map optional fields:
-- `description` from task context in transcript
-- `priority` from task's Priority field
-- `assignee` from task's Who field
-- `labels` from task's Theme field (snake_cased)
+### Ticket 1: [Summary]
+- **Priority**: P1
+- **Assignee**: [Name]  
+- **Type**: Documentation (→ KATA-2226) / General (→ User Epic)
+- **Description**: [Context from meeting]
 
-Produce one JSON payload per ticket.
+### Ticket 2: [Summary]
+...
+```
+
+**Execution Phase**: Only create actual tickets after user confirmation.
+
+When user confirms ticket creation:
+1. Ask for project space (KATA/AVP), epic ID, and release
+2. Route documentation tickets to KATA-2226 automatically
+3. Use MCP integration to create real tickets
+4. Apply proper field mappings and required fields
 
 ---
 
 ### Step 7 - Build prioritized action plan
 
-Output a markdown table sorted by priority (High first):
+Output a markdown table sorted by priority (P1 first):
 
-| # | Ticket name | Assignee | Priority | Due | Epic | Release |
-|---|-------------|----------|----------|-----|------|---------|
-| 1 | ...         | ...      | High     | ... | ...  | ...     |
+| # | Proposed Ticket | Assignee | Priority | Due | Type | Notes |
+|---|-----------------|----------|----------|-----|------|-------|
+| 1 | ...             | ...      | P1       | ... | Doc  | → KATA-2226 |
+| 2 | ...             | ...      | P1       | ... | General | → User Epic |
 
 Follow the table with a **Next steps** section: 3-5 bullet points the team should act on immediately.
 
+**End with clarification and confirmation**:
+
+First, ask any clarifying questions about unclear items, then:
+
+"Would you like me to create these JIRA tickets? If yes, please confirm the project space (KATA/AVP), epic ID for general tickets, and target release."
+
 ---
 
-### Step 8 - Save workspace
+### Step 8 - Save workspace (Post-Execution)
+
+**Only execute after JIRA tickets are created** (if user confirms).
 
 Read and follow `.cursor/skills/meeting-workspace/SKILL.md`.
+
+Use `workspaces/` within the current repository.
 
 Pass it:
 - The original transcript
 - The full analysis output from Steps 1-7
-- All JIRA ticket JSON payloads from Step 6
+- All JIRA ticket metadata with actual ticket keys and URLs
 - A summary of key decisions made during the session
 
-### Step 9 - Compose Slack summary (optional)
+**If tickets not created**: Save analysis with proposed ticket plans only.
 
-Ask the user: "Would you like a Slack message to share with your team?"
+### Step 9 - Compose Slack summary (automatic)
 
-Only proceed if the user confirms. If yes, read and follow `.cursor/skills/meeting-slack-summary/SKILL.md`.
+After workspace creation, automatically ask: "Would you like me to generate a Slack message for the office hours thread?"
+
+If yes, read and follow `.cursor/skills/meeting-slack-summary/SKILL.md`.
 
 Pass it:
-- Meeting title and date (from Step 1)
-- Attendees (from Step 1)
+- Meeting title and date (from Step 1) 
+- Attendees (from Step 1) - categorize by organization
 - Workspace path (from Step 8)
 - Action items with assignee and priority (from Step 5)
 - JIRA ticket keys and URLs (from Step 6, if any)
+- Ask for Gemini notes link if available
+
+The skill will generate both the thread starter and reply content in the office hours format.
 
 ---
 

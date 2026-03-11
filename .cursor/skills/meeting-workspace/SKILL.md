@@ -5,14 +5,14 @@ description: Creates a structured workspace directory under /workspaces for a me
 
 # Meeting Workspace
 
-Creates a persistent directory under `/workspaces` for a completed meeting analysis and saves all artifacts to it.
+Creates a persistent directory under `workspaces/` in the current repo for a completed meeting analysis and saves all artifacts to it.
 
 ## Directory naming
 
 Derive the directory name from the meeting title and date:
 
 ```
-/workspaces/<YYYY-MM-DD>-<slugified-title>/
+workspaces/<YYYY-MM-DD>-<slugified-title>/
 ```
 
 Slugify rules: lowercase, spaces and special characters replaced with hyphens, max 60 chars.
@@ -22,19 +22,20 @@ Example: `2026-03-11-q1-planning-kickoff`
 ## Directory structure
 
 ```
-/workspaces/<meeting-slug>/
+workspaces/<meeting-slug>/
   transcript.md          <- original transcript (verbatim)
   analysis.md            <- full 7-section meeting analysis
   action-items.md        <- extracted tasks table only (Steps 5 + 7)
   jira-tickets/
-    <slug-of-ticket-name>.json   <- one file per JIRA ticket payload
+    <slug-of-ticket-name>.json   <- JIRA ticket metadata with actual keys and URLs
+  slack-message.md       <- office hours thread content and AlexD message
   chat-history.md        <- summary of key decisions made during the AI session
 ```
 
 ## Workflow
 
 1. Derive the directory slug from meeting title and date (see naming rules above)
-2. Create the directory: `mkdir -p /workspaces/<slug>`
+2. Create the directory: `mkdir -p workspaces/<slug>`
 3. Write `transcript.md` - the verbatim transcript provided by the user
 4. Write `analysis.md` - the complete meeting analysis output (all 7 sections)
 5. Write `action-items.md` using this template:
@@ -53,9 +54,10 @@ Example: `2026-03-11-q1-planning-kickoff`
 - ...
 ```
 
-6. For each JIRA ticket payload, write `jira-tickets/<ticket-slug>.json`
+6. For each JIRA ticket, write `jira-tickets/<ticket-slug>.json`
    - Derive filename by slugifying the ticket summary (lowercase, hyphens)
-   - Write the raw JSON payload as produced by the relevant jira-task-creation skill
+   - Write ticket metadata including actual JIRA key, URL, and creation details
+7. Write `slack-message.md` with office hours thread content and AlexD message (if Slack summary was generated)
 7. Write `chat-history.md` using this template:
 
 ```markdown
@@ -82,17 +84,20 @@ Example: `2026-03-11-q1-planning-kickoff`
 8. Confirm to the user:
 
 ```
-Workspace created at /workspaces/<slug>/
+Workspace created at workspaces/<slug>/
   transcript.md
   analysis.md
   action-items.md
   jira-tickets/
-    <n> ticket(s) saved
+    <n> ticket(s) with actual JIRA keys saved
+  slack-message.md
   chat-history.md
 ```
 
 ## Notes
 
-- If `/workspaces` does not exist, create it first with `mkdir -p /workspaces`
+- If `workspaces/` does not exist, create it first with `mkdir -p workspaces`
 - If a directory for the same slug already exists, append `-2`, `-3`, etc. rather than overwriting
 - All files are UTF-8 markdown or JSON; no binary content
+- JIRA ticket files now contain actual ticket metadata, not just payloads
+- Workspaces are stored within the current repository for version control and organization

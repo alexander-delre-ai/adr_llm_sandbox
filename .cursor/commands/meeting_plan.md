@@ -1,6 +1,8 @@
 # /meeting_plan
 
-Accept a Google Gemini meeting transcript and produce a full meeting analysis, action plan, and JIRA ticket payloads.
+**Mode: Plan**
+
+Accept a meeting transcript and produce a full meeting analysis with reviewable JIRA ticket plans, then optionally create actual tickets via MCP integration.
 
 ## Input
 
@@ -15,29 +17,45 @@ If no transcript is provided, ask: "Please paste the meeting transcript or provi
 
 1. Accept the transcript using one of the input methods above
 2. Switch to Plan mode so the analysis is collaborative before any artifacts are created
-3. Read and follow `.cursor/skills/meeting-analysis-and-planning/SKILL.md` - execute all seven steps against the transcript
-4. Return the full analysis using this structure:
+3. Read and follow `.cursor/skills/meeting-analysis-and-planning/SKILL.md` - execute through Step 7 (analysis and ticket planning)
+4. Return the full analysis with **proposed** JIRA tickets for review
 
-```
-# Meeting Analysis: <title> (<date>)
+## Review and Execution Phase
 
-## 1. Meeting context
-## 2. Key decisions
-## 3. Discussion themes
-## 4. Unresolved questions
-## 5. Action items
-## 6. JIRA tickets
-## 7. Prioritized action plan
-```
+After presenting the analysis, ask: 
 
-5. After the analysis, ask: "Would you like me to finalize the JIRA ticket payloads? If yes, please confirm the **epic ID** and **release** (or provide them per ticket)."
+**"Would you like me to create these JIRA tickets? If yes, please confirm:**
+- **Project space** (KATA or AVP)
+- **Epic ID** (or I'll route docs to KATA-2226)  
+- **Release** (e.g., Release 26.1)
+- Any **modifications** to the proposed tickets"
 
-If the user confirms, ask which project space applies (KATA or AVP) and collect any missing mandatory fields (`epic_id`, `release`). Invoke `kata-jira-task-creation` or `avp-jira-task-creation` accordingly for each action item. Output one validated JSON payload per fenced block, labeled with the ticket name.
+If confirmed, execute Step 6 with MCP integration:
+- Create actual JIRA tickets via MCP server
+- Apply proper field mappings (P0-P3 priorities, release IDs)
+- Route documentation tickets to KATA-2226 automatically
+- Include MCP creation tracking
+- Return real ticket URLs and complete workspace
 
-## Step 6 - Save workspace
+## Two-Phase Workflow
 
-After the analysis and any JIRA payloads are complete, the `meeting-analysis-and-planning` skill will automatically:
-1. Invoke `meeting-workspace` to persist all artifacts to `/workspaces/<date>-<meeting-slug>/`
-2. Ask the user if they would like a Slack summary - only invoke `meeting-slack-summary` if they confirm
+### Phase 1: Analysis & Planning (Plan Mode)
+- Complete meeting analysis with proposed tickets
+- **Ask clarifying questions** about unclear action items, priorities, or assignments
+- User reviews and approves/modifies ticket plans
+- Collaborative refinement before execution
 
-Confirm the saved workspace path to the user when done.
+### Phase 2: Execution (Agent Mode)  
+- Create actual JIRA tickets via MCP integration
+- Apply proper field mappings and epic routing
+- Save complete workspace in `workspaces/` within current repo
+- Generate office hours Slack thread message
+- Provide immediate actionability
+
+## Benefits
+
+- ✅ **Review before commit**: See proposed tickets before creation
+- ✅ **Clarifying questions**: Ask about unclear priorities, assignments, or scope
+- ✅ **Collaborative refinement**: Adjust tickets based on discussion
+- ✅ **MCP integration**: Create real tickets when ready
+- ✅ **Complete automation**: Full workflow from review to execution
