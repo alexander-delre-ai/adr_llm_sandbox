@@ -29,15 +29,17 @@ Include when available:
 - `epic_id` must match pattern `KATA-[0-9]+`
 - `release` must be a semver or named milestone string
 - If any mandatory field is missing, stop and ask the user before generating the payload
+- **TBD handling**: If `epic_id` is "TBD", use "KATA-127". If `release` is "TBD", use "Release 26.1"
 
 ## Workflow
 
-1. Confirm all mandatory fields are present; prompt for any that are missing
-2. Reject any `epic_id` that does not start with `KATA-`
-3. Fill optional fields with defaults when absent
-4. **IMPORTANT**: Check if KATA MCP server has tools available
-5. If tools are available, create the actual JIRA ticket using the MCP server
-6. If tools are not available, output the JSON payload for manual creation
+1. **CRITICAL**: If working from tickets.md file, read the final edited version to get user-modified titles and descriptions
+2. Confirm all mandatory fields are present; prompt for any that are missing
+3. Reject any `epic_id` that does not start with `KATA-`
+4. Fill optional fields with defaults when absent
+5. **IMPORTANT**: Check if KATA MCP server has tools available
+6. If tools are available, create the actual JIRA ticket using the MCP server with **final edited content**
+7. If tools are not available, output the JSON payload for manual creation
 
 ## Release Mapping
 
@@ -66,12 +68,16 @@ The Release field uses `customfield_10104` with these available versions:
 Use the `user-atlassian-mcp-kata` MCP server to create tickets:
 
 1. **Get Cloud ID**: Call `getAccessibleAtlassianResources` to get the cloud ID for the KATA project
-2. **Create Ticket**: Call `createJiraIssue` with these parameters:
+2. **Lookup Assignee** (if assignee is not "Unassigned"):
+   - Call `lookupJiraAccountId` with assignee name to get account ID
+   - If lookup fails, proceed without assignee (will be unassigned)
+3. **Create Ticket**: Call `createJiraIssue` with these parameters:
    - `cloudId`: "eadd00c6-0d3f-4c89-99e3-ad95a0daaa51" (KATA cloud ID)
    - `projectKey`: "KATA"
    - `issueTypeName`: "Task" (or "Story" if specified)
    - `summary`: the ticket name
-   - `description`: the description in markdown format + "\n\n_Created via JIRA MCP from meeting analysis._"
+   - `description`: the description in markdown format + "\n\nCreated via JIRA MCP"
+   - `assignee_account_id`: account ID from lookup (omit if "Unassigned" or lookup failed)
    - `additional_fields`: object with required fields:
      - `priority`: {"name": "P1"} (or P0, P2, P3)
      - `parent`: {"key": "KATA-XXXX"} (epic ID)
@@ -109,7 +115,17 @@ If MCP server is unavailable, produce a structured JIRA ticket payload as a fenc
 ## MCP Tool Usage Example
 
 ```javascript
-// Create a documentation ticket under KATA-2226
+// First, lookup assignee (if not "Unassigned")
+CallMcpTool({
+  server: "user-atlassian-mcp-kata",
+  toolName: "lookupJiraAccountId",
+  arguments: {
+    cloudId: "eadd00c6-0d3f-4c89-99e3-ad95a0daaa51",
+    searchString: "Alex Del Re"
+  }
+})
+
+// Then create ticket with assignee
 CallMcpTool({
   server: "user-atlassian-mcp-kata",
   toolName: "createJiraIssue", 
@@ -118,7 +134,8 @@ CallMcpTool({
     projectKey: "KATA",
     issueTypeName: "Task",
     summary: "Create PyArch threading examples",
-    description: "Document threading patterns and best practices for PyArch applications.\n\n_Created via JIRA MCP from meeting analysis._",
+    description: "Document threading patterns and best practices for PyArch applications.\n\nCreated via JIRA MCP",
+    assignee_account_id: "account_id_from_lookup", // Omit if "Unassigned"
     additional_fields: {
       priority: {"name": "P2"},
       parent: {"key": "KATA-2226"},

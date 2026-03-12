@@ -23,8 +23,9 @@ Example: `2026-03-11-q1-planning-kickoff`
 
 ```
 workspaces/<meeting-slug>/
-  transcript.md          <- original transcript (verbatim)
+  transcript.md OR summary.md    <- original content (transcript if full transcript, summary.md if meeting summary)
   analysis.md            <- full 7-section meeting analysis
+  tickets.md             <- original editable tickets file
   action-items.md        <- extracted tasks table only (Steps 5 + 7)
   jira-tickets/
     <slug-of-ticket-name>.json   <- JIRA ticket metadata with actual keys and URLs
@@ -36,9 +37,13 @@ workspaces/<meeting-slug>/
 
 1. Derive the directory slug from meeting title and date (see naming rules above)
 2. Create the directory: `mkdir -p workspaces/<slug>`
-3. Write `transcript.md` - the verbatim transcript provided by the user
-4. Write `analysis.md` - the complete meeting analysis output (all 7 sections)
-5. Write `action-items.md` using this template:
+3. Handle original content file:
+   - **If from temp/ directory**: Move the original file to workspace as `transcript.md` or `summary.md` (based on content type)
+   - **If inline content**: Write `transcript.md` (full transcript) or `summary.md` (meeting summary) with provided content
+   - **Efficiency**: Moving temp files avoids re-processing and preserves original formatting
+4. Copy `<meeting-name>.analysis.md` and `<meeting-name>.tickets.md` to workspace directory
+5. Write `action-items.md` - extracted tasks table with JIRA links
+6. Write `action-items.md` using this template:
 
 ```markdown
 # Action Items: <title> (<date>)
@@ -54,11 +59,11 @@ workspaces/<meeting-slug>/
 - ...
 ```
 
-6. For each JIRA ticket, write `jira-tickets/<ticket-slug>.json`
+7. For each JIRA ticket, write `jira-tickets/<ticket-slug>.json`
    - Derive filename by slugifying the ticket summary (lowercase, hyphens)
    - Write ticket metadata including actual JIRA key, URL, and creation details
-7. Write `slack-message.md` with office hours thread content and AlexD message (if Slack summary was generated)
-7. Write `chat-history.md` using this template:
+8. Write `slack-message.md` with office hours thread content and AlexD message (if Slack summary was generated)
+9. Write `chat-history.md` using this template:
 
 ```markdown
 # Session Summary: <title> (<date>)
@@ -75,18 +80,20 @@ workspaces/<meeting-slug>/
 
 | File | Contents |
 |------|----------|
-| transcript.md | Original meeting transcript |
+| transcript.md OR summary.md | Original meeting content |
 | analysis.md | Full 7-section analysis |
+| tickets.md | Original editable tickets file |
 | action-items.md | Extracted tasks and next steps |
 | jira-tickets/ | JIRA JSON payloads |
 ```
 
-8. Confirm to the user:
+10. Confirm to the user:
 
 ```
 Workspace created at workspaces/<slug>/
-  transcript.md
+  transcript.md OR summary.md
   analysis.md
+  tickets.md
   action-items.md
   jira-tickets/
     <n> ticket(s) with actual JIRA keys saved

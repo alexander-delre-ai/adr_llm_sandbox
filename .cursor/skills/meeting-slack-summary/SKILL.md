@@ -22,10 +22,12 @@ Collect these before composing the message:
 
 If the workspace path is not yet known, run the `meeting-workspace` skill first.
 
-Ask the user for optional inputs:
+Ask the user for optional inputs (if not already provided):
 - **Gemini notes link** - URL to the original meeting notes (if available)
-- **Attendee organization** - to separate Komatsu vs Applied attendees
+- **Attendee organization** - to separate Komatsu vs Applied attendees  
 - **Meeting room confirmation** - if uncertain whether a name is a meeting room or attendee
+
+**Note**: If Gemini notes link was not provided during initial workflow, ask for it before generating Slack summary.
 
 ## Slack Message Format
 
@@ -97,7 +99,6 @@ Ask the user for optional inputs:
 🧵06/03/2026: Komatsu <> VehicleOS Adaptive Architecture sync
 ```
 
-**Reply in thread:**
 ```
 **Komatsu Attendees:** Nuthan Sabbani
 
@@ -120,3 +121,5 @@ Cursor output for <meeting title> (<date>):
 
 [Include the full thread starter and reply content above]
 ```
+
+**Gemini Link Handling**: If no Gemini notes link was provided, the Slack message will omit the Gemini notes line entirely (as per the rules).

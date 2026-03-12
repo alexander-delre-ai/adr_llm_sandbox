@@ -1,6 +1,6 @@
 ---
 name: meeting-analysis-and-planning
-description: Analyzes a meeting transcript to extract context, decisions, themes, unresolved questions, and action items. Converts action items into JIRA-ready tickets and builds a prioritized plan. Use when processing meeting notes, call transcripts, or Google Gemini meeting exports.
+description: DEPRECATED - Use separate meeting-analysis and meeting-tickets skills instead. This skill is maintained for backward compatibility but new workflows should use the modular approach.
 ---
 
 # Meeting Analysis and Planning
@@ -60,17 +60,24 @@ Throughout the analysis, especially in Steps 4-6, ask clarifying questions when:
 
 ### Step 1 - Extract meeting context
 
-Pull these fields from the transcript header or opening minutes:
+**First, identify the content type:**
+- **Full Transcript**: Contains detailed conversation with speaker names, timestamps, and dialogue
+- **Gemini Summary**: AI-generated summary with structured sections (Summary, Details, Next Steps)
 
-| Field | What to look for |
-|-------|-----------------|
-| Meeting title | explicit title, recurring series name, or infer from agenda |
-| Date & time | timestamp in transcript metadata |
-| Participants | speaker names/handles listed or inferred from dialogue (exclude meeting rooms) |
-| Meeting location | identify conference room names (e.g., "Coulomb's Law (SVL-WCAL-HQ, FL3)") |
-| Stated objective | agenda items or opening statement of purpose |
+Pull these fields based on content type:
 
-**Important**: Filter out meeting room names from participants list. Meeting rooms follow the pattern of scientist names with location codes.
+| Field | Full Transcript | Gemini Summary |
+|-------|----------------|----------------|
+| Meeting title | explicit title, recurring series name, or infer from agenda | Look for title at top or in "Invited" section |
+| Date & time | timestamp in transcript metadata | Date at beginning (e.g., "Mar 10, 2026") |
+| Participants | speaker names/handles from dialogue (exclude meeting rooms) | Parse "Invited" list, filter out meeting rooms and email domains |
+| Meeting location | identify conference room names in participant list | Extract from "Invited" section or infer from context |
+| Stated objective | agenda items or opening statement | Extract from "Summary" section or main topics |
+
+**Important**: 
+- Filter out meeting room names from participants list (scientist names with location codes)
+- For Gemini summaries, remove email domains from names (e.g., "nuthan.sabbani@global.komatsu" → "Nuthan Sabbani")
+- Gemini summaries may have richer structured content in "Details" and "Suggested next steps" sections
 
 ---
 
@@ -78,7 +85,8 @@ Pull these fields from the transcript header or opening minutes:
 
 A decision is a statement of agreement, approval, or chosen direction.
 
-Signals: "we decided", "agreed to", "going with", "approved", "confirmed".
+**Full Transcript Signals**: "we decided", "agreed to", "going with", "approved", "confirmed"
+**Gemini Summary**: Look for definitive statements in "Summary" and "Details" sections
 
 Output as a numbered list: `Decision N: <one-sentence summary>`
 
@@ -86,9 +94,12 @@ Output as a numbered list: `Decision N: <one-sentence summary>`
 
 ### Step 3 - Identify discussion themes
 
-Group related conversation segments into 3-7 named themes. Each theme gets:
+Group related content into 3-7 named themes. Each theme gets:
 - A short label (2-4 words)
 - A one-sentence description of what was discussed
+
+**Full Transcript**: Group conversation segments by topic
+**Gemini Summary**: Use section headers and topic groupings from "Details" section
 
 ---
 
@@ -96,7 +107,8 @@ Group related conversation segments into 3-7 named themes. Each theme gets:
 
 Capture open questions, blockers, and deferred topics.
 
-Signals: "we need to figure out", "TBD", "who owns", "not sure yet", "follow up on".
+**Full Transcript Signals**: "we need to figure out", "TBD", "who owns", "not sure yet", "follow up on"
+**Gemini Summary**: Look for uncertainty language, questions raised, or items marked for future discussion
 
 Output as a bulleted list with the responsible person (if named) in brackets.
 
@@ -104,12 +116,20 @@ Output as a bulleted list with the responsible person (if named) in brackets.
 
 ### Step 5 - Extract actionable tasks
 
+**For Full Transcripts**: Look for commitment language ("I'll", "we need to", "action item")
+**For Gemini Summaries**: Check "Suggested next steps" section and action-oriented items in "Details"
+
 For each action item extract:
 - **What**: clear imperative description of the work
 - **Who**: assignee (if named; otherwise "Unassigned")
 - **When**: due date or sprint (if mentioned)
-- **Priority**: `High` / `Medium` / `Low` based on urgency language in transcript
+- **Priority**: `High` / `Medium` / `Low` based on urgency language or context
 - **Theme**: which theme from Step 3 this belongs to
+
+**Gemini Summary Notes**: 
+- Next steps are often pre-identified in the "Suggested next steps" section
+- Additional tasks may be embedded in detailed discussion points
+- Look for phrases like "will meet", "need to", "should schedule", "must provide"
 
 ---
 
@@ -149,10 +169,12 @@ Present tickets in a reviewable format:
 **Execution Phase**: Only create actual tickets after user confirmation.
 
 When user confirms ticket creation:
-1. Ask for project space (KATA/AVP), epic ID, and release
-2. Route documentation tickets to KATA-2226 automatically
-3. Use MCP integration to create real tickets
-4. Apply proper field mappings and required fields
+1. **CRITICAL**: Re-read the final tickets.md file to get user-edited titles, descriptions, and field values
+2. Ask for project space (KATA/AVP), epic ID, and release (if not already specified in tickets.md)
+3. Route documentation tickets to KATA-2226 automatically
+4. Use MCP integration to create real tickets with **edited content from tickets.md**
+5. Lookup assignees from tickets.md and set in JIRA (skip if "Unassigned" or lookup fails)
+6. Apply proper field mappings and required fields
 
 ---
 

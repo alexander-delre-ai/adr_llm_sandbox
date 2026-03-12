@@ -32,9 +32,10 @@ Include when available:
 
 ## Workflow
 
-1. Confirm all mandatory fields are present; prompt for any that are missing
-2. Reject any `epic_id` that does not start with `AVP-`
-3. Fill optional fields with defaults when absent
+1. **CRITICAL**: If working from tickets.md file, read the final edited version to get user-modified titles and descriptions
+2. Confirm all mandatory fields are present; prompt for any that are missing
+3. Reject any `epic_id` that does not start with `AVP-`
+4. Fill optional fields with defaults when absent
 4. Get the cloud ID for the AVP project using the MCP server
 5. Create the actual JIRA ticket using the MCP server
 6. Report the created ticket details including the ticket key
@@ -66,7 +67,17 @@ CallMcpTool({
   toolName: "getAccessibleAtlassianResources"
 })
 
-// Step 2: Create the issue
+// Step 2: Lookup assignee (if not "Unassigned")
+CallMcpTool({
+  server: "user-atlassian-mcp-applied",
+  toolName: "lookupJiraAccountId",
+  arguments: {
+    cloudId: "<cloud_id_from_step_1>",
+    searchString: "assignee_name"
+  }
+})
+
+// Step 3: Create the issue
 CallMcpTool({
   server: "user-atlassian-mcp-applied", 
   toolName: "createJiraIssue",
@@ -75,7 +86,8 @@ CallMcpTool({
     projectKey: "AVP",
     issueTypeName: "Task",
     summary: "<name>",
-    description: "<description>",
+    description: "<description>\n\nCreated via JIRA MCP",
+    assignee_account_id: "<account_id_from_step_2>", // Omit if "Unassigned"
     additional_fields: {
       // Epic link, priority, fix versions, labels, story points
     }
