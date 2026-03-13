@@ -11,7 +11,7 @@ Converts meeting action items into editable tickets.md file with proper tracking
 
 - **Action items list**: From meeting analysis (Step 5 output)
 - **Meeting metadata**: Title, date for file headers
-- **Output location**: Directory path where tickets.md should be created
+- **Output location**: Directory path where tickets.md should be created (format: workspaces/YYYY-MM-DD-meeting-name/)
 
 ## Workflow
 
@@ -38,7 +38,7 @@ For each action item, set these defaults:
 - **assignee**: "Unassigned" (single person per item)
 - **parent_id**: "TBD" (will become KATA-127 if unchanged)
 - **release**: "TBD" (will become Release 2026.1 if unchanged)
-- **story_points**: 0
+- **story_points**: 0 (always default to 0)
 - **description**: Clean summary from action item
 
 ### Step 3 - Generate YAML format
@@ -73,7 +73,7 @@ Edit the fields below as needed. When ready, confirm with the agent to create th
 - **assignee**: Single person responsible for the action item (one assignee per item) - defaults to "Unassigned"
 - **parent_id**: Epic ID (KATA-XXXX or AVP-XXXX format) - leave as "TBD" to use default "KATA-127"
 - **release**: Target release - leave as "TBD" to use default "Release 2026.1". Can use short format (e.g., "2025.3" will become "Release 2025.3")
-- **story_points**: 0.2 (1 day), 0.5 (2.5 days), 1 (1 week), 2 (2 weeks), 3 (3 weeks), 5 (5 weeks), 8 (8 weeks) - defaults to 0 if not specified
+- **story_points**: 0.2 (1 day), 0.5 (2.5 days), 1 (1 week), 2 (2 weeks), 3 (3 weeks), 5 (5 weeks), 8 (8 weeks) - always defaults to 0
 - **description**: Brief summary of the work
 
 ---
@@ -105,11 +105,13 @@ description: [Clean description]
 
 ### JIRA Tracking (Technical)
 - "Research X technology"
-- "Create Y documentation"
+- "Create Y documentation" (will be mirrored to AVP space)
 - "Implement Z feature"
 - "Define requirements for..."
 - Development work
 - Technical analysis
+
+**Documentation Mirroring**: Documentation tickets in KATA space are automatically mirrored to AVP space (parent: AVP-5477). AVP mirrors are excluded from Slack summaries.
 
 ## TBD Default System
 

@@ -27,6 +27,7 @@ workspaces/<meeting-slug>/
   analysis.md            <- full 7-section meeting analysis
   tickets.md             <- original editable tickets file
   action-items.md        <- extracted tasks table only (Steps 5 + 7)
+  gemini-link.txt        <- Gemini summary URL (if provided) for Slack reference
   jira-tickets/
     <slug-of-ticket-name>.json   <- JIRA ticket metadata with actual keys and URLs
   slack-message.md       <- office hours thread content and AlexD message
@@ -42,8 +43,9 @@ workspaces/<meeting-slug>/
    - **If inline content**: Write `transcript.md` (full transcript) or `summary.md` (meeting summary) with provided content
    - **Efficiency**: Moving temp files avoids re-processing and preserves original formatting
 4. Copy `<meeting-name>.analysis.md` and `<meeting-name>.tickets.md` to workspace directory
-5. Write `action-items.md` - extracted tasks table with JIRA links
-6. Write `action-items.md` using this template:
+5. Write `gemini-link.txt` with Gemini summary URL (if provided during workflow)
+6. Write `action-items.md` - extracted tasks table with JIRA links
+7. Write `action-items.md` using this template:
 
 ```markdown
 # Action Items: <title> (<date>)
@@ -59,11 +61,11 @@ workspaces/<meeting-slug>/
 - ...
 ```
 
-7. For each JIRA ticket, write `jira-tickets/<ticket-slug>.json`
+8. For each JIRA ticket, write `jira-tickets/<ticket-slug>.json`
    - Derive filename by slugifying the ticket summary (lowercase, hyphens)
    - Write ticket metadata including actual JIRA key, URL, and creation details
-8. Write `slack-message.md` with office hours thread content and AlexD message (if Slack summary was generated)
-9. Write `chat-history.md` using this template:
+9. Write `slack-message.md` with office hours thread content and AlexD message (if Slack summary was generated)
+10. Write `chat-history.md` using this template:
 
 ```markdown
 # Session Summary: <title> (<date>)
@@ -84,10 +86,11 @@ workspaces/<meeting-slug>/
 | analysis.md | Full 7-section analysis |
 | tickets.md | Original editable tickets file |
 | action-items.md | Extracted tasks and next steps |
+| gemini-link.txt | Gemini summary URL (if provided) |
 | jira-tickets/ | JIRA JSON payloads |
 ```
 
-10. Confirm to the user:
+11. Confirm to the user:
 
 ```
 Workspace created at workspaces/<slug>/
@@ -95,6 +98,7 @@ Workspace created at workspaces/<slug>/
   analysis.md
   tickets.md
   action-items.md
+  gemini-link.txt (if provided)
   jira-tickets/
     <n> ticket(s) with actual JIRA keys saved
   slack-message.md

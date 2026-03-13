@@ -11,7 +11,7 @@ Creates JIRA tickets for K1 hardware application development using standardized 
 
 The skill expects a markdown template with:
 - Manager name placeholder: `{manager_name}`
-- Numbered task list (1-7 tasks)
+- Numbered task list (1-11 tasks)
 - JIRA ticket link types section defining dependencies
 
 ## Template Example
@@ -21,26 +21,30 @@ The skill expects a markdown template with:
 
 1. List out input/output mappings for {manager_name}
 2. List out hardware dependencies for application functionality
-3. Establish zonal allocation for manager software 
-4. Draw subsystem diagrams on shared miro board
-5. Draft functional requirements for {manager_name} manager
-6. Draft performance requirements for {manager_name} manager
-7. State machine development for {manager_name} 
-8. Allocate physical HW for placement on truck bench
-9. HW bringup for {manager_name} on K1 bench
+3. Establish zonal allocation for manager software
+4. Draft functional requirements for {manager_name} manager
+5. Draft performance requirements for {manager_name} manager
+6. Review and sign-off on requirements for {manager_name} manager
+7. Draw subsystem diagrams on shared Miro board
+8. Define test cases for {manager_name} manager
+9. State machine development for {manager_name}
+10. Allocate physical HW for placement on truck bench
+11. HW bringup for {manager_name} on K1 bench
 
 ## Jira ticket link types:
-9 is blocked by 8.
-8 is blocked by 3
-3 is blocked by 2 
-2 is blocked by 1
 1 and 2 are related
-7 is blocked by 5
-7 is blocked by 6
-5 and 6 are related
-5 is blocked by 4
-6 is blocked by 4
-4 is blocked by 1
+2 blocks 3
+1 blocks 4
+1 blocks 5
+4 and 5 are related
+4 blocks 6
+5 blocks 6
+6 blocks 7
+6 blocks 8
+4 blocks 9
+5 blocks 9
+3 blocks 10
+10 blocks 11
 ```
 
 ## Required Parameters
@@ -53,7 +57,7 @@ When using this skill, you must provide:
 
 - `project`: Always "KATA" (manager workflows are KATA-specific)
 - `initiative_id`: Always "KATA-1760" (top-level initiative for all manager epics)
-- `release`: Defaults to "Release 26.1" unless specified
+- `release`: Defaults to "Release 26.1" (ID: 10002) unless specified
 
 ## Optional Parameters
 
@@ -61,7 +65,7 @@ When using this skill, you must provide:
 - `priority`: P0-P3 priority level (default: "P2")
 - `labels`: Not used (labels are not added to JIRA items)
 - `release`: Target release (default: "Release 26.1")
-- `story_points`: Custom story points array (9 values) or "default" to use 0 for all tasks (must be estimated)
+- `story_points`: Custom story points array (11 values) or "default" to use 0 for all tasks (must be estimated)
 - `batch_mode`: Set to true for multi-manager batch processing
 - `managers_list`: Array of manager configurations for batch mode
 
@@ -77,7 +81,7 @@ When using this skill, you must provide:
 
 2. **Template Processing**:
    - Replace `{manager_name}` placeholder with actual manager name
-   - Parse numbered task list (1-9)
+   - Parse numbered task list (1-11)
    - Extract dependency relationships from link types section
    - Handle batch mode if multiple managers specified
 
@@ -101,19 +105,21 @@ When using this skill, you must provide:
    - Initialize progress tracking for error recovery
    - Set up transaction logging for audit trail
 
-6. **Progressive Ticket Creation** (after confirmation):
-   - Create 9 JIRA tasks per manager with pause-on-error capability
+6. **Progressive Ticket Creation**:
+   - Create 11 JIRA tasks per manager with pause-on-error capability
    - Use format: `[Task Description]` (no manager brackets)
    - Link all tasks to the manager-specific epic
    - Include release and story points for each task (default 0, must be estimated)
    - Set all tasks as unassigned initially
    - Update checkpoint after each successful operation
 
-7. **Dependency Linking**:
-   - Create JIRA issue links with error recovery
+7. **Dependency Linking** (immediately after ticket creation, no separate confirmation):
+   - Create JIRA issue links with CORRECT directions using validated logic
+   - For "Task A blocks Task B": inwardIssue = A (gets "blocks"), outwardIssue = B (gets "is blocked by")
    - Support "blocks/blocked by" and "relates" relationships
    - Continue with remaining links if individual links fail
    - Log all operations for potential rollback
+   - Dependency directions have been validated across all 20 managers (P0-P3) and are confirmed correct
 
 8. **Error Recovery** (if failures occur):
    - Pause on first failure and generate recovery plan
@@ -122,9 +128,10 @@ When using this skill, you must provide:
    - Support resuming from last successful checkpoint
 
 9. **Final Reporting**:
-   - Update validation history with results
-   - Generate comprehensive success/failure report
-   - Update statistics for future smart validation
+    - Update validation history with results
+    - Generate comprehensive success/failure report
+    - Update statistics for future smart validation
+    - Include dependency verification in final report
 
 ## Implementation Details
 
@@ -168,7 +175,7 @@ Manager workflows always use:
    - Epic: [Epic ID] - [Manager Name] Development
    - Initiative: KATA-1760 - K1 Hardware Manager Development
    - Release: [Release Name]
-   - Total Tasks: 9
+   - Total Tasks: 11
    - Estimated Points: [Total Points]
    
    ## Validation Results
@@ -192,10 +199,10 @@ Manager workflows always use:
    |------|----------------|-----------------|---------|
    | 1. I/O Mapping | 3 | 1-8 | [ ] |
    | 2. Hardware Dependencies | 5 | 2-13 | [ ] |
-   | ... (all 9 tasks)
+   | ... (all 11 tasks)
    
    ## Planned Tickets
-   [List of 9 tickets with enhanced descriptions]
+   [List of 11 tickets with enhanced descriptions]
    
    ## Dependency Relationships
    [Visual representation of links]
@@ -212,7 +219,30 @@ Manager workflows always use:
 3. **Batch Mode Plan Generation**:
    For multiple managers, use batch template with combined overview and individual manager sections.
 
-### Enhanced Ticket Creation Process (After Confirmation)
+### Validated Dependency Pattern
+
+The dependency directions below have been validated across all 20 managers (6 P1, 3 P2, 11 P3) and confirmed correct.
+No separate dependency confirmation step is required. Ticket creation and dependency linking
+proceed as a single continuous operation after plan review.
+
+**Standard 13-link dependency pattern (validated)**:
+```
+1 relates 2      (bidirectional)
+2 blocks 3       (2 must complete before 3)
+1 blocks 4       (1 must complete before 4)
+1 blocks 5       (1 must complete before 5)
+4 relates 5      (bidirectional)
+4 blocks 6       (4 must complete before 6)
+5 blocks 6       (5 must complete before 6)
+6 blocks 7       (6 must complete before 7)
+6 blocks 8       (6 must complete before 8)
+4 blocks 9       (4 must complete before 9)
+5 blocks 9       (5 must complete before 9)
+3 blocks 10      (3 must complete before 10)
+10 blocks 11     (10 must complete before 11)
+```
+
+### Ticket Creation and Dependency Linking Process
 
 1. **Create Checkpoint**:
    ```javascript
@@ -220,7 +250,7 @@ Manager workflows always use:
      timestamp: new Date().toISOString(),
      manager_name: manager_name,
      epic_id: manager_epic_id,
-     total_tasks: 9,
+     total_tasks: 11,
      completed_tickets: [],
      completed_links: [],
      failed_operations: [],
@@ -276,26 +306,32 @@ Manager workflows always use:
    }
    ```
 
-3. **Progressive Link Creation with Error Recovery**:
+3. **Progressive Link Creation with Error Recovery** (CORRECTED LOGIC):
    ```javascript
+   // CRITICAL: For "Task A blocks Task B" relationships:
+   // - inwardIssue = A (Task A gets "blocks" relationship)
+   // - outwardIssue = B (Task B gets "is blocked by" relationship)
+   // This means Task A must complete before Task B can start
+   
    for (const linkDef of linkDefinitions) {
      try {
        const result = await CallMcpTool({
-         server: "user-atlassian-mcp-kata",
-         toolName: "createIssueLink",
-         arguments: {
-           cloudId: "eadd00c6-0d3f-4c89-99e3-ad95a0daaa51",
-           inwardIssue: linkDef.inward_ticket_id,
-           outwardIssue: linkDef.outward_ticket_id,
-           type: linkDef.link_type,
-           comment: "Dependency created via K1 HW template"
-         }
-       });
+        server: "user-atlassian-mcp-kata",
+        toolName: "createIssueLink",
+        arguments: {
+          cloudId: "eadd00c6-0d3f-4c89-99e3-ad95a0daaa51",
+          inwardIssue: linkDef.blocking_task_id,  // Task that does the blocking
+          outwardIssue: linkDef.blocked_task_id,  // Task that gets blocked
+          type: linkDef.link_type
+          // Do NOT include comment field - causes "Invalid ADF content" errors
+        }
+      });
        
        checkpoint.completed_links.push({
-         inward: linkDef.inward_ticket_id,
-         outward: linkDef.outward_ticket_id,
-         type: linkDef.link_type
+         blocking_task: linkDef.blocking_task_id,
+         blocked_task: linkDef.blocked_task_id,
+         type: linkDef.link_type,
+         description: `${linkDef.blocking_task_name} blocks ${linkDef.blocked_task_name}`
        });
        updateCheckpoint(checkpoint);
        
@@ -346,12 +382,14 @@ Standard K1 hardware development tasks:
 1. **I/O Mapping**: List input/output mappings for {manager_name}
 2. **Hardware Dependencies**: List hardware dependencies for application functionality
 3. **Zonal Allocation**: Establish zonal allocation for manager software
-4. **Subsystem Diagrams**: Draw subsystem diagrams on shared miro board
-5. **Functional Requirements**: Draft functional requirements for {manager_name} manager
-6. **Performance Requirements**: Draft performance requirements for {manager_name} manager
-7. **State Machine**: State machine development for {manager_name}
-8. **Physical Allocation**: Allocate physical HW for placement on truck bench
-9. **HW Bringup**: HW bringup for {manager_name} on K1 bench
+4. **Functional Requirements**: Draft functional requirements for {manager_name} manager
+5. **Performance Requirements**: Draft performance requirements for {manager_name} manager
+6. **Requirements Sign-off**: Review and sign-off on requirements for {manager_name} manager
+7. **Subsystem Diagrams**: Draw subsystem diagrams on shared Miro board
+8. **Test Cases**: Define test cases for {manager_name} manager
+9. **State Machine**: State machine development for {manager_name}
+10. **Physical Allocation**: Allocate physical HW for placement on truck bench
+11. **HW Bringup**: HW bringup for {manager_name} on K1 bench
 
 ## Dependency Patterns
 
@@ -361,28 +399,49 @@ Common dependency relationships:
 - **Convergence**: Multiple tasks feeding into final integration
 - **Related**: Tasks that share context but don't block each other
 
+## JIRA Link Direction Logic (CRITICAL)
+
+**Understanding JIRA createIssueLink parameters**:
+
+For relationship "Task A blocks Task B":
+- `inwardIssue`: Task A (gets "blocks" relationship)
+- `outwardIssue`: Task B (gets "is blocked by" relationship)
+- `type`: "Blocks"
+
+**Example**: "Task 1 blocks Task 2"
+```javascript
+createIssueLink({
+  inwardIssue: "KATA-2625",  // Task 1 - shows "blocks KATA-2626"
+  outwardIssue: "KATA-2626", // Task 2 - shows "is blocked by KATA-2625"  
+  type: "Blocks"
+});
+```
+
+**Result in JIRA**:
+- KATA-2625 (Task 1): "blocks KATA-2626"
+- KATA-2626 (Task 2): "is blocked by KATA-2625"
+
+**Verification**: Task 1 must complete before Task 2 can start ✓
+
 ## Release Mapping (KATA)
 
 | Release Name | Field ID | Usage |
 |--------------|----------|-------|
 | Release 25.1 | 10000 | Legacy |
 | Release 25.2 | 10001 | Legacy |
-| Release 25.3 | 10036 | Current |
-| Release 26.1 | 10002 | Default |
-| Release 26.2 | 10003 | Future |
+| Release 25.3 | 10036 | Legacy |
+| Release 26.1 | 10002 | **Default** |
+| Release 26.2 | 10003 | Available |
 
 ## Epic Structure
 
 ```
 KATA-1760 (Initiative: K1 Hardware Manager Development)
-├── KATA-XXXX (Epic: PowerManager Development)
-│   ├── KATA-YYYY (Task 1: List out input/output mappings for PowerManager)
-│   ├── KATA-YYYY (Task 2: List out HW dependencies for application functionality)
-│   └── ... (Tasks 3-7)
-├── KATA-XXXX (Epic: ThermalManager Development)
-│   ├── KATA-YYYY (Task 1: List out input/output mappings for ThermalManager)
-│   └── ... (Tasks 2-7)
-└── ... (Other Manager Epics)
+├── KATA-XXXX (Epic: [Manager] Development)
+│   ├── KATA-YYYY (Task 1: List out input/output mappings for [Manager])
+│   ├── KATA-YYYY (Task 2: List out hardware dependencies for application functionality)
+│   └── ... (Tasks 3-11)
+└── ... (20 Manager Epics total: 6 P1, 3 P2, 11 P3)
 ```
 
 ## Batch Processing Support
@@ -401,7 +460,7 @@ Parameters:
     {
       manager_name: "AutoLube",
       manager_epic_id: "KATA-2800",
-      story_points: [3,5,8,5,5,3,13,3,8], // optional custom points
+      story_points: [3,5,8,5,5,3,13,5,8,3,5], // optional custom points (11 values)
       priority: "P2" // optional per-manager priority
     },
     {
@@ -500,7 +559,7 @@ Generated: [timestamp]
 - **Release**: [Release Name]
 - **Priority**: [Priority Level]
 - **Assignee**: Unassigned
-- **Total Tasks**: 9
+- **Total Tasks**: 11
 - **Estimated Points**: [Total Points]
 
 ## Validation Results
@@ -515,7 +574,7 @@ Generated: [timestamp]
 ### Warnings
 [Any validation warnings based on history]
 - ⚠️ Epic KATA-XXXX had permission issues in previous runs
-- ⚠️ Release 26.1 validation recommended
+- ⚠️ Release version validation recommended
 - ⚠️ All tasks have 0 story points - estimation required before proceeding
 - ✅ Manager name follows consistent pattern
 
@@ -531,12 +590,14 @@ See [story-points-guide.md](story-points-guide.md) for detailed guidelines.
 | 1 | I/O Mapping | 0 ⚠️ | 1-8 | Signal count, protocol complexity |
 | 2 | Hardware Dependencies | 0 ⚠️ | 2-13 | Component count, spec availability |
 | 3 | Zonal Allocation | 0 ⚠️ | 3-13 | Options analysis, constraints |
-| 4 | Subsystem Diagrams | 0 ⚠️ | 3-13 | Diagram complexity, detail level |
-| 5 | Functional Requirements | 0 ⚠️ | 3-13 | Requirement complexity, novelty |
-| 6 | Performance Requirements | 0 ⚠️ | 1-8 | Criteria count, modeling needs |
-| 7 | State Machine Development | 0 ⚠️ | 8-21 | States, transitions, complexity |
-| 8 | Physical Allocation | 0 ⚠️ | 1-8 | Setup complexity, custom needs |
-| 9 | Hardware Bringup | 0 ⚠️ | 5-13 | Hardware complexity, validation |
+| 4 | Functional Requirements | 0 ⚠️ | 3-13 | Requirement complexity, novelty |
+| 5 | Performance Requirements | 0 ⚠️ | 1-8 | Criteria count, modeling needs |
+| 6 | Requirements Sign-off | 0 ⚠️ | 1-5 | Stakeholder count, review complexity |
+| 7 | Subsystem Diagrams | 0 ⚠️ | 3-13 | Diagram complexity, detail level |
+| 8 | Test Cases Definition | 0 ⚠️ | 2-13 | Test scenario complexity, automation |
+| 9 | State Machine Development | 0 ⚠️ | 8-21 | States, transitions, complexity |
+| 10 | Physical Allocation | 0 ⚠️ | 1-8 | Setup complexity, custom needs |
+| 11 | Hardware Bringup | 0 ⚠️ | 5-13 | Hardware complexity, validation |
 
 **To modify story points**: Edit the values above and confirm changes.
 
@@ -555,22 +616,24 @@ Task: [Enhanced detailed task description based on user feedback]
 
 Created via JIRA MCP
 
-[... continues for all 9 tasks with enhanced descriptions]
+[... continues for all 11 tasks with enhanced descriptions]
 
 ## Dependency Relationships
 
-The following 11 links will be created:
-- Task 9 (HW bringup for [Manager] on K1 bench) **is blocked by** Task 8 (Allocate physical HW)
-- Task 8 (Allocate physical HW) **is blocked by** Task 3 (Zonal allocation)
-- Task 3 (Zonal allocation) **is blocked by** Task 2 (Hardware dependencies)
-- Task 2 (Hardware dependencies) **is blocked by** Task 1 (I/O mappings)
+The following 13 links will be created:
 - Task 1 (I/O mappings) **relates to** Task 2 (Hardware dependencies)
-- Task 7 (State machine development) **is blocked by** Task 5 (Functional requirements)
-- Task 7 (State machine development) **is blocked by** Task 6 (Performance requirements)
-- Task 5 (Functional requirements) **relates to** Task 6 (Performance requirements)
-- Task 5 (Functional requirements) **is blocked by** Task 4 (Subsystem diagrams)
-- Task 6 (Performance requirements) **is blocked by** Task 4 (Subsystem diagrams)
-- Task 4 (Subsystem diagrams) **is blocked by** Task 1 (I/O mappings)
+- Task 2 (Hardware dependencies) **blocks** Task 3 (Zonal allocation)
+- Task 1 (I/O mappings) **blocks** Task 4 (Functional requirements)
+- Task 1 (I/O mappings) **blocks** Task 5 (Performance requirements)
+- Task 4 (Functional requirements) **relates to** Task 5 (Performance requirements)
+- Task 4 (Functional requirements) **blocks** Task 6 (Requirements sign-off)
+- Task 5 (Performance requirements) **blocks** Task 6 (Requirements sign-off)
+- Task 6 (Requirements sign-off) **blocks** Task 7 (Subsystem diagrams)
+- Task 6 (Requirements sign-off) **blocks** Task 8 (Test cases)
+- Task 4 (Functional requirements) **blocks** Task 9 (State machine)
+- Task 5 (Performance requirements) **blocks** Task 9 (State machine)
+- Task 3 (Zonal allocation) **blocks** Task 10 (Physical allocation)
+- Task 10 (Physical allocation) **blocks** Task 11 (HW bringup)
 
 ## Epic Structure
 ```
@@ -579,9 +642,11 @@ KATA-1760: K1 Hardware Manager Development (Initiative)
     ├── List out input/output mappings for [Manager]
     ├── List out hardware dependencies for application functionality
     ├── Establish zonal allocation for manager software
-    ├── Draw subsystem diagrams on shared miro board
     ├── Draft functional requirements for [Manager] manager
     ├── Draft performance requirements for [Manager] manager
+    ├── Review and sign-off on requirements for [Manager] manager
+    ├── Draw subsystem diagrams on shared Miro board
+    ├── Define test cases for [Manager] manager
     ├── State machine development for [Manager]
     ├── Allocate physical HW for placement on truck bench
     └── HW bringup for [Manager] on K1 bench
@@ -615,17 +680,17 @@ For multiple managers, the plan includes:
 🔍 Validation completed: 5/5 checks passed
 📊 Story points customized: 45 total points (3 tasks modified)
 
-✅ Created 9 K1 Hardware Development tickets for AutoLube:
+✅ Created 11 K1 Hardware Development tickets for AutoLube:
 - KATA-1234: List out input/output mappings for AutoLube (3 pts)
 - KATA-1235: List out hardware dependencies for application functionality (8 pts)
 - KATA-1236: Establish zonal allocation for manager software (5 pts)
-- ... (6 more)
-
-✅ Created 11 issue links:
-- KATA-1243 blocks KATA-1242 (HW bringup → Physical allocation)
-- KATA-1242 blocks KATA-1236 (Physical allocation → Zonal allocation)
-- KATA-1241 relates KATA-1240 (Functional ↔ Performance requirements)
 - ... (8 more)
+
+✅ Created 13 issue links:
+- KATA-1234 relates KATA-1235 (I/O mappings ↔ Hardware dependencies)
+- KATA-1235 blocks KATA-1236 (Hardware dependencies → Zonal allocation)
+- KATA-1234 blocks KATA-1237 (I/O mappings → Functional requirements)
+- ... (10 more)
 
 📈 Updated validation history: Success rate for AutoLube: 100%
 💾 Checkpoint completed successfully: checkpoint_AutoLube_20260311.json
@@ -637,13 +702,13 @@ For multiple managers, the plan includes:
 🔍 Batch validation: 3 managers validated successfully
 
 ✅ Batch creation completed:
-- AutoLube: 9 tickets, 11 links (45 pts) ✅
-- ThermalManager: 9 tickets, 11 links (52 pts) ✅  
-- PowerManager: 9 tickets, 11 links (48 pts) ✅
+- AutoLube: 11 tickets, 13 links (45 pts) ✅
+- ThermalManager: 11 tickets, 13 links (52 pts) ✅  
+- PowerManager: 11 tickets, 13 links (48 pts) ✅
 
 📊 Batch Summary:
-- Total tickets: 27
-- Total links: 33
+- Total tickets: 33
+- Total links: 39
 - Total story points: 145
 - Success rate: 100%
 - Duration: 3m 24s
@@ -656,13 +721,13 @@ For multiple managers, the plan includes:
 📋 Generated plan: plan.md
 🔍 Validation completed with warnings
 
-⚠️ Ticket creation paused at task 5/9
+⚠️ Ticket creation paused at task 5/11
 ❌ Error: Permission denied for epic KATA-2800
 
 🔧 Recovery plan generated: recovery_AutoLube_20260311.md
 📊 Current state:
-- Completed tickets: 4/9
-- Completed links: 3/11
+- Completed tickets: 4/11
+- Completed links: 3/13
 - Failed operation: Create ticket #5
 
 🔄 Recovery options:
@@ -682,12 +747,12 @@ For multiple managers, the plan includes:
 
 ⚠️ Validation warnings:
 - Epic KATA-2800 had permission issues in 2 previous runs
-- Release "Release 26.1" not found in recent project versions
+- Release version not found in recent project versions
 - Manager name "AutoLube" is new (no historical data)
 
 💡 Recommendations:
 - Verify epic permissions before proceeding
-- Consider using "Release 26.2" instead
+- Use "Release 26.1" (ID: 10002) as default
 - Proceed with caution for new manager type
 
 ✅ Pre-flight checks:

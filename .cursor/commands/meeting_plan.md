@@ -2,61 +2,82 @@
 
 **Mode: Plan**
 
-Accept a meeting transcript or Gemini summary and produce a full meeting analysis with reviewable JIRA ticket plans, then optionally create actual tickets via MCP integration.
+Accept a meeting transcript or Gemini summary link and produce a full meeting analysis with reviewable JIRA ticket plans, then optionally create actual tickets via MCP integration.
 
 ## Input
 
 The meeting content may be provided as:
 - **Full transcript**: Complete meeting recording transcript with detailed conversation
-- **Gemini summary**: AI-generated meeting summary with key points, decisions, and action items
+- **Gemini summary link**: Google Docs link to AI-generated meeting summary (for reference only, used in Slack summary)
 - Inline text pasted directly in the message
 - A file path - read the file using the Read tool (supports `temp/` directory files)
-- A URL - fetch using the appropriate fetch tool
 
-If no content is provided, ask: "Please paste the meeting transcript/summary or provide a file path."
+**Input Format Examples:**
+- `@temp/meeting-transcript.md` (file path)
+- `@temp/meeting-transcript.md gemini summary: https://docs.google.com/document/d/...` (transcript + Gemini link)
+- `gemini summary: https://docs.google.com/document/d/...` (Gemini link only - ask for transcript)
+
+If no content is provided, ask: "Please paste the meeting transcript or provide a file path."
+
+**Gemini Link Extraction**: When user provides "gemini summary: [URL]" in their message, extract and store this URL for inclusion in the Slack summary. The link is for reference only and not processed for content.
 
 **Temp Directory Support**: Files in `temp/` directory will be moved to the meeting workspace after successful analysis (saves processing time by avoiding content duplication).
 
 ## Steps
 
-1. Accept the meeting content (transcript or Gemini summary) using one of the input methods above
-2. **Identify content type**: Determine if input is a full transcript or Gemini summary
-3. Switch to Plan mode so the analysis is collaborative before any artifacts are created
-4. **Create workspace directory** immediately using meeting title and date
-5. **Create meeting analysis**: Read and follow `.cursor/skills/meeting-analysis/SKILL.md` to create analysis.md
-6. **Create ticket proposals**: Read and follow `.cursor/skills/meeting-tickets/SKILL.md` to create tickets.md
-7. **Stage files in workspace**:
-   - `workspaces/<meeting-slug>/analysis.md` - Complete meeting analysis (context, decisions, themes, questions, action items, prioritized plan)
-   - `workspaces/<meeting-slug>/tickets.md` - Editable ticket proposals with essential fields (tracking, priority, assignee, parent_id, release, story_points, description)
+1. Accept the meeting content (transcript) or Gemini summary link using one of the input methods above
+2. **Extract Gemini link**: If user message contains "gemini summary: [URL]", extract and store this URL for later use in Slack summary
+3. **Identify content type**: Determine if input is a full transcript or Gemini summary link (for reference only)
+4. Switch to Plan mode so the analysis is collaborative before any artifacts are created
+5. **Create workspace directory** immediately using YYYY-MM-DD-meeting-name format
+6. **Store Gemini link**: If extracted in step 2, save Gemini summary URL to workspace metadata for Slack summary use
+7. **Create meeting analysis**: Read and follow `.cursor/skills/meeting-analysis/SKILL.md` to create analysis.md
+8. **Create ticket proposals**: Read and follow `.cursor/skills/meeting-tickets/SKILL.md` to create tickets.md
+9. **Stage files in workspace**:
+   - `workspaces/YYYY-MM-DD-meeting-name/analysis.md` - Complete meeting analysis (context, decisions, themes, questions, action items, prioritized plan)
+   - `workspaces/YYYY-MM-DD-meeting-name/tickets.md` - Editable ticket proposals with essential fields (tracking, priority, assignee, parent_id, release, story_points, description)
+   - `workspaces/YYYY-MM-DD-meeting-name/transcript.md` - Original meeting transcript
+   - `workspaces/YYYY-MM-DD-meeting-name/gemini-link.txt` - Gemini summary URL (if provided) for Slack summary reference
    - **Auto-assign tracking**: Items involving "schedule", "meeting", "coordinate", or "set up" default to "slack" tracking
    - **Single assignee**: Each action item assigned to one person for clear accountability
-8. Present summary with references to staged workspace files
+10. Present summary with references to staged workspace files
 
 ## Review and Execution Phase
 
 After staging files in workspace, ask: 
 
 **"I've created the workspace and staged files for your review:**
-- **`workspaces/<meeting-slug>/analysis.md`** - Complete meeting analysis and plan
-- **`workspaces/<meeting-slug>/tickets.md`** - Editable JIRA ticket proposals
+- **`workspaces/YYYY-MM-DD-meeting-name/analysis.md`** - Complete meeting analysis and plan
+- **`workspaces/YYYY-MM-DD-meeting-name/tickets.md`** - Editable JIRA ticket proposals
 
 **Please:**
 1. **Review the analysis** for accuracy
 2. **Edit the tickets file** as needed (tracking, priority, assignee, parent_id, release, story_points, description)
-3. **Provide Gemini notes link** (if available) for Slack summary
+3. **Confirm Gemini notes link** (if provided) for Slack summary reference
 4. **Confirm when ready** to create the JIRA tickets and complete the workspace"
 
-If confirmed, execute Step 6 with MCP integration:
-- **Read final tickets.md file** to get user-edited titles, descriptions, and field values
-- Process tracking field: create JIRA tickets only for "jira" or "both", include all items in Slack summary
-- Create actual JIRA tickets via MCP server using **edited content from tickets.md**
-- Apply proper field mappings (P0-P3 priorities, release IDs)
-- Lookup and set assignees from tickets.md (skip if "Unassigned" or lookup fails)
-- Use defaults: assignee="Unassigned", parent_id="KATA-127" (if TBD), release="Release 2026.1" (if TBD), story_points=0 if not specified
-- Auto-format releases: prepend "Release " if only version number provided (e.g., "2025.3" → "Release 2025.3")
-- Route documentation tickets to KATA-2226 automatically
-- Include MCP creation tracking
-- Return real ticket URLs and complete workspace
+If confirmed, execute Phase 2 using the specialized skills:
+- **JIRA Ticket Creation**: Use appropriate skill based on parent_id project space:
+  - `.cursor/skills/kata-jira-task-creation/SKILL.md` for KATA-XXXX parent_ids
+  - `.cursor/skills/avp-jira-task-creation/SKILL.md` for AVP-XXXX parent_ids
+  - **Read final tickets.md file** to get user-edited titles, descriptions, and field values
+  - Process tracking field: create JIRA tickets only for "jira" or "both"
+  - Apply proper field mappings (P0-P3 priorities, release IDs)
+  - Lookup and set assignees from tickets.md (skip if "Unassigned" or lookup fails)
+  - Use defaults: assignee="Unassigned", parent_id="KATA-127" (if TBD), release="Release 2026.1" (if TBD), story_points=0 (always default to 0)
+  - Auto-format releases: prepend "Release " if only version number provided (e.g., "2025.3" → "Release 2025.3")
+  - **Documentation ticket routing**: Any tickets with parent_id="KATA-2226" are documentation tickets
+  - **Ticket title validation**: Ensure ticket summaries match the updated action item names from tickets.md after user review
+  - **Create AVP mirrors**: Automatically create AVP copies for documentation tickets (parent: AVP-5477, engagement: "Komatsu")
+- **Slack Summary Generation**: Use `.cursor/skills/meeting-slack-summary/SKILL.md`
+  - **Read Gemini link**: Check for `gemini-link.txt` in workspace and pass URL to Slack summary skill
+  - Include all action items (Slack-only first, then JIRA tickets)
+  - **Include Gemini summary link** (if available from workspace) as reference in Slack message
+  - **Slack filtering**: Only include KATA tickets in summaries (exclude AVP mirrors)
+  - Send formatted message to AlexD with workspace context
+- **Workspace Creation**: Use `.cursor/skills/meeting-workspace/SKILL.md`
+  - Save complete workspace with all artifacts and JIRA ticket metadata
+  - Return workspace path and real ticket URLs for immediate actionability
 
 ## Two-Phase Workflow
 
@@ -73,14 +94,21 @@ If confirmed, execute Step 6 with MCP integration:
 ### Phase 2: Execution (Agent Mode)  
 - **Re-read tickets.md** to capture any user edits to titles, descriptions, assignments, etc.
 - Process tracking preferences (JIRA tickets vs Slack-only items)
-- Create actual JIRA tickets via MCP integration using **final edited content**
-- Apply proper field mappings and epic routing (defaults: Unassigned, KATA-127 if TBD, Release 2026.1 if TBD, story_points=0)
-- Auto-format release names (prepend "Release " if needed)
-- Save complete workspace in `workspaces/` within current repo
-- **Move temp files**: If input was from `temp/` directory, move original file to workspace
-- **Request Gemini notes link** (if not already provided) before generating Slack summary
-- Generate office hours Slack thread message (includes all items and Gemini link if provided)
-- Provide immediate actionability
+- **Create JIRA tickets**: Read and follow appropriate JIRA creation skill based on project space:
+  - `.cursor/skills/kata-jira-task-creation/SKILL.md` for KATA project tickets
+  - `.cursor/skills/avp-jira-task-creation/SKILL.md` for AVP project tickets
+  - Apply proper field mappings and epic routing (defaults: Unassigned, KATA-127 if TBD, Release 2026.1 if TBD, story_points=0 always)
+  - **Validate ticket titles**: Confirm ticket summaries match the action item names from the final edited tickets.md
+  - Auto-format release names (prepend "Release " if needed)
+  - Create AVP mirrors for documentation tickets (parent: AVP-5477, engagement: "Komatsu")
+- **Generate Slack summary**: Read and follow `.cursor/skills/meeting-slack-summary/SKILL.md`
+  - **Read Gemini link**: Check for `gemini-link.txt` in workspace and include URL in Slack message
+  - **Include Gemini notes link** (if available from workspace) as reference in Slack message
+  - Include all action items (Slack-only first, then JIRA tickets)
+  - Send formatted office hours thread message to AlexD
+- **Save workspace**: Read and follow `.cursor/skills/meeting-workspace/SKILL.md` to create complete workspace
+- **Move temp files**: If input was from `temp/` directory, move original file to workspace as transcript.md
+- Provide immediate actionability with workspace path and ticket URLs
 
 ## Benefits
 

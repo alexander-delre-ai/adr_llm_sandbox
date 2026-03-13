@@ -10,7 +10,7 @@ Processes meeting content (full transcripts or AI-generated summaries) to create
 ## Input Requirements
 
 - **Meeting content**: Full transcript or AI summary
-- **Output location**: Directory path where analysis.md should be created
+- **Output location**: Directory path where analysis.md should be created (format: workspaces/YYYY-MM-DD-meeting-name/)
 - **Meeting metadata**: Title, date, participants (extracted from content)
 
 ## Workflow

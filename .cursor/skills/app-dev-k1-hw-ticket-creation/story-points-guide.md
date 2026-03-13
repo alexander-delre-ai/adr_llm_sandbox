@@ -35,17 +35,7 @@ Story points represent the relative effort and complexity of tasks. Use Fibonacc
 - Complexity of proximity and repairability analysis
 - Impact on system architecture
 
-### 4. Subsystem Diagrams (Default: 0 points - must be estimated)
-**Low Complexity (3 points)**: Simple diagrams, existing templates
-**Medium Complexity (5-8 points)**: Standard architecture and connectivity diagrams
-**High Complexity (13+ points)**: Complex system interactions, multiple diagram types
-
-**Factors to consider**:
-- Number and complexity of diagrams needed
-- Level of detail required
-- Integration with other vehicle systems
-
-### 5. Functional Requirements (Default: 0 points - must be estimated)
+### 4. Functional Requirements (Default: 0 points - must be estimated)
 **Low Complexity (3 points)**: Well-understood functionality, existing patterns
 **Medium Complexity (5-8 points)**: Standard requirements definition
 **High Complexity (13+ points)**: Novel functionality, complex operational states
@@ -55,7 +45,7 @@ Story points represent the relative effort and complexity of tasks. Use Fibonacc
 - Number of functional requirements
 - Novelty of the functionality
 
-### 6. Performance Requirements (Default: 0 points - must be estimated)
+### 5. Performance Requirements (Default: 0 points - must be estimated)
 **Low Complexity (1-2 points)**: Standard performance criteria
 **Medium Complexity (3-5 points)**: Detailed timing and throughput specs
 **High Complexity (8+ points)**: Complex performance modeling needed
@@ -65,7 +55,39 @@ Story points represent the relative effort and complexity of tasks. Use Fibonacc
 - Complexity of timing constraints
 - Need for performance modeling or simulation
 
-### 7. State Machine Development (Default: 0 points - must be estimated)
+### 6. Requirements Sign-off (Default: 0 points - must be estimated)
+**Low Complexity (1 point)**: Simple review and approval process
+**Medium Complexity (2-3 points)**: Multiple stakeholder review required
+**High Complexity (5+ points)**: Complex approval process, multiple iterations
+
+**Factors to consider**:
+- Number of stakeholders involved in sign-off
+- Complexity of requirements being reviewed
+- Expected number of review iterations
+- Documentation requirements for approval
+
+### 7. Subsystem Diagrams (Default: 0 points - must be estimated)
+**Low Complexity (3 points)**: Simple diagrams, existing templates
+**Medium Complexity (5-8 points)**: Standard architecture and connectivity diagrams
+**High Complexity (13+ points)**: Complex system interactions, multiple diagram types
+
+**Factors to consider**:
+- Number and complexity of diagrams needed
+- Level of detail required
+- Integration with other vehicle systems
+
+### 8. Test Cases Definition (Default: 0 points - must be estimated)
+**Low Complexity (2-3 points)**: Standard test cases, existing patterns
+**Medium Complexity (5-8 points)**: Custom test cases, moderate complexity
+**High Complexity (13+ points)**: Complex test scenarios, automation required
+
+**Factors to consider**:
+- Number of test cases to define
+- Complexity of test scenarios
+- Need for test automation
+- Integration with existing test frameworks
+
+### 9. State Machine Development (Default: 0 points - must be estimated)
 **Low Complexity (8 points)**: Simple state machine, few states
 **Medium Complexity (13 points)**: Standard complexity state machine
 **High Complexity (21+ points)**: Complex state machine with many transitions
@@ -76,7 +98,7 @@ Story points represent the relative effort and complexity of tasks. Use Fibonacc
 - Integration with other system components
 - Testing and validation requirements
 
-### 8. Physical Hardware Allocation (Default: 0 points - must be estimated)
+### 10. Physical Hardware Allocation (Default: 0 points - must be estimated)
 **Low Complexity (1-2 points)**: Clear hardware list from dependencies
 **Medium Complexity (3-5 points)**: Standard bench allocation
 **High Complexity (8+ points)**: Complex setup requirements, custom configurations
@@ -86,7 +108,7 @@ Story points represent the relative effort and complexity of tasks. Use Fibonacc
 - Custom mounting or configuration needs
 - Integration with test equipment
 
-### 9. Hardware Bringup (Default: 0 points - must be estimated)
+### 11. Hardware Bringup (Default: 0 points - must be estimated)
 **Low Complexity (5 points)**: Standard hardware, known procedures
 **Medium Complexity (8 points)**: Standard bringup with validation
 **High Complexity (13+ points)**: Complex hardware, extensive validation needed

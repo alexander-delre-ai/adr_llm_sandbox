@@ -21,7 +21,7 @@ Include when available:
 - `priority` - `P0` (critical), `P1` (high), `P2` (medium), `P3` (low) (default: `P1`)
 - `assignee` - team member handle or name
 - `labels` - comma-separated list
-- `story_points` - numeric estimate (set to 0 if not specified, field is required)
+- `story_points` - numeric estimate (always defaults to 0, field is required)
 
 ## Validation rules
 
@@ -34,9 +34,10 @@ Include when available:
 ## Workflow
 
 1. **CRITICAL**: If working from tickets.md file, read the final edited version to get user-modified titles and descriptions
-2. Confirm all mandatory fields are present; prompt for any that are missing
-3. Reject any `epic_id` that does not start with `KATA-`
-4. Fill optional fields with defaults when absent
+2. **Validate ticket titles**: Ensure ticket summaries match the action item names from tickets.md exactly
+3. Confirm all mandatory fields are present; prompt for any that are missing
+4. Reject any `epic_id` that does not start with `KATA-`
+5. Fill optional fields with defaults when absent
 5. **IMPORTANT**: Check if KATA MCP server has tools available
 6. If tools are available, create the actual JIRA ticket using the MCP server with **final edited content**
 7. If tools are not available, output the JSON payload for manual creation
@@ -60,6 +61,17 @@ The Release field uses `customfield_10104` with these available versions:
 - **KATA-2226**: Documentation and tutorial expansion tickets
 - **KATA-2561**: General meeting follow-up tickets
 
+## AVP Documentation Mirroring
+
+**CRITICAL**: When creating documentation tickets in KATA space:
+1. **Identify documentation tickets**: Any ticket with parent_id="KATA-2226" is automatically a documentation ticket
+2. **Create AVP mirror ticket**: Automatically create corresponding ticket in AVP space
+3. **AVP ticket details**:
+   - Parent epic: **AVP-5477** (AVP documentation epic)
+   - Description: Include link to original KATA ticket
+   - Same priority, story points, and assignee as KATA ticket
+4. **Slack exclusion**: AVP documentation tickets should NOT appear in Slack summaries (only KATA tickets)
+
 ## Implementation
 
 **Note**: The `user-atlassian-mcp-kata` MCP server is available and functional. This skill will:
@@ -71,7 +83,7 @@ Use the `user-atlassian-mcp-kata` MCP server to create tickets:
 2. **Lookup Assignee** (if assignee is not "Unassigned"):
    - Call `lookupJiraAccountId` with assignee name to get account ID
    - If lookup fails, proceed without assignee (will be unassigned)
-3. **Create Ticket**: Call `createJiraIssue` with these parameters:
+3. **Create KATA Ticket**: Call `createJiraIssue` with these parameters:
    - `cloudId`: "eadd00c6-0d3f-4c89-99e3-ad95a0daaa51" (KATA cloud ID)
    - `projectKey`: "KATA"
    - `issueTypeName`: "Task" (or "Story" if specified)
@@ -83,6 +95,15 @@ Use the `user-atlassian-mcp-kata` MCP server to create tickets:
      - `parent`: {"key": "KATA-XXXX"} (epic ID)
      - `customfield_10104`: {"id": "10002"} (release ID from mapping above)
      - `customfield_10137`: 0 (story points, required field)
+4. **Create AVP Mirror** (if documentation ticket):
+   - Check if parent epic is "KATA-2226" or ticket involves documentation work
+   - If yes, create corresponding ticket in AVP space using `user-atlassian-mcp-applied` server:
+     - Same summary and assignee as KATA ticket
+     - Description: Original description + "\n\nMirror of KATA ticket: [KATA-XXXX](https://appliedint-katana.atlassian.net/browse/KATA-XXXX)\n\nCreated via JIRA MCP"
+     - Parent epic: "AVP-5477"
+     - Same priority and story points
+     - **Engagement**: "Komatsu" (required field for AVP project)
+   - AVP tickets are for internal tracking only and should NOT appear in Slack summaries
 
 ### Fallback: JSON Output
 If MCP server is unavailable, produce a structured JIRA ticket payload as a fenced JSON block:
@@ -115,7 +136,7 @@ If MCP server is unavailable, produce a structured JIRA ticket payload as a fenc
 ## MCP Tool Usage Example
 
 ```javascript
-// First, lookup assignee (if not "Unassigned")
+// 1. Lookup assignee (if not "Unassigned")
 CallMcpTool({
   server: "user-atlassian-mcp-kata",
   toolName: "lookupJiraAccountId",
@@ -125,7 +146,7 @@ CallMcpTool({
   }
 })
 
-// Then create ticket with assignee
+// 2. Create KATA ticket
 CallMcpTool({
   server: "user-atlassian-mcp-kata",
   toolName: "createJiraIssue", 
@@ -141,6 +162,27 @@ CallMcpTool({
       parent: {"key": "KATA-2226"},
       customfield_10104: {"id": "10002"}, // Release 26.1
       customfield_10137: 0 // Story points (required)
+    }
+  }
+})
+
+// 3. Create AVP mirror (if documentation ticket - parent is KATA-2226)
+CallMcpTool({
+  server: "user-atlassian-mcp-applied",
+  toolName: "createJiraIssue",
+  arguments: {
+    cloudId: "applied_cloud_id", // Get from getAccessibleAtlassianResources
+    projectKey: "AVP",
+    issueTypeName: "Task",
+    summary: "Create PyArch threading examples", // Same as KATA
+    description: "Document threading patterns and best practices for PyArch applications.\n\nMirror of KATA ticket: [KATA-2575](https://appliedint-katana.atlassian.net/browse/KATA-2575)\n\nCreated via JIRA MCP",
+    assignee_account_id: "account_id_from_lookup", // Same as KATA
+    additional_fields: {
+      priority: {"name": "P2"}, // Same as KATA
+      parent: {"key": "AVP-5477"}, // AVP documentation epic
+      customfield_10104: {"id": "release_id"}, // Same release as KATA
+      customfield_10137: 0, // Same story points as KATA
+      customfield_11608: [{"value": "Komatsu"}] // Engagement field (required for AVP, array format)
     }
   }
 })

@@ -19,15 +19,21 @@ Collect these before composing the message:
 | Workspace path | Output of `meeting-workspace` skill |
 | Action items | Step 5 of analysis (What, Who, Priority) |
 | JIRA ticket keys + URLs | Step 6 of analysis (optional - omit row if no tickets were created) |
+| User organization mapping | Read `user-mapping.md` in this skill directory |
 
 If the workspace path is not yet known, run the `meeting-workspace` skill first.
 
-Ask the user for optional inputs (if not already provided):
-- **Gemini notes link** - URL to the original meeting notes (if available)
-- **Attendee organization** - to separate Komatsu vs Applied attendees  
-- **Meeting room confirmation** - if uncertain whether a name is a meeting room or attendee
+**IMPORTANT**: Before processing attendees, read the `user-mapping.md` file in this skill directory to get the latest user organization assignments and known Slack IDs.
 
-**Note**: If Gemini notes link was not provided during initial workflow, ask for it before generating Slack summary.
+**Check for Gemini link in workspace**:
+- Look for `gemini-link.txt` file in the workspace directory
+- If found, read the URL for inclusion in Slack summary
+- If not found, ask user for Gemini notes link (optional)
+
+Ask the user for optional inputs (if not already provided):
+- **Gemini notes link** - URL to the original meeting notes (if not available in workspace)
+- **Attendee organization** - to separate Komatsu vs Applied attendees (use mapping file as primary reference)
+- **Meeting room confirmation** - if uncertain whether a name is a meeting room or attendee
 
 ## Slack Message Format
 
@@ -39,46 +45,62 @@ Ask the user for optional inputs (if not already provided):
 ### Reply in thread:
 ```
 **Komatsu Attendees:** <name>, <name>
-
 **Applied Attendees:** <@slack_id>, <@slack_id>
-
-<Gemini notes: URL> (only include this line if URL is provided)
-
+<Gemini notes link> (only include this line if URL is provided)
 **Action items:**
-• <@slack_id or name>, <https://jira-url|JIRA-KEY>: <short description> (if ticket exists)
-• <@slack_id or name>: <short description> (if no ticket)
-• ...
+• <@slack_id or name>: <short description> (Slack-only items first)
+• <@slack_id or name>: <short description> (more Slack items...)
+• <@slack_id>: <https://jira-url|JIRA-KEY>: <short description> (assigned JIRA tickets)
+• <https://jira-url|JIRA-KEY>: <short description> (unassigned JIRA tickets)
 ```
 
 ## Implementation Steps
 
-1. **Parse attendees by organization and find Slack IDs**:
-   - **Filter out meeting rooms**: Remove scientist names with location codes (e.g., "Coulomb's Law (SVL-WCAL-HQ, FL3)")
-   - Identify which attendees are from Komatsu vs Applied
-   - Use `slack_search_users` to find Slack user IDs for Applied attendees
-   - Format Applied attendees as `<@USER_ID>` for Slack mentions
-   - Keep external attendees (like Komatsu) as plain names
+1. **Check for Gemini link in workspace**:
+   - Look for `gemini-link.txt` file in the workspace directory
+   - If found, read the URL content for inclusion in Slack summary
+   - Store for use in step 3 (message generation)
 
-2. **Format the date and thread title**:
+2. **Parse attendees by organization and find Slack IDs**:
+   - **Reference user mapping**: Read `user-mapping.md` in this skill directory for comprehensive user organization assignments and known Slack IDs
+   - **Filter out meeting rooms**: Remove entries with location codes (e.g., "Coulomb's Law (SVL-WCAL-HQ, FL3)")
+   - **Komatsu attendees**: Use plain names (no Slack mentions)
+     - Examples: Jonas Hageman, Mike Lemm, Joseph Boyer, Nuthan Sabbani, Joshua Rohman
+   - **Applied attendees**: Use Slack mentions format `<@USER_ID>`
+     - Known IDs: Alex Del Re (U063Y6FQA5V), Lauren Joyce (U07CNBCK53P)
+   - **Name corrections**: "Ashley" should be "Ashli Forbes"
+   - **Special cases**: "Coulomb's Law/Alex (SVL)" or "Alex (SVL)" refers to Alex Del Re
+   - Use `slack_search_users` to find Slack user IDs for new Applied attendees not in mapping
+   - Update user-mapping.md when new users are discovered
+
+3. **Format the date and thread title**:
    - Convert from meeting date to DD/MM/YYYY format
    - Example: "Mar 6, 2026" → "06/03/2026"
    - Add colon after date: `🧵06/03/2026: Meeting Title`
 
-3. **Generate both messages**:
+4. **Generate both messages**:
    - Top-level thread starter
    - Threaded reply with full details
    - Only include Gemini notes line if URL is provided
 
-4. **Handle JIRA links**:
-   - Include actual ticket URLs if tickets were created
+5. **Handle action items ordering and formatting**:
+   - **Order**: List Slack-only items first, then JIRA tickets last
+   - **Slack items**: `<@slack_id>: <description>` (no ticket link)
+   - **JIRA items**: 
+     - If assigned: `<@slack_id>: <ticket_link>: <description>`
+     - If unassigned: `<ticket_link>: <description>` (omit "Unassigned")
    - Use Slack hyperlink format: `<https://appliedint-katana.atlassian.net/browse/KATA-2563|KATA-2563>`
-   - This displays only the ticket ID as a clickable link
-   - Omit JIRA reference entirely if no ticket exists for that action item
+   - **IMPORTANT**: Only include KATA tickets in Slack summaries, exclude AVP documentation mirrors
 
-5. **Send message to AlexD**:
+6. **Send message to AlexD**:
    - After generating the Slack content, send a direct message to AlexD
    - Include the office hours thread content for posting
    - Provide context about the meeting and action items
+
+7. **Update user mapping (if needed)**:
+   - If new users were discovered during Slack ID lookup
+   - If organizational assignments were clarified
+   - Update `user-mapping.md` with new information for future use
 
 ## Rules
 
@@ -86,9 +108,10 @@ Ask the user for optional inputs (if not already provided):
 - **Thread title**: Use actual meeting title, not generic "Office hours"
 - **Attendee formatting**: Bold headers, comma-separated lists, Slack mentions for Applied attendees
 - **Slack mentions**: Use `<@USER_ID>` format for Applied attendees, plain names for external
-- **JIRA links**: Use Slack hyperlink format `<URL|TICKET-ID>` to show only ticket IDs as clickable links
-- **Gemini notes**: Include as hyperlink only if provided, otherwise omit the line entirely
-- **Action items**: Bold header, format as assignee, hyperlink, description
+- **JIRA links**: Use Slack hyperlink format `<URL|TICKET-ID>` to show only ticket IDs as clickable links (KATA tickets only, exclude AVP mirrors)
+- **Assignee format**: Separate assignee and ticket with colon, omit "Unassigned" entirely for unassigned tickets
+- **Gemini notes**: Include as hyperlink `<URL|Gemini notes>` only if provided, otherwise omit the line entirely
+- **Action items**: Bold header, no extra spacing between lines, remove "(Slack tracking)" suffixes, order with Slack items first then JIRA tickets
 - **Character limit**: Keep under Slack's message limits
 - **Two separate messages**: Provide both the thread starter and the reply content
 
@@ -101,15 +124,13 @@ Ask the user for optional inputs (if not already provided):
 
 ```
 **Komatsu Attendees:** Nuthan Sabbani
-
 **Applied Attendees:** <@U080A6CFRAQ>, <@U063Y6FQA5V>
-
-Link to gemini notes: N/A
-
+<https://docs.google.com/document/d/example|Gemini notes>
 **Action items:**
-• <@U080A6CFRAQ>, <https://appliedint-katana.atlassian.net/browse/KATA-2563|KATA-2563>: Research schema migration support in PyArch persistency module
-• Nuthan Sabbani, <https://appliedint-katana.atlassian.net/browse/KATA-2565|KATA-2565>: Provide detailed payload feature requirements
-• <@U063Y6FQA5V>, <https://appliedint-katana.atlassian.net/browse/KATA-2567|KATA-2567>: Check Komatsu repo dependencies for PyArch development
+• <@U063Y6FQA5V>: Follow up on meeting scheduling
+• <@U080A6CFRAQ>: <https://appliedint-katana.atlassian.net/browse/KATA-2563|KATA-2563>: Research schema migration support in PyArch persistency module
+• Nuthan Sabbani: <https://appliedint-katana.atlassian.net/browse/KATA-2565|KATA-2565>: Provide detailed payload feature requirements
+• <https://appliedint-katana.atlassian.net/browse/KATA-2567|KATA-2567>: Check Komatsu repo dependencies for PyArch development
 ```
 
 ## AlexD Notification
@@ -119,7 +140,9 @@ After generating the Slack content, send a direct message to AlexD with:
 ```
 Cursor output for <meeting title> (<date>):
 
-[Include the full thread starter and reply content above]
+<thread starter>
+
+<reply content - without "Reply content:" header>
 ```
 
 **Gemini Link Handling**: If no Gemini notes link was provided, the Slack message will omit the Gemini notes line entirely (as per the rules).
