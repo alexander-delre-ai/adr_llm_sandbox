@@ -351,7 +351,7 @@ def map_priority(priority_str: str) -> int:
 
 def format_task_content(item: Dict[str, Any]) -> str:
     """
-    Format task content with metadata and links.
+    Format task content with metadata (no Slack links).
     
     Args:
         item: Todo item data
@@ -364,27 +364,8 @@ def format_task_content(item: Dict[str, Any]) -> str:
     if item.get('type') == 'slack':
         content_parts.append(f"Meeting: {item.get('meeting_source', 'Unknown')}")
         content_parts.append(f"Assigned: {item.get('assignee', 'Unassigned')}")
-        
-        # Fix Slack URL formatting
-        if item.get('slack_url'):
-            slack_url = item['slack_url']
-            # Ensure it's a proper Slack URL, not a search URL
-            if 'appliedint.slack.com/archives/search' in slack_url:
-                # Extract search query and create a proper search link
-                if '?q=' in slack_url:
-                    query = slack_url.split('?q=')[1]
-                    # URL decode and create proper search link
-                    import urllib.parse
-                    decoded_query = urllib.parse.unquote_plus(query)
-                    proper_slack_url = f"https://appliedint.slack.com/archives/search?q={urllib.parse.quote_plus(decoded_query)}"
-                    content_parts.append(f"Slack Search: {proper_slack_url}")
-                else:
-                    content_parts.append(f"Slack: {slack_url}")
-            else:
-                content_parts.append(f"Slack: {slack_url}")
-        
-        if item.get('theme'):
-            content_parts.append(f"Theme: {item['theme']}")
+        # Note: Slack links removed as requested
+        # Theme is handled as tags/labels, not in content
     
     elif item.get('type') == 'jira':
         content_parts.append(f"Status: {item.get('status', 'Unknown')}")

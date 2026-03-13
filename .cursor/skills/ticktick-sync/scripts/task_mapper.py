@@ -19,11 +19,9 @@ def map_slack_item_to_task(item: Dict[str, Any]) -> Dict[str, Any]:
     Returns:
         TickTick task data dictionary
     """
-    # Use clean description without priority labels for title
-    description = item.get('description', 'No description')
-    title = description
-    if len(title) > 100:
-        title = title[:97] + "..."
+    # Use full description as title (no condensing)
+    full_description = item.get('description', 'No description')
+    title = full_description
     
     # Generate task data
     task_data = {
@@ -42,7 +40,7 @@ def map_slack_item_to_task(item: Dict[str, Any]) -> Dict[str, Any]:
         task_data['dueDate'] = due_date.isoformat()
     
     # Add start date for scheduled items
-    if 'schedule' in description.lower() or 'meeting' in description.lower():
+    if 'schedule' in full_description.lower() or 'meeting' in full_description.lower():
         start_date = datetime.now()
         task_data['startDate'] = start_date.isoformat()
     
@@ -259,8 +257,8 @@ def validate_task_data(task: Dict[str, Any]) -> bool:
     if not task.get('title'):
         return False
     
-    # Title length check
-    if len(task.get('title', '')) > 200:
+    # Title length check (increased limit for full titles)
+    if len(task.get('title', '')) > 500:
         return False
     
     # Priority validation

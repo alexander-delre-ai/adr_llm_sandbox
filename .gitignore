@@ -2,3 +2,4 @@ workspaces/
 temp/
 .cursor/skills/meeting-slack-summary/user-mapping.md
 todos/
+.cursor/skills/ticktick-sync/.env

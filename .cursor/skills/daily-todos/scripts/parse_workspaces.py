@@ -147,8 +147,8 @@ def parse_jira_tickets(jira_dir: Path, meeting_source: str) -> List[Dict[str, An
     
     return items
 
-def scan_workspaces(workspaces_dir: str = "/home/alexanderdelre/adr_llm_sandbox/workspaces") -> Dict[str, List[Dict[str, Any]]]:
-    """Scan all workspace directories and extract action items."""
+def scan_workspaces(workspaces_dir: str = "/home/alexanderdelre/adr_llm_sandbox/workspaces", target_date: str = None) -> Dict[str, List[Dict[str, Any]]]:
+    """Scan workspace directories and extract action items for a specific date."""
     workspaces_path = Path(workspaces_dir)
     all_items = {'slack': [], 'jira': []}
     
@@ -160,6 +160,12 @@ def scan_workspaces(workspaces_dir: str = "/home/alexanderdelre/adr_llm_sandbox/
             continue
         
         meeting_name = workspace_dir.name
+        
+        # Filter by date if target_date is provided
+        if target_date:
+            # Check if workspace directory name starts with the target date
+            if not meeting_name.startswith(target_date):
+                continue
         
         # Parse action-items.md
         action_items_file = workspace_dir / 'action-items.md'
@@ -399,8 +405,8 @@ if __name__ == "__main__":
     date = sys.argv[1] if len(sys.argv) > 1 else None
     workspaces_dir = sys.argv[2] if len(sys.argv) > 2 else "/home/alexanderdelre/adr_llm_sandbox/workspaces"
     
-    # Scan workspaces and generate todo list
-    items = scan_workspaces(workspaces_dir)
+    # Scan workspaces and generate todo list for specific date
+    items = scan_workspaces(workspaces_dir, date)
     markdown = generate_todo_markdown(items, date)
     
     print(markdown)

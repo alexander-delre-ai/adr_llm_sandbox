@@ -1,17 +1,17 @@
 # Daily Todo Generator Skill
 
-This skill automatically generates daily to-do lists for AlexD by scanning workspace directories for action items and JIRA tickets.
+This skill automatically generates daily to-do lists for AlexD by scanning workspace directories for Slack action items and syncing them directly to TickTick Inbox.
 
 ## Features
 
+- **Direct TickTick Integration**: Syncs Slack action items directly to TickTick Inbox
 - **Automatic Scanning**: Reads all workspace directories under `/workspaces/`
-- **Smart Filtering**: Only includes items assigned to AlexD or unassigned items
-- **Priority Organization**: Groups items by priority (🔴 High → 🟡 Medium → 🟢 Low)
-- **Theme Categorization**: Groups Slack items by common themes (Meeting Scheduling, JIRA Management, etc.)
-- **Cursor-Optimized**: Checkboxes work in Cursor for progress tracking
-- **Visual Indicators**: Priority emojis and type icons (💬 Slack, 🎫 JIRA)
-- **Hyperlinked References**: Clickable links to Slack searches and JIRA tickets
-- **Summary Statistics**: Progress tracking and focus area recommendations
+- **Smart Filtering**: Only includes Slack items assigned to AlexD (JIRA tickets filtered out)
+- **Priority Mapping**: Maps to TickTick priorities (High=P0, Medium=P1, Low=P2, None=P3)
+- **Clean Task Titles**: No priority labels in titles (handled by TickTick priority system)
+- **Rich Context**: Meeting source and Slack links in task descriptions
+- **Theme Tags**: Minimal tagging based on action item themes
+- **Fallback Support**: Generates markdown files if TickTick sync fails
 
 ## Quick Start
 

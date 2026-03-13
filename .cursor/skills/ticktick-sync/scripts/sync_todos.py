@@ -61,10 +61,10 @@ class TickTickSyncManager:
         """Load configuration from environment variables and .env file."""
         config = {
             'access_token': None,
-            'project_name': 'Daily Todos',
+            'project_name': 'Inbox',  # Now uses Inbox instead of creating projects
             'sync_enabled': True,
             'batch_size': 10,
-            'auto_cleanup': True,
+            'auto_cleanup': False,  # Disabled since using Inbox
             'debug': False,
             'dry_run': False
         }
@@ -147,8 +147,8 @@ class TickTickSyncManager:
             workspaces_dir = self.workspace_root / 'workspaces'
             self.debug_print(f"Scanning workspaces in: {workspaces_dir}")
             
-            # Scan workspaces using daily-todos logic
-            items = scan_workspaces(str(workspaces_dir))
+            # Scan workspaces using daily-todos logic for specific date
+            items = scan_workspaces(str(workspaces_dir), date)
             
             # Combine all items
             all_todos = []
@@ -166,27 +166,60 @@ class TickTickSyncManager:
             return []
     
     def get_or_create_project(self, date: str) -> Optional[Dict[str, Any]]:
-        """Get or create daily project for the given date."""
-        project_name = f"{self.config['project_name']} - {date}"
-        
+        """Get or create the Cursor Sync project for adding tasks."""
         try:
-            # Check if project already exists
-            project = self.client.get_project_by_name(project_name)
-            if project:
-                self.debug_print(f"Found existing project: {project_name}")
-                return project
+            # Get all projects and look for "Cursor Sync" project
+            projects = self.client.get_projects()
             
-            # Create new project
-            if self.config['dry_run']:
-                print(f"[DRY RUN] Would create project: {project_name}")
-                return {'id': 'dry_run_project_id', 'name': project_name}
+            # First, look for "Cursor Sync" project
+            cursor_sync_project = None
+            for project in projects:
+                project_name = project.get('name', '')
+                if project_name == 'Cursor Sync':
+                    cursor_sync_project = project
+                    break
+            
+            if cursor_sync_project:
+                self.debug_print(f"Using Cursor Sync project: {cursor_sync_project['name']}")
+                return cursor_sync_project
+            
+            # If "Cursor Sync" doesn't exist, create it
+            if not self.config['dry_run']:
+                try:
+                    cursor_sync_project = self.client.create_project('Cursor Sync')
+                    print(f"✅ Created Cursor Sync project")
+                    return cursor_sync_project
+                except Exception as create_error:
+                    print(f"❌ Error creating Cursor Sync project: {create_error}")
+                    # Fall back to existing inbox
+                    pass
             else:
-                project = self.client.create_project(project_name)
-                print(f"✅ Created TickTick project: {project_name}")
-                return project
+                print(f"[DRY RUN] Would create Cursor Sync project")
+                return {'id': 'dry_run_cursor_sync_id', 'name': 'Cursor Sync'}
+            
+            # Fallback: Look for any inbox project
+            inbox_project = None
+            for project in projects:
+                project_name = project.get('name', '').lower()
+                if 'inbox' in project_name or project.get('kind') == 'INBOX':
+                    inbox_project = project
+                    break
+            
+            if inbox_project:
+                self.debug_print(f"Fallback to Inbox project: {inbox_project['name']}")
+                return inbox_project
+            
+            # Last resort: use first project
+            if projects:
+                fallback_project = projects[0]
+                self.debug_print(f"Using fallback project: {fallback_project['name']}")
+                return fallback_project
+            
+            print("❌ No projects found in TickTick account")
+            return None
                 
         except Exception as e:
-            print(f"❌ Error managing project '{project_name}': {e}")
+            print(f"❌ Error finding/creating Cursor Sync project: {e}")
             return None
     
     def check_existing_tasks(self, project_id: str, tasks: List[Dict[str, Any]]) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
@@ -194,26 +227,42 @@ class TickTickSyncManager:
         if self.config['dry_run']:
             return tasks, []  # In dry run, assume no existing tasks
         
-        try:
-            existing_tasks = self.client.get_tasks(project_id)
-            existing_titles = {task.get('title', '') for task in existing_tasks}
-            
-            new_tasks = []
-            skipped_tasks = []
-            
-            for task in tasks:
-                task_title = task.get('title', '')
-                if task_title in existing_titles:
-                    skipped_tasks.append(task)
-                    self.debug_print(f"Skipping duplicate task: {task_title}")
-                else:
-                    new_tasks.append(task)
-            
-            return new_tasks, skipped_tasks
-            
-        except Exception as e:
-            print(f"❌ Error checking existing tasks: {e}")
-            return tasks, []  # On error, proceed with all tasks
+        # Use file-based duplicate tracking since API is unreliable
+        duplicate_file = self.skill_dir / '.task_duplicates.json'
+        existing_titles = set()
+        
+        # Load existing task titles from file
+        if duplicate_file.exists():
+            try:
+                with open(duplicate_file, 'r') as f:
+                    data = json.load(f)
+                    existing_titles = set(data.get('task_titles', []))
+            except Exception as e:
+                self.debug_print(f"Error loading duplicate file: {e}")
+        
+        new_tasks = []
+        skipped_tasks = []
+        new_titles = set()
+        
+        for task in tasks:
+            task_title = task.get('title', '')
+            if task_title in existing_titles:
+                skipped_tasks.append(task)
+                self.debug_print(f"Skipping duplicate task: {task_title}")
+            else:
+                new_tasks.append(task)
+                new_titles.add(task_title)
+        
+        # Save new titles to file
+        if new_titles:
+            try:
+                all_titles = existing_titles.union(new_titles)
+                with open(duplicate_file, 'w') as f:
+                    json.dump({'task_titles': list(all_titles)}, f, indent=2)
+            except Exception as e:
+                self.debug_print(f"Error saving duplicate file: {e}")
+        
+        return new_tasks, skipped_tasks
     
     def create_tasks_in_batches(self, project_id: str, tasks: List[Dict[str, Any]]) -> int:
         """Create tasks in batches to respect API limits."""
@@ -263,15 +312,9 @@ class TickTickSyncManager:
     
     def cleanup_old_projects(self):
         """Clean up old daily todo projects."""
-        if not self.config['auto_cleanup'] or self.config['dry_run']:
-            return
-        
-        try:
-            deleted_count = self.client.cleanup_old_projects(days_old=30)
-            if deleted_count > 0:
-                print(f"🧹 Cleaned up {deleted_count} old projects")
-        except Exception as e:
-            print(f"❌ Error during cleanup: {e}")
+        # Disabled cleanup since we're now using Inbox instead of creating projects
+        self.debug_print("Cleanup disabled - using Inbox project")
+        return
     
     def sync_todos(self, date: Optional[str] = None) -> bool:
         """Main sync process."""

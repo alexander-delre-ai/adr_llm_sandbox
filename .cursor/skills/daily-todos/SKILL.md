@@ -1,32 +1,35 @@
 ---
 name: daily-todos
-description: Generates daily to-do lists for AlexD by scanning workspace directories for action items and JIRA tickets. Creates organized markdown files with checkboxes in todos directory, sorted by Slack items and JIRA tickets. Use when creating daily task lists, organizing action items, or tracking completion status.
+description: Generates daily to-do lists for AlexD by scanning workspace directories for Slack action items and syncing them directly to TickTick Cursor Sync project. Optionally creates markdown files. Use when creating daily task lists, syncing todos to TickTick, or organizing action items.
 ---
 
 # Daily Todo Generator
 
 ## Instructions
 
-This skill scans all workspace directories and generates daily to-do lists for AlexD with organized, priority-based layout optimized for Cursor. The todos are grouped by priority and theme for efficient daily review.
+This skill scans all workspace directories and generates daily to-do lists for AlexD by syncing Slack action items directly to TickTick "Cursor Sync" project. Provides streamlined workflow from meeting analysis to actionable tasks with clean formatting.
 
 ### Workflow
 
 1. **Scan workspaces**: Read all workspace directories under `/workspaces/`
-2. **Extract action items**: Parse `action-items.md`, `tickets.md`, and `jira-tickets/*.json` files
-3. **Categorize todos**: Group by priority (High/Medium/Low) and theme
-4. **Generate organized list**: Create Cursor-optimized markdown with checkboxes
-5. **Save to todos directory**: Place in `todos/YYYY-MM-DD.md` format
+2. **Extract Slack items**: Parse `action-items.md` and `tickets.md` files for Slack action items
+3. **Sync to TickTick**: Add tasks directly to TickTick "Cursor Sync" project with proper priorities
+4. **Optional markdown**: Generate `todos/YYYY-MM-DD.md` file if requested
 
 ### Output Format
 
-**Organized Markdown**: `todos/YYYY-MM-DD.md`
-- ✅ Priority-based sections (🔴 High → 🟡 Medium → 🟢 Low)
-- ✅ Slack items grouped by theme (Meeting Scheduling, JIRA Management, etc.)
-- ✅ Cursor-compatible checkboxes for progress tracking
-- ✅ Visual priority indicators and emojis
-- ✅ Hyperlinked Slack searches and JIRA tickets
-- ✅ Summary statistics and focus areas
-- ✅ Clean, scannable layout for daily review
+**Primary**: TickTick "Cursor Sync" Project Tasks
+- ✅ Clean task titles (no priority labels or theme text)
+- ✅ Proper TickTick priority mapping (High=P0, Medium=P1, Low=P2)
+- ✅ Meeting context in task descriptions (no Slack links)
+- ✅ Theme-based tags/labels for organization
+- ✅ Accessible across all devices via TickTick
+
+**Optional Markdown**: `todos/YYYY-MM-DD.md` (use `--markdown-only` flag)
+- ✅ Priority-based sections with visual indicators
+- ✅ Slack items grouped by theme
+- ✅ Hyperlinked Slack searches
+- ✅ Summary statistics and completion tracking
 
 ### Todo Categories
 
@@ -133,14 +136,19 @@ description: Task description
 
 ## Usage Examples
 
-**Generate today's todos**:
+**Sync today's todos to TickTick** (default behavior):
 ```
-Generate my daily todo list
+Generate my daily todos
 ```
 
-**Generate and sync to TickTick**:
+**Sync specific date to TickTick**:
 ```
-Generate my daily todos and sync to TickTick
+Generate todos for March 15, 2026
+```
+
+**Generate markdown file only**:
+```
+Generate todos markdown for today
 ```
 
 **Generate for specific date**:
@@ -150,18 +158,16 @@ Create todo list for March 15, 2026
 
 ## Quick Implementation
 
-To generate organized daily todo list:
+To sync daily todos to TickTick:
 
-1. **Create todos directory**: `mkdir -p todos`
-2. **Generate organized todos**: `bash .cursor/skills/daily-todos/scripts/generate_todos.sh`
-3. **Generate and sync to TickTick**: `bash .cursor/skills/daily-todos/scripts/generate_todos.sh --sync-ticktick`
-4. **For specific date**: `bash .cursor/skills/daily-todos/scripts/generate_todos.sh 2026-03-15 --sync-ticktick`
+1. **Sync today's todos**: `bash .cursor/skills/daily-todos/scripts/generate_todos.sh`
+2. **Sync specific date**: `bash .cursor/skills/daily-todos/scripts/generate_todos.sh 2026-03-15`
+3. **Generate markdown only**: `bash .cursor/skills/daily-todos/scripts/generate_todos.sh --markdown-only`
 
 The script automatically:
-- Scans all workspace directories
-- Extracts action items from tables and YAML blocks
-- Filters for AlexD or unassigned items
-- Groups by priority (High → Medium → Low)
-- Categorizes Slack items by theme
-- Generates Cursor-optimized markdown with checkboxes and hyperlinks
-- Optionally syncs to TickTick for task management integration
+- Scans all workspace directories for Slack action items
+- Syncs tasks directly to TickTick Inbox with proper priorities
+- Provides fallback to markdown generation if TickTick sync fails
+- Filters out JIRA tickets (Slack items only)
+- Creates clean task titles without priority labels
+- Adds meeting context and Slack links to task descriptions
