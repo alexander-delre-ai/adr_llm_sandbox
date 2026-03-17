@@ -99,14 +99,12 @@ def map_meeting_item_to_task(item: Dict[str, Any], meeting_title: str,
     """
     short_title = shorten_title(item['title'])
     description = item.get('description', '')
-    assignee = item.get('assignee', 'Unassigned')
 
     content_parts = []
     if description:
         content_parts.append(description)
     content_parts.append('')
     content_parts.append(f"Meeting: {meeting_slug}")
-    content_parts.append(f"Assigned: {assignee}")
 
     tags = []
     if meeting_slug:

@@ -1,7 +1,13 @@
 {
   "task_titles": [
+    "Clarify signal probe field name mapping from pyArch",
+    "Clarify vECU-to-repository target binding mechanism",
+    "Confirm physical signal support in local rig injector",
+    "Follow up on PyArch interface constraints for interface creation",
     "Follow up on automated PDU start-bit calculation feature request",
+    "Identify how SIL start script configuration patterns for Komatsu truck variants",
     "Investigate methods to detect missing runtime function implementations in automated testing",
+    "Investigate multiple software component instance support with signal probes",
     "Investigate some-IP cross-zone latency for central-to-zone communication",
     "add documentation for test_only targets and mock kernel interfaces"
   ]

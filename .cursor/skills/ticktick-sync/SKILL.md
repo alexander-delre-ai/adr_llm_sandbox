@@ -42,7 +42,6 @@ This skill integrates with TickTick's API to create tasks from your daily todos.
 [Full original description text]
 
 Meeting: [meeting-slug or meeting source]
-Assigned: [assignee name]
 ```
 
 **Priority Mapping**: P0/P1 to High, P2 to Medium, P3+ to Low

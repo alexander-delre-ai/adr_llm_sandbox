@@ -7,3 +7,4 @@ todos/
 
 .cursor/skills/ticktick-sync/.env
 *.pyc
+.cursor/skills/ticktick-sync/.task_duplicates.json
