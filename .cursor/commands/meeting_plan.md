@@ -117,6 +117,7 @@ If confirmed, execute Phase 2 using the specialized skills:
   - Short titles (15 words max), full descriptions in content body
 - **Save workspace**: Read and follow `.cursor/skills/meeting-workspace/SKILL.md` to create complete workspace with TickTick sync results
 - **Move temp files**: If input was from `temp/` directory, move original file to workspace as transcript.md
+- **Commit workspace**: Stage and commit the entire `workspaces/<slug>/` directory and any modified skill/mapping files (e.g., user-mapping.md) with message: `add workspace for <meeting-slug>`. If skill or command files were also modified during this session, include them in the same commit.
 - Provide immediate actionability with workspace path and ticket URLs
 
 ## Benefits
