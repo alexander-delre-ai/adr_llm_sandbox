@@ -111,6 +111,16 @@ Create `analysis.md` file with this structure:
 [Table and next steps]
 ```
 
+## Post-Review Update
+
+After the user reviews and edits `tickets.md`, sections 5 and 6 of `analysis.md` must be updated to match the final ticket content:
+
+1. Re-read the final `tickets.md` to capture user edits (title changes, priority adjustments, assignee updates, removed items)
+2. Rewrite **Section 5 (Action Items)** to match the final tickets list
+3. Rewrite **Section 6 (Prioritized Action Plan + Next Steps)** table and bullet points to reflect the reviewed tickets
+
+This ensures `analysis.md` remains the single source of truth after user review.
+
 ## Usage
 
 This skill focuses purely on analysis and does not create tickets or workspaces. It produces a comprehensive analysis.md file that can be used by other workflows for ticket creation, planning, or documentation.
@@ -118,6 +128,6 @@ This skill focuses purely on analysis and does not create tickets or workspaces.
 ## Integration
 
 - **Input**: Meeting content (transcript or summary)
-- **Output**: Structured analysis.md file
+- **Output**: Structured analysis.md file (updatable after ticket review)
 - **Reusable**: Can be called from meeting-plan, standalone analysis, or other workflows
 - **Consistent**: Always produces the same 6-section format

@@ -41,7 +41,12 @@ For each action item, set these defaults:
 - **story_points**: 0 (always default to 0)
 - **description**: Clean summary from action item
 
-### Step 3 - Generate YAML format
+### Step 3 - Format action item titles
+
+- **No numbering**: Do not prefix headings with "Action Item 1:", "Action Item 2:", etc.
+- **Sentence case**: Use natural sentence case for headings (e.g., "Follow up on build system documentation"), not Title Case
+
+### Step 4 - Generate YAML format
 
 Create clean YAML blocks for each action item:
 
@@ -78,7 +83,7 @@ Edit the fields below as needed. When ready, confirm with the agent to create th
 
 ---
 
-## Action Item 1: [Title]
+## [Action item title in sentence case]
 
 ```yaml
 tracking: [auto-assigned]
@@ -90,7 +95,7 @@ story_points: 0
 description: [Clean description]
 ```
 
-[Continue for each action item...]
+[Continue for each action item - no numbering, sentence case headings]
 ```
 
 ## Smart Categorization Rules

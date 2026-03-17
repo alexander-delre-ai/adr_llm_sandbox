@@ -1,20 +1,8 @@
 {
   "task_titles": [
-    "Set up meeting to discuss signal gateway documentation and implementation examples. Priority item that has been pending for several days.",
-    "Verify if Komatsu should have dedicated Jira admin and confirm Mike as the right person for the role. Get approval for formal admin status.",
-    "Schedule hill testing discussion",
-    "Follow up on JIRA access expansion",
-    "Work with Lauren to get Komatsu team access to JIRA plans, sprint boards, and planning features to improve project visibility and planning capabilities.",
-    "Schedule diagnostics and fault management meeting",
-    "Check with Katana team on provisioning a Katana Jira admin",
-    "Document the purpose and usage of test_only targets and mock kernel interfaces in the build system. Consult with testing team for accurate explanations.",
-    "Create SDV software backlog filter",
-    "Schedule signal gateway discussion",
-    "Schedule manager-specific IO meetings",
-    "Share examples of low voltage testing solutions",
-    "Schedule meetings for each manager to discuss IO zone allocation and success criteria with Komatsu and Applied system engineering personnel for upcoming release planning.",
-    "Investigate methods to detect missing runtime function implementations in automated testing. Focus on identifying gaps where unit tests pass but production code fails due to empty runtime functions while mocks are populated.",
-    "Coordinate meeting with Eduardo from Applied and Komatsu team members (Eric, Tony) to discuss HIL testing implementation and requirements.",
-    "Create new JIRA filter for SDV software backlog visibility to help with sprint planning and ticket management."
+    "Follow up on automated PDU start-bit calculation feature request",
+    "Investigate methods to detect missing runtime function implementations in automated testing",
+    "Investigate some-IP cross-zone latency for central-to-zone communication",
+    "add documentation for test_only targets and mock kernel interfaces"
   ]
 }

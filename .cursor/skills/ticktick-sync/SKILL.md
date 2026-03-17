@@ -1,11 +1,11 @@
 ---
 name: ticktick-sync
-description: Syncs daily todos (Slack items only) to TickTick Cursor Sync project using their API. Creates clean tasks with proper priority mapping and theme-based tags. Use when syncing Slack todos to TickTick, organizing tasks in Cursor Sync project, or managing task synchronization.
+description: Syncs Slack-tracked action items to TickTick Cursor Sync project using their API. Supports two modes - daily-todos sync and meeting action item sync from tickets.md. Tasks use short titles (15 words max) with full descriptions in content.
 ---
 
 # TickTick Sync
 
-Automatically syncs Slack items from daily todos to your TickTick "Cursor Sync" project using their Open API. Creates clean tasks with condensed titles, full descriptions in content, proper priority mapping, theme-based tags, and robust duplicate detection.
+Syncs Slack-tracked action items to your TickTick "Cursor Sync" project using their Open API. Supports two modes: daily-todos batch sync and meeting-specific sync from a `tickets.md` file. Tasks use short titles (15 words max) with full descriptions in content body.
 
 ## Instructions
 
@@ -29,13 +29,24 @@ This skill integrates with TickTick's API to create tasks from your daily todos.
 
 ### Task Organization
 
-**Project Structure**: Single project per day named "Daily Todos - YYYY-MM-DD"
+**Project**: "Cursor Sync" (created automatically if it doesn't exist)
 
-**Task Format**:
-- **Slack Items**: `[Priority] Description` with meeting context and Slack links
-- **JIRA Tickets**: `[TICKET-KEY] Summary` with status, points, and JIRA links
-- **Priority Mapping**: P0/P1 → High, P2 → Medium, P3+ → Low
-- **Tags**: Type-based (slack/jira) and metadata tags
+**Task Title Format** (applies to all modes):
+- **15 words or less** - intelligently condensed action-oriented titles
+- Preserves key action verbs and context (e.g., "Document X" → "add documentation for X")
+- Natural language flow, no priority prefixes or labels
+- Full original text preserved in the content/description body
+
+**Task Content Format**:
+```
+[Full original description text]
+
+Meeting: [meeting-slug or meeting source]
+Assigned: [assignee name]
+```
+
+**Priority Mapping**: P0/P1 to High, P2 to Medium, P3+ to Low
+**Tags**: Theme-based tags for Slack items, meeting slug for meeting items
 
 ### Implementation Steps
 
@@ -77,11 +88,43 @@ TICKTICK_BATCH_SIZE=10
 TICKTICK_AUTO_CLEANUP=true
 ```
 
+### Meeting Action Item Sync
+
+Syncs Slack-tracked action items from a meeting's `tickets.md` file to TickTick.
+
+**Filtering rules**:
+- Only items with `tracking: slack` are synced
+- Only items assigned to AlexD or Unassigned are included
+- JIRA-tracked items are skipped (they're tracked in JIRA)
+
+**Running the sync**:
+```bash
+python3 .cursor/skills/ticktick-sync/scripts/sync_meeting_items.py \
+  --tickets workspaces/<slug>/tickets.md \
+  --meeting "<Meeting Title>"
+```
+
+**Data flow**: `tickets.md` heading becomes short title (15 words max), YAML `description` field becomes content body, meeting metadata appended.
+
 ## Usage Examples
 
-**Sync today's todos**:
+**Sync today's daily todos**:
 ```
 Sync my daily todos to TickTick
+```
+
+**Sync meeting action items**:
+```bash
+python3 .cursor/skills/ticktick-sync/scripts/sync_meeting_items.py \
+  --tickets workspaces/2026-03-12-sdv-office-hours/tickets.md \
+  --meeting "2026-03-12-sdv-office-hours"
+```
+
+**Dry run** (preview without creating):
+```bash
+python3 .cursor/skills/ticktick-sync/scripts/sync_meeting_items.py \
+  --tickets workspaces/<slug>/tickets.md \
+  --meeting "<Meeting Title>" --dry-run
 ```
 
 **Setup authentication**:
@@ -89,11 +132,8 @@ Sync my daily todos to TickTick
 Setup TickTick integration
 ```
 
-**Sync specific date**:
-```
-Sync March 15 todos to TickTick
-```
-
 ## Integration
 
-This skill integrates seamlessly with the daily-todos skill. When enabled, it automatically syncs generated todos to TickTick, creating a unified task management workflow between your meeting analysis and personal task tracking.
+This skill integrates with:
+- **daily-todos skill**: Syncs generated daily Slack todos to TickTick
+- **meeting_plan command**: After Slack summary is sent, syncs eligible meeting action items to TickTick as follow-up tasks

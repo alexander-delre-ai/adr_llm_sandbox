@@ -8,42 +8,128 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Any, Optional
 from ticktick_client import map_priority, format_task_content, generate_task_tags
 
+MAX_TITLE_WORDS = 15
+
+
+def create_concise_title(text: str) -> str:
+    """
+    Create a concise, action-oriented title from the full description.
+    Aims for 15 words or less while preserving the key action and context.
+    Uses intelligent parsing to create meaningful titles similar to the examples.
+    """
+    words = text.split()
+    if len(words) <= MAX_TITLE_WORDS:
+        return text
+    
+    text_lower = text.lower()
+    
+    # Pattern matching based on the examples provided
+    # Example 1: "Document the purpose..." -> "add documentation for test_only targets..."
+    if text_lower.startswith('document '):
+        # Convert "Document X" to "add documentation for X"
+        # Find the main subject after "document the purpose and usage of"
+        if 'purpose and usage of' in text_lower:
+            after_purpose = text[text_lower.find('purpose and usage of') + len('purpose and usage of'):].strip()
+            subject_words = after_purpose.split()
+            # Take key terms, but include important technical terms
+            key_terms = []
+            for word in subject_words:
+                if word.lower() in ['in', 'the', '.', 'consult', 'with']:
+                    break
+                key_terms.append(word)
+            if key_terms:
+                # Include more terms for technical documentation
+                key_phrase = ' '.join(key_terms[:10])  # Allow up to 10 words for the subject
+                title = f"add documentation for {key_phrase}"
+                # Ensure we don't exceed 15 words total
+                if len(title.split()) <= MAX_TITLE_WORDS:
+                    return title
+                else:
+                    # Truncate if too long
+                    return f"add documentation for {' '.join(key_terms[:8])}"
+        else:
+            # Generic document case
+            subject = ' '.join(words[1:8])  # Skip "Document" and take next 7 words
+            return f"add documentation for {subject}"
+    
+    # Example 2: "Verify if Komatsu should have..." -> "Verify if Komatsu can have..."
+    elif text_lower.startswith('verify '):
+        # For verify statements, keep the core question but simplify
+        if 'should have' in text_lower:
+            # Replace "should have" with "can have" and truncate at natural break
+            modified = text.replace('should have', 'can have')
+            # Find natural break point
+            for break_phrase in [' and confirm', ' and get', '. Get', '. Consult']:
+                if break_phrase in modified:
+                    return modified[:modified.find(break_phrase)]
+            # Fallback: take first part
+            return ' '.join(modified.split()[:10])
+        else:
+            # Generic verify case
+            return ' '.join(words[:12])
+    
+    # Handle other common action verbs
+    elif any(text_lower.startswith(verb + ' ') for verb in ['create', 'schedule', 'coordinate', 'check', 'set up', 'work with', 'share', 'follow up']):
+        # For other action verbs, take the action + main object
+        # Find natural break points
+        for break_phrase in ['. ', ' and ', ' to ', ' for ', ' with ']:
+            if break_phrase in text:
+                first_part = text[:text.find(break_phrase)]
+                if len(first_part.split()) <= MAX_TITLE_WORDS:
+                    return first_part
+        # Fallback: take first 12 words for action items
+        return ' '.join(words[:12])
+    
+    # Default case: try to find natural break points
+    # Look for sentence endings, conjunctions, or prepositional phrases
+    break_points = ['. ', ' and ', ' to ', ' for ', ' with ', ' in ', ' on ', ' at ']
+    
+    for break_phrase in break_points:
+        if break_phrase in text:
+            first_part = text[:text.find(break_phrase)]
+            if 5 <= len(first_part.split()) <= MAX_TITLE_WORDS:
+                return first_part
+    
+    # Final fallback: just take first 15 words
+    return ' '.join(words[:MAX_TITLE_WORDS])
+
 
 def map_slack_item_to_task(item: Dict[str, Any]) -> Dict[str, Any]:
     """
     Convert Slack action item to TickTick task format.
-    
-    Args:
-        item: Slack item data from daily todos
-        
-    Returns:
-        TickTick task data dictionary
+    Title: Concise action-oriented title (15 words or less)
+    Content: Full original description + meeting metadata
     """
-    # Use full description as title (no condensing)
     full_description = item.get('description', 'No description')
-    title = full_description
     
-    # Generate task data
+    # Create concise title
+    title = create_concise_title(full_description)
+    
+    # Build detailed content with full description and metadata
+    content_parts = [full_description]
+    content_parts.append('')
+    meeting_source = item.get('meeting_source', 'Unknown')
+    content_parts.append(f"Meeting: {meeting_source}")
+    content_parts.append(f"Assigned: {item.get('assignee', 'Unassigned')}")
+
     task_data = {
         'title': title,
-        'content': format_task_content(item),
+        'content': '\n'.join(content_parts),
         'priority': map_priority(item.get('priority', 'P2')),
         'tags': generate_task_tags(item),
         'isAllDay': False,
-        'timeZone': 'America/Los_Angeles',  # Default timezone
+        'timeZone': 'America/Los_Angeles',
     }
-    
-    # Add due date for high priority items (today + 1 day)
+
     priority = item.get('priority', '').lower()
     if priority in ['p0', 'p1', 'high']:
         due_date = datetime.now() + timedelta(days=1)
         task_data['dueDate'] = due_date.isoformat()
-    
-    # Add start date for scheduled items
+
     if 'schedule' in full_description.lower() or 'meeting' in full_description.lower():
         start_date = datetime.now()
         task_data['startDate'] = start_date.isoformat()
-    
+
     return task_data
 
 
@@ -117,24 +203,19 @@ def map_todo_item_to_task(item: Dict[str, Any]) -> Optional[Dict[str, Any]]:
 def map_generic_item_to_task(item: Dict[str, Any]) -> Dict[str, Any]:
     """
     Convert generic todo item to TickTick task format.
-    
-    Args:
-        item: Generic item data
-        
-    Returns:
-        TickTick task data dictionary
+    Title: Concise action-oriented title (15 words or less)
+    Content: Full description + metadata
     """
-    # Use description or summary for title
-    title = item.get('description') or item.get('summary', 'Unknown task')
+    full_text = item.get('description') or item.get('summary', 'Unknown task')
+    title = create_concise_title(full_text)
     priority_str = item.get('priority', 'P2')
-    title = f"[{priority_str}] {title}"
-    
-    if len(title) > 100:
-        title = title[:97] + "..."
-    
+
+    content_parts = [full_text, '']
+    content_parts.append(f"Assigned: {item.get('assignee', 'Unassigned')}")
+
     return {
         'title': title,
-        'content': format_task_content(item),
+        'content': '\n'.join(content_parts),
         'priority': map_priority(priority_str),
         'tags': generate_task_tags(item),
         'isAllDay': False,
@@ -257,8 +338,8 @@ def validate_task_data(task: Dict[str, Any]) -> bool:
     if not task.get('title'):
         return False
     
-    # Title length check (increased limit for full titles)
-    if len(task.get('title', '')) > 500:
+    # Title length check (reasonable limit for concise titles)
+    if len(task.get('title', '')) > 200:
         return False
     
     # Priority validation

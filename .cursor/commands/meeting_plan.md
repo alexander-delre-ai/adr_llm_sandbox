@@ -69,14 +69,19 @@ If confirmed, execute Phase 2 using the specialized skills:
   - **Documentation ticket routing**: Any tickets with parent_id="KATA-2226" are documentation tickets
   - **Ticket title validation**: Ensure ticket summaries match the updated action item names from tickets.md after user review
   - **Create AVP mirrors**: Automatically create AVP copies for documentation tickets (parent: AVP-5477, engagement: "Komatsu")
+- **Update analysis.md**: Re-read the final `tickets.md` and update sections 5 (Action Items) and 6 (Prioritized Action Plan + Next Steps) in `analysis.md` to match the final reviewed ticket content
 - **Slack Summary Generation**: Use `.cursor/skills/meeting-slack-summary/SKILL.md`
   - **Read Gemini link**: Check for `gemini-link.txt` in workspace and pass URL to Slack summary skill
   - Include all action items (Slack-only first, then JIRA tickets)
   - **Include Gemini summary link** (if available from workspace) as reference in Slack message
   - **Slack filtering**: Only include KATA tickets in summaries (exclude AVP mirrors)
   - Send formatted message to AlexD with workspace context
+- **TickTick Sync**: Use `.cursor/skills/ticktick-sync` to sync eligible meeting items
+  - Run: `python3 .cursor/skills/ticktick-sync/scripts/sync_meeting_items.py --tickets workspaces/<slug>/tickets.md --meeting "<Meeting Title>"`
+  - Syncs only Slack-tracked items assigned to AlexD or Unassigned
+  - Tasks get short titles (15 words max) with full descriptions in content
 - **Workspace Creation**: Use `.cursor/skills/meeting-workspace/SKILL.md`
-  - Save complete workspace with all artifacts and JIRA ticket metadata
+  - Save complete workspace with all artifacts, JIRA ticket metadata, and TickTick sync results
   - Return workspace path and real ticket URLs for immediate actionability
 
 ## Two-Phase Workflow
@@ -101,12 +106,16 @@ If confirmed, execute Phase 2 using the specialized skills:
   - **Validate ticket titles**: Confirm ticket summaries match the action item names from the final edited tickets.md
   - Auto-format release names (prepend "Release " if needed)
   - Create AVP mirrors for documentation tickets (parent: AVP-5477, engagement: "Komatsu")
+- **Update analysis.md**: Re-read the final `tickets.md` and rewrite sections 5 (Action Items) and 6 (Prioritized Action Plan + Next Steps) in `analysis.md` to reflect the user-reviewed ticket content
 - **Generate Slack summary**: Read and follow `.cursor/skills/meeting-slack-summary/SKILL.md`
   - **Read Gemini link**: Check for `gemini-link.txt` in workspace and include URL in Slack message
   - **Include Gemini notes link** (if available from workspace) as reference in Slack message
   - Include all action items (Slack-only first, then JIRA tickets)
   - Send formatted office hours thread message to AlexD
-- **Save workspace**: Read and follow `.cursor/skills/meeting-workspace/SKILL.md` to create complete workspace
+- **TickTick Sync**: Run `python3 .cursor/skills/ticktick-sync/scripts/sync_meeting_items.py --tickets workspaces/<slug>/tickets.md --meeting "<Meeting Title>"`
+  - Syncs Slack-tracked items assigned to AlexD or Unassigned to TickTick "Cursor Sync" project
+  - Short titles (15 words max), full descriptions in content body
+- **Save workspace**: Read and follow `.cursor/skills/meeting-workspace/SKILL.md` to create complete workspace with TickTick sync results
 - **Move temp files**: If input was from `temp/` directory, move original file to workspace as transcript.md
 - Provide immediate actionability with workspace path and ticket URLs
 
