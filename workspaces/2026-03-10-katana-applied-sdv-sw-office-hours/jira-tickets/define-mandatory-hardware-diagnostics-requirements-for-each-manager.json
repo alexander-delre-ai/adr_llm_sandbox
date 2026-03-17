@@ -1,0 +1,20 @@
+{
+  "ticket_key": "KATA-2573",
+  "ticket_id": "25968",
+  "web_url": "https://appliedint-katana.atlassian.net/browse/KATA-2573",
+  "api_url": "https://api.atlassian.com/ex/jira/eadd00c6-0d3f-4c89-99e3-ad95a0daaa51/rest/api/3/issue/25968",
+  "summary": "Define mandatory hardware diagnostics requirements for each manager",
+  "description": "Work with Chad and Lee to determine mandatory requirements for hardware diagnostics, including circuit diagnostics (open, closed, short circuit) for outputs and current/voltage diagnostics for inputs.",
+  "issue_type": "Task",
+  "priority": "P1",
+  "status": "Backlog",
+  "assignee": null,
+  "parent_epic": "KATA-127",
+  "release": "Release 25.3",
+  "story_points": 0.1,
+  "project": "KATA",
+  "created_date": "2026-03-11",
+  "created_via": "JIRA MCP",
+  "meeting_source": "Katana <> Applied: SDV SW Office Hours (Mar 10, 2026)",
+  "action_item_number": 6
+}

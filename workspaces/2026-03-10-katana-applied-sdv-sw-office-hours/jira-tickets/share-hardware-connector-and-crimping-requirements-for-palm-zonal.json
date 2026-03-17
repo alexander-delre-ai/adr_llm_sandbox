@@ -1,0 +1,20 @@
+{
+  "ticket_key": "KATA-2572",
+  "ticket_id": "25966",
+  "web_url": "https://appliedint-katana.atlassian.net/browse/KATA-2572",
+  "api_url": "https://api.atlassian.com/ex/jira/eadd00c6-0d3f-4c89-99e3-ad95a0daaa51/rest/api/3/issue/25966",
+  "summary": "Share hardware connector and crimping requirements for Palm zonal",
+  "description": "Share list of connectors, terminals, and crimpers needed to expand the harness once application hardware needs on zonal and central compute. This is needed for Komatsu to modify harness and expect hardware testing.",
+  "issue_type": "Task",
+  "priority": "P1",
+  "status": "Backlog",
+  "assignee": null,
+  "parent_epic": "KATA-127",
+  "release": "Release 25.3",
+  "story_points": 0.05,
+  "project": "KATA",
+  "created_date": "2026-03-11",
+  "created_via": "JIRA MCP",
+  "meeting_source": "Katana <> Applied: SDV SW Office Hours (Mar 10, 2026)",
+  "action_item_number": 5
+}

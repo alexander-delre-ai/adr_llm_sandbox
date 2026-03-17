@@ -1,0 +1,20 @@
+{
+  "ticket_key": "KATA-2571",
+  "ticket_id": "25964",
+  "web_url": "https://appliedint-katana.atlassian.net/browse/KATA-2571",
+  "api_url": "https://api.atlassian.com/ex/jira/eadd00c6-0d3f-4c89-99e3-ad95a0daaa51/rest/api/3/issue/25964",
+  "summary": "Gather dependency information for vehicle managers",
+  "description": "Document clear dependency information including pin-outs, sensors, and motors for various managers. Required for vehicle hardware team planning toward August 2027 first truck build.",
+  "issue_type": "Task",
+  "priority": "P1",
+  "status": "Backlog",
+  "assignee": null,
+  "parent_epic": "KATA-127",
+  "release": "Release 25.3",
+  "story_points": 0.1,
+  "project": "KATA",
+  "created_date": "2026-03-11",
+  "created_via": "JIRA MCP",
+  "meeting_source": "Katana <> Applied: SDV SW Office Hours (Mar 10, 2026)",
+  "action_item_number": 4
+}

@@ -1,0 +1,20 @@
+{
+  "ticket_key": "KATA-2574",
+  "ticket_id": "25970",
+  "web_url": "https://appliedint-katana.atlassian.net/browse/KATA-2574",
+  "api_url": "https://api.atlassian.com/ex/jira/eadd00c6-0d3f-4c89-99e3-ad95a0daaa51/rest/api/3/issue/25970",
+  "summary": "Share examples of low voltage testing solutions",
+  "description": "Investigate Applied's solutions for automated low voltage testing processes to help Komatsu move away from manual testing procedures.",
+  "issue_type": "Task",
+  "priority": "P2",
+  "status": "Backlog",
+  "assignee": null,
+  "parent_epic": "KATA-127",
+  "release": "Release 26.1",
+  "story_points": 0,
+  "project": "KATA",
+  "created_date": "2026-03-11",
+  "created_via": "JIRA MCP",
+  "meeting_source": "Katana <> Applied: SDV SW Office Hours (Mar 11, 2026)",
+  "action_item_number": 5
+}

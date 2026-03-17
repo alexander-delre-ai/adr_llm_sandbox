@@ -1,0 +1,21 @@
+{
+  "ticket_key": "KATA-2570",
+  "ticket_id": "25962",
+  "web_url": "https://appliedint-katana.atlassian.net/browse/KATA-2570",
+  "api_url": "https://api.atlassian.com/ex/jira/eadd00c6-0d3f-4c89-99e3-ad95a0daaa51/rest/api/3/issue/25962",
+  "summary": "Conduct Auto Loop subsystem walkthrough for timeline estimation",
+  "description": "Walk through Auto Loop implementation to get an accurate idea of how long a subsystem takes to complete. This will inform SteerCo commitment decisions and scope management for Q2.",
+  "issue_type": "Task",
+  "priority": "P1",
+  "status": "Backlog",
+  "assignee": "Joseph Boyer",
+  "assignee_account_id": "712020:c23f3243-5591-4d30-91cc-2c4f6fcf272e",
+  "parent_epic": "KATA-2560",
+  "release": "Release 25.3",
+  "story_points": 0.05,
+  "project": "KATA",
+  "created_date": "2026-03-11",
+  "created_via": "JIRA MCP",
+  "meeting_source": "Katana <> Applied: SDV SW Office Hours (Mar 10, 2026)",
+  "action_item_number": 2
+}
