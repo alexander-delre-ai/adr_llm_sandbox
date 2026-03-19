@@ -1,5 +1,4 @@
 ---
-name: kata-jira-task-creation
 description: Creates a new JIRA ticket in the KATA project space. Use when converting a meeting action item or planned task into a KATA JIRA issue. Epic IDs must use the KATA- prefix. Requires epic ID, release, and ticket name as mandatory fields.
 ---
 
@@ -66,7 +65,10 @@ The Release field uses `customfield_10104` with these available versions:
 ## AVP Documentation Mirroring
 
 **CRITICAL**: When creating documentation tickets in KATA space:
-1. **Identify documentation tickets**: Any ticket with parent_id="KATA-2226" is automatically a documentation ticket
+1. **Identify documentation tickets**: A ticket is a documentation ticket if:
+   - parent_id is "KATA-2226", OR
+   - The ticket title or description contains any of these keywords: `document`, `documentation`, `write`, `tutorial`, `guide`, `runbook`, `README`, `SDK setup`, `API doc`
+   - If detected by keyword but parent_id is TBD, automatically set parent_id to "KATA-2226"
 2. **Create AVP mirror ticket**: Automatically create corresponding ticket in AVP space
 3. **AVP ticket details**:
    - Parent epic: **AVP-5477** (AVP documentation epic)
@@ -76,16 +78,17 @@ The Release field uses `customfield_10104` with these available versions:
 
 ## Implementation
 
-**Note**: The `user-atlassian-mcp-kata` MCP server is available and functional. This skill will:
+**Note**: The `kata-atlassian` MCP server is available and functional. This skill will:
 
 ### MCP Server Integration (Primary Method)
-Use the `user-atlassian-mcp-kata` MCP server to create tickets:
 
-1. **Get Cloud ID**: Call `getAccessibleAtlassianResources` to get the cloud ID for the KATA project
+Use the `mcp__kata-atlassian` MCP tools to create tickets:
+
+1. **Get Cloud ID**: Call `mcp__kata-atlassian__getAccessibleAtlassianResources` to get the cloud ID for the KATA project
 2. **Lookup Assignee** (if assignee is not "Unassigned"):
-   - Call `lookupJiraAccountId` with assignee name to get account ID
+   - Call `mcp__kata-atlassian__lookupJiraAccountId` with assignee name to get account ID
    - If lookup fails, proceed without assignee (will be unassigned)
-3. **Create KATA Ticket**: Call `createJiraIssue` with these parameters:
+3. **Create KATA Ticket**: Call `mcp__kata-atlassian__createJiraIssue` with these parameters:
    - `cloudId`: "eadd00c6-0d3f-4c89-99e3-ad95a0daaa51" (KATA cloud ID)
    - `projectKey`: "KATA"
    - `issueTypeName`: "Task" (or "Story" if specified)
@@ -99,7 +102,7 @@ Use the `user-atlassian-mcp-kata` MCP server to create tickets:
      - `customfield_10137`: 0 (story points, required field)
 4. **Create AVP Mirror** (if documentation ticket):
    - Check if parent epic is "KATA-2226" or ticket involves documentation work
-   - If yes, create corresponding ticket in AVP space using `user-atlassian-mcp-applied` server:
+   - If yes, create corresponding ticket in AVP space using the applied MCP server:
      - Same summary and assignee as KATA ticket
      - Description: Original description + "\n\nMirror of KATA ticket: [KATA-XXXX](https://appliedint-katana.atlassian.net/browse/KATA-XXXX)\n\nCreated via JIRA MCP"
      - Parent epic: "AVP-5477"
@@ -135,65 +138,10 @@ If MCP server is unavailable, produce a structured JIRA ticket payload as a fenc
 }
 ```
 
-## MCP Tool Usage Example
-
-```javascript
-// 1. Lookup assignee (if not "Unassigned")
-CallMcpTool({
-  server: "user-atlassian-mcp-kata",
-  toolName: "lookupJiraAccountId",
-  arguments: {
-    cloudId: "eadd00c6-0d3f-4c89-99e3-ad95a0daaa51",
-    searchString: "Alex Del Re"
-  }
-})
-
-// 2. Create KATA ticket
-CallMcpTool({
-  server: "user-atlassian-mcp-kata",
-  toolName: "createJiraIssue", 
-  arguments: {
-    cloudId: "eadd00c6-0d3f-4c89-99e3-ad95a0daaa51",
-    projectKey: "KATA",
-    issueTypeName: "Task",
-    summary: "Create PyArch threading examples",
-    description: "Document threading patterns and best practices for PyArch applications.\n\nCreated via JIRA MCP",
-    assignee_account_id: "account_id_from_lookup", // Omit if "Unassigned"
-    additional_fields: {
-      priority: {"name": "P2"},
-      parent: {"key": "KATA-2226"},
-      customfield_10104: {"id": "10002"}, // Release 26.1
-      customfield_10137: 0 // Story points (required)
-    }
-  }
-})
-
-// 3. Create AVP mirror (if documentation ticket - parent is KATA-2226)
-CallMcpTool({
-  server: "user-atlassian-mcp-applied",
-  toolName: "createJiraIssue",
-  arguments: {
-    cloudId: "applied_cloud_id", // Get from getAccessibleAtlassianResources
-    projectKey: "AVP",
-    issueTypeName: "Task",
-    summary: "Create PyArch threading examples", // Same as KATA
-    description: "Document threading patterns and best practices for PyArch applications.\n\nMirror of KATA ticket: [KATA-2575](https://appliedint-katana.atlassian.net/browse/KATA-2575)\n\nCreated via JIRA MCP",
-    assignee_account_id: "account_id_from_lookup", // Same as KATA
-    additional_fields: {
-      priority: {"name": "P2"}, // Same as KATA
-      parent: {"key": "AVP-5477"}, // AVP documentation epic
-      customfield_10104: {"id": "release_id"}, // Same release as KATA
-      customfield_10137: 0, // Same story points as KATA
-      customfield_11608: [{"value": "Komatsu"}] // Engagement field (required for AVP, array format)
-    }
-  }
-})
-```
-
 ## Release ID Quick Reference
 
 - Release 25.1: `{"id": "10000"}`
-- Release 25.2: `{"id": "10001"}`  
+- Release 25.2: `{"id": "10001"}`
 - Release 25.3: `{"id": "10036"}`
 - Release 26.1: `{"id": "10002"}`
 - Release 26.2: `{"id": "10003"}`
