@@ -32,15 +32,20 @@ If no content is provided, ask: "Please paste the meeting transcript or provide 
 5. **Create workspace directory** immediately using YYYY-MM-DD-meeting-name format
 6. **Store Gemini link**: If extracted in step 2, save Gemini summary URL to workspace metadata for Slack summary use
 7. **Create meeting analysis**: Read and follow `.cursor/skills/meeting-analysis/SKILL.md` to create analysis.md
-8. **Create ticket proposals**: Read and follow `.cursor/skills/meeting-tickets/SKILL.md` to create tickets.md
-9. **Stage files in workspace**:
-   - `workspaces/YYYY-MM-DD-meeting-name/analysis.md` - Complete meeting analysis (context, decisions, themes, questions, action items, prioritized plan)
-   - `workspaces/YYYY-MM-DD-meeting-name/tickets.md` - Editable ticket proposals with essential fields (tracking, priority, assignee, parent_id, release, story_points, description)
-   - `workspaces/YYYY-MM-DD-meeting-name/transcript.md` - Original meeting transcript
-   - `workspaces/YYYY-MM-DD-meeting-name/gemini-link.txt` - Gemini summary URL (if provided) for Slack summary reference
-   - **Auto-assign tracking**: Items involving "schedule", "meeting", "coordinate", or "set up" default to "slack" tracking
-   - **Single assignee**: Each action item assigned to one person for clear accountability
-10. Present summary with references to staged workspace files
+8. **Research unresolved questions**: Read and follow `.cursor/skills/meeting-research/SKILL.md` to research each unresolved question from Section 4 of analysis.md
+   - Parse each bullet from Section 4 (Unresolved Questions) as a separate question
+   - Run the meeting-research skill for each question with the workspace path as context
+   - Compile all results into a single `research.md` in the workspace (batch format from the skill)
+9. **Create ticket proposals**: Read and follow `.cursor/skills/meeting-tickets/SKILL.md` to create tickets.md
+10. **Stage files in workspace**:
+    - `workspaces/YYYY-MM-DD-meeting-name/analysis.md` - Complete meeting analysis (context, decisions, themes, questions, action items, prioritized plan)
+    - `workspaces/YYYY-MM-DD-meeting-name/research.md` - Research findings for unresolved questions from analysis
+    - `workspaces/YYYY-MM-DD-meeting-name/tickets.md` - Editable ticket proposals with essential fields (tracking, priority, assignee, parent_id, release, story_points, description)
+    - `workspaces/YYYY-MM-DD-meeting-name/transcript.md` - Original meeting transcript
+    - `workspaces/YYYY-MM-DD-meeting-name/gemini-link.txt` - Gemini summary URL (if provided) for Slack summary reference
+    - **Auto-assign tracking**: Items involving "schedule", "meeting", "coordinate", or "set up" default to "slack" tracking
+    - **Single assignee**: Each action item assigned to one person for clear accountability
+11. Present summary with references to staged workspace files
 
 ## Review and Execution Phase
 
@@ -48,13 +53,15 @@ After staging files in workspace, ask:
 
 **"I've created the workspace and staged files for your review:**
 - **`workspaces/YYYY-MM-DD-meeting-name/analysis.md`** - Complete meeting analysis and plan
+- **`workspaces/YYYY-MM-DD-meeting-name/research.md`** - Research findings for unresolved questions
 - **`workspaces/YYYY-MM-DD-meeting-name/tickets.md`** - Editable JIRA ticket proposals
 
 **Please:**
 1. **Review the analysis** for accuracy
-2. **Edit the tickets file** as needed (tracking, priority, assignee, parent_id, release, story_points, description)
-3. **Confirm Gemini notes link** (if provided) for Slack summary reference
-4. **Confirm when ready** to create the JIRA tickets and complete the workspace"
+2. **Review the research findings** for unresolved questions
+3. **Edit the tickets file** as needed (tracking, priority, assignee, parent_id, release, story_points, description)
+4. **Confirm Gemini notes link** (if provided) for Slack summary reference
+5. **Confirm when ready** to create the JIRA tickets and complete the workspace"
 
 If confirmed, execute Phase 2 using the specialized skills:
 - **JIRA Ticket Creation**: Use appropriate skill based on parent_id project space:
@@ -89,11 +96,12 @@ If confirmed, execute Phase 2 using the specialized skills:
 ### Phase 1: Analysis & Planning (Plan Mode)
 - **Create workspace directory** immediately for staging files
 - Complete meeting analysis with proposed tickets
-- **Stage files in workspace** - analysis and editable tickets ready for review
+- **Research unresolved questions** - search Slack, Confluence, JIRA, and codebase for answers to open questions from analysis Section 4
+- **Stage files in workspace** - analysis, research, and editable tickets ready for review
 - **Auto-categorize tracking** - scheduling/meeting items default to "slack", others to "jira"
 - **Single assignee per item** - ensure clear accountability with one person responsible per action (defaults to "Unassigned")
 - **Ask clarifying questions** about unclear action items, priorities, or assignments
-- User reviews analysis and edits tickets file directly in workspace
+- User reviews analysis, research findings, and edits tickets file directly in workspace
 - Collaborative refinement before execution
 
 ### Phase 2: Execution (Agent Mode)  
