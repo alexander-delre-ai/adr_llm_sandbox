@@ -93,7 +93,8 @@ Use the `mcp__kata-atlassian` MCP tools to create tickets:
    - `projectKey`: "KATA"
    - `issueTypeName`: "Task" (or "Story" if specified)
    - `summary`: the ticket name
-   - `description`: the description in markdown format + "\n\nCreated via JIRA MCP"
+   - `description`: the description in plain markdown text. Append a blank line followed by "Created via JIRA MCP" as a separate paragraph — do NOT use `\n` escape sequences; pass the text with real line breaks or as separate sentences
+   - `contentFormat`: "markdown"
    - `assignee_account_id`: account ID from lookup (omit if "Unassigned" or lookup failed)
    - `additional_fields`: object with required fields:
      - `priority`: {"name": "P1"} (or P0, P2, P3)
