@@ -20,18 +20,17 @@ Helps you write and submit a feature request to reMarkable at https://support.re
 
 ### Step 1 - Collect details
 
-If not already provided in the prompt, ask for the following:
+**Defaults (use unless the user overrides):**
 
-| Field | Required | Notes |
-|-------|----------|-------|
-| Web Email | Yes | Email to associate with the submission |
-| Subject | Yes | Short feature title, max 10 words |
-| Feature description | Yes | What the feature does |
-| Use case | Yes | The problem it solves for you |
-| Profession | No | e.g. Student, Teacher, Engineer, Designer, Executive, Other |
-| What's this about? | No | e.g. reMarkable Paper, reMarkable Paper Pro, reMarkable app |
-| Current workaround | No | How you handle it today |
-| Acceptance criteria | No | Specific expectations for the feature |
+| Field | Default |
+|-------|---------|
+| Profession | Engineering |
+| What's this about? | New Functionality |
+| Web Email | alexanderdelre@gmail.com |
+
+If the user described the feature request in their prompt, infer Subject and Description from it directly - do not re-ask for what was already provided. Only prompt for Subject or Description if the request contains no usable content.
+
+Optional fields (current workaround, acceptance criteria) - include only if the user mentioned them.
 
 ### Step 2 - Craft Subject and Description
 

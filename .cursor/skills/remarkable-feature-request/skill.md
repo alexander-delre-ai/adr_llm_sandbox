@@ -20,18 +20,17 @@ https://support.remarkable.com/s/contactsupport/wishes-and-ideas
 
 ### Step 1 - Collect details
 
-If not already provided, prompt the user for:
+**Defaults (use unless the user overrides):**
 
-| Field | Required | Notes |
-|-------|----------|-------|
-| Web Email | Yes | The email to associate with the submission |
-| Subject | Yes | Short feature title, max 10 words |
-| Feature description | Yes | What the feature does and why it's valuable |
-| Use case | Yes | The specific problem it solves |
-| Profession | No | e.g. Student, Teacher, Engineer, Designer, Executive, Other |
-| What's this about? | No | e.g. reMarkable Paper, reMarkable Paper Pro, reMarkable app |
-| Current workaround | No | How they handle it today |
-| Acceptance criteria | No | Specific expectations for how it should work |
+| Field | Default |
+|-------|---------|
+| Profession | Engineering |
+| What's this about? | New Functionality |
+| Web Email | alexanderdelre@gmail.com |
+
+If the user has described the feature request in their prompt, infer the Subject and Description directly from that - do not ask for what was already provided. Only prompt for missing required fields (Subject or Description) if the request contains no usable content.
+
+Optional fields (current workaround, acceptance criteria) - ask only if relevant or if the user has already mentioned them.
 
 ### Step 2 - Craft the Subject and Description
 
