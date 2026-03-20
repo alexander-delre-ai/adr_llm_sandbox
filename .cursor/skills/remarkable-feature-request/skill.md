@@ -12,16 +12,16 @@ https://support.remarkable.com/s/contactsupport/wishes-and-ideas
 
 If not already provided, prompt the user for:
 
-| Field | Purpose |
-|-------|---------|
-| First name | Prechat field (required by chat widget) |
-| Last name | Prechat field (required by chat widget) |
-| Email | Prechat field (required by chat widget) |
-| Product | Which reMarkable product this applies to |
-| Feature title | Short, clear name for the feature (max 10 words) |
-| Feature description | What the feature does |
-| Use case | Why the user needs it; what problem it solves |
-| Workaround | How they currently handle it (if any) |
+| Field | Required | Purpose |
+|-------|----------|---------|
+| First name | Yes | Prechat field (required by chat widget) |
+| Email | Yes | Prechat field (required by chat widget) |
+| Last name | No | Prechat field (optional) |
+| Product | No | Which reMarkable product this applies to |
+| Feature title | Yes | Short, clear name for the feature (max 10 words) |
+| Feature description | Yes | What the feature does |
+| Use case | Yes | Why the user needs it; what problem it solves |
+| Workaround | No | How they currently handle it (if any) |
 
 **Products to offer:**
 - reMarkable Paper (2nd gen)
@@ -62,11 +62,11 @@ Display the following to the user:
    - Open: https://support.remarkable.com/s/contactsupport/wishes-and-ideas
    - Click **"Chat with us"** or the chat widget that appears
    - Fill in the prechat form:
-     - **First name**: <first name>
-     - **Last name**: <last name>
-     - **Email**: <email>
-     - **Product**: <product>
-     - **Category**: Wishes & Ideas (pre-selected via URL)
+     - **First name** (required): <first name>
+     - **Email** (required): <email>
+     - **Last name** (optional): <last name if provided>
+     - **Product** (optional): <product if provided>
+     - **I have a question about**: Wishes & Ideas (pre-selected via URL)
    - Paste the crafted message into the chat
    - Send and follow any prompts from the support agent
 

@@ -17,9 +17,9 @@ If not already provided in the prompt, ask for the following (can ask all at onc
 | Field | Required | Notes |
 |-------|----------|-------|
 | First name | Yes | For the chat prechat form |
-| Last name | Yes | For the chat prechat form |
 | Email | Yes | For the chat prechat form |
-| Product | Yes | See product list below |
+| Last name | No | For the chat prechat form (optional) |
+| Product | No | See product list below |
 | Feature title | Yes | Short name, max 10 words |
 | Feature description | Yes | What the feature does |
 | Use case | Yes | The problem it solves for you |
@@ -70,7 +70,12 @@ Show the user:
 3. Steps:
    - Open: https://support.remarkable.com/s/contactsupport/wishes-and-ideas
    - Click the chat widget that appears on the page
-   - Fill in the prechat form with the values above
+   - Fill in the prechat form:
+     - **First name** (required): <first name>
+     - **Email** (required): <email>
+     - **Last name** (optional): <last name if provided>
+     - **Product** (optional): <product if provided>
+     - **I have a question about**: Wishes & Ideas (pre-selected via URL)
    - Paste the message into the chat and send
 
 ### Step 4 - Open the URL
