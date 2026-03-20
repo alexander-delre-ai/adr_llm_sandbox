@@ -1,78 +1,78 @@
 # reMarkable Feature Request
 
-Crafts and submits a feature request to reMarkable's "Wishes & Ideas" support portal. Since the portal uses a Salesforce chat widget, this skill generates a polished feature request message and guides the user through submission.
+Crafts and submits a feature request to reMarkable's "Wishes & Ideas" support portal.
 
 ## Submission URL
 
 https://support.remarkable.com/s/contactsupport/wishes-and-ideas
 
+## Form Fields
+
+| Field | Required | Type |
+|-------|----------|------|
+| Profession | No | Dropdown |
+| What's this about? | No | Dropdown |
+| Web Email | Yes | Text |
+| Subject | Yes | Text |
+| Description | Yes | Textarea |
+
 ## Workflow
 
-### Step 1 - Collect user info
+### Step 1 - Collect details
 
 If not already provided, prompt the user for:
 
-| Field | Required | Purpose |
-|-------|----------|---------|
-| First name | Yes | Prechat field (required by chat widget) |
-| Email | Yes | Prechat field (required by chat widget) |
-| Last name | No | Prechat field (optional) |
-| Product | No | Which reMarkable product this applies to |
-| Feature title | Yes | Short, clear name for the feature (max 10 words) |
-| Feature description | Yes | What the feature does |
-| Use case | Yes | Why the user needs it; what problem it solves |
-| Workaround | No | How they currently handle it (if any) |
+| Field | Required | Notes |
+|-------|----------|-------|
+| Web Email | Yes | The email to associate with the submission |
+| Subject | Yes | Short feature title, max 10 words |
+| Feature description | Yes | What the feature does and why it's valuable |
+| Use case | Yes | The specific problem it solves |
+| Profession | No | e.g. Student, Teacher, Engineer, Designer, Executive, Other |
+| What's this about? | No | e.g. reMarkable Paper, reMarkable Paper Pro, reMarkable app |
+| Current workaround | No | How they handle it today |
+| Acceptance criteria | No | Specific expectations for how it should work |
 
-**Products to offer:**
-- reMarkable Paper (2nd gen)
-- reMarkable Paper Pro
-- Both / All devices
-- reMarkable app (mobile/desktop)
+### Step 2 - Craft the Subject and Description
 
-### Step 2 - Craft the feature request
+**Subject** (maps to the Subject field): Short, imperative, max 10 words.
+Example: `Add folder-level template assignment for notebooks`
 
-Write a concise, compelling feature request message using this structure:
+**Description** (maps to the Description textarea): Use this structure:
 
 ```
-**Feature Request: <feature title>**
-
-**Product:** <product>
-
 **What I'm requesting:**
 <1-2 sentences describing the feature clearly>
 
 **Why it would be valuable:**
-<2-3 sentences on the use case and problem it solves. Be specific and personal - "I need this because..." lands better than abstract justification>
+<2-3 sentences on the use case and problem it solves. Use first person - "I need this because..." lands better than abstract justification>
 
 **Current workaround:**
-<What the user does today, or "None" if there's no workaround>
+<What the user does today, or "None">
 
-**Acceptance criteria (optional):**
-<If the user has specific expectations for how the feature should work, list them here as bullet points>
+**Acceptance criteria:**
+<Bullet points if provided, otherwise omit this section>
 ```
 
-Keep the total message under 300 words. Use plain language, not marketing speak.
+Keep the total description under 300 words. Plain language only - no marketing speak.
 
 ### Step 3 - Present submission instructions
 
-Display the following to the user:
+Display:
 
-1. The crafted feature request message (in a copyable code block)
-2. Step-by-step submission guide:
+1. The filled form values in a clear summary:
+   - **Profession**: <value or "leave blank">
+   - **What's this about?**: <value or "leave blank">
+   - **Web Email**: <email>
+   - **Subject**: <subject>
+   - **Description**: (copyable code block with the crafted description)
+
+2. Steps:
    - Open: https://support.remarkable.com/s/contactsupport/wishes-and-ideas
-   - Click **"Chat with us"** or the chat widget that appears
-   - Fill in the prechat form:
-     - **First name** (required): <first name>
-     - **Email** (required): <email>
-     - **Last name** (optional): <last name if provided>
-     - **Product** (optional): <product if provided>
-     - **I have a question about**: Wishes & Ideas (pre-selected via URL)
-   - Paste the crafted message into the chat
-   - Send and follow any prompts from the support agent
+   - Fill in the form fields with the values above
+   - Click **Submit**
 
 ### Step 4 - Open the URL
-
-Run the following shell command to open the page in the user's default browser:
 
 ```bash
 xdg-open "https://support.remarkable.com/s/contactsupport/wishes-and-ideas"
@@ -80,7 +80,6 @@ xdg-open "https://support.remarkable.com/s/contactsupport/wishes-and-ideas"
 
 ## Notes
 
-- The "wishes-and-ideas" URL path pre-routes the chat to the feature request flow
-- The portal uses Salesforce Embedded Messaging - there is no API or form POST endpoint to automate
-- Multiple feature requests should be submitted as separate chat sessions
-- reMarkable does not guarantee responses to feature requests, but they aggregate community votes
+- reMarkable reads all submissions but cannot respond to each individually
+- Submit one feature per form submission for clarity
+- The "Wishes & Ideas" path pre-selects the correct category
