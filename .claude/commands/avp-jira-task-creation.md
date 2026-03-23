@@ -27,7 +27,12 @@ Every ticket requires:
 
 Include when available:
 - `description` - detailed acceptance criteria or context
-- `priority` - `Highest`, `High`, `Medium`, `Low`, `Lowest` (default: `Medium`)
+- `priority` - use P-notation mapped to AVP values (default: `P2`):
+  - P0 = `Highest`
+  - P1 = `High`
+  - P2 = `Medium`
+  - P3 = `Low`
+  - P4 = `Lowest`
 - `assignee` - team member handle or name
 - `labels` - comma-separated list
 - `story_points` - numeric estimate
