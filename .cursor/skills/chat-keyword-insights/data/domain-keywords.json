@@ -1,0 +1,51 @@
+{
+  "jira": [
+    "KATA", "AVP", "epic", "sprint", "backlog", "story points",
+    "initiative", "subtask", "issue link", "fix version", "release",
+    "P0", "P1", "P2", "P3", "Highest", "High", "Medium", "Low", "Lowest",
+    "Jira", "JIRA", "Atlassian", "Confluence"
+  ],
+  "hardware": [
+    "K1", "CAN", "ECU", "SIL", "HIL", "MIL",
+    "zonal", "central compute", "bench", "AutoLube",
+    "HMU", "payload", "power manager", "thermal",
+    "diagnostics", "sensor", "actuator", "GPIO",
+    "hardware manager", "batch manager"
+  ],
+  "tools": [
+    "MCP", "Cursor", "Buildkite", "GitHub", "Slack", "TickTick",
+    "Confluence", "Miro", "Docker", "VS Code", "Claude",
+    "npm", "pip", "git", "cron", "systemd"
+  ],
+  "protocols": [
+    "CAN", "LIN", "Ethernet", "SOME/IP", "UDS",
+    "REST", "gRPC", "HTTP", "WebSocket", "MQTT"
+  ],
+  "processes": [
+    "provisioning", "deployment", "uprev", "release",
+    "sprint planning", "standup", "retro", "office hours",
+    "code review", "PR", "pull request", "merge",
+    "CI/CD", "pipeline", "build", "test"
+  ],
+  "sdv": [
+    "SDV", "software-defined vehicle", "virtual toolchain",
+    "simulation", "model-in-the-loop", "software-in-the-loop",
+    "hardware-in-the-loop", "digital twin", "OTA",
+    "AUTOSAR", "adaptive", "classic", "ROS", "DDS"
+  ],
+  "safety": [
+    "ASIL", "ISO 26262", "functional safety", "FMEA",
+    "safety case", "hazard analysis", "fault tree",
+    "redundancy", "watchdog", "safe state"
+  ],
+  "teams": [
+    "Katana", "Applied", "App Dev", "Platform",
+    "SDV SW", "Virtual Toolchain", "Systems"
+  ],
+  "concepts": [
+    "architecture", "API", "interface", "integration",
+    "dependency", "blocker", "milestone", "deliverable",
+    "requirement", "specification", "validation", "verification",
+    "template", "workflow", "automation", "skill"
+  ]
+}

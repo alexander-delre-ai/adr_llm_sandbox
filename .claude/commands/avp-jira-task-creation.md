@@ -36,6 +36,7 @@ Include when available:
 - `assignee` - team member handle or name
 - `labels` - comma-separated list
 - `story_points` - numeric estimate
+- `mirror_ticket` - key of an existing ticket to link (e.g. `KATA-2422`); appends a hyperlink to the source ticket URL in the description, e.g. `Mirrored from [KATA-2422](https://appliedint-katana.atlassian.net/browse/KATA-2422)`
 
 ## Validation rules
 
@@ -52,9 +53,11 @@ Include when available:
 3. Confirm all mandatory fields are present; prompt for any that are missing
 4. Reject any `epic_id` that does not start with `AVP-`
 5. Fill optional fields with defaults when absent
-6. Get the cloud ID for the AVP project using the MCP server
-7. Create the actual JIRA ticket using the MCP server
-8. Report the created ticket details including the ticket key
+6. If `mirror_ticket` is provided, determine the source URL and append `\n\nMirrored from [TICKET-KEY](SOURCE_URL)` to the description
+   - KATA tickets: `https://appliedint-katana.atlassian.net/browse/KATA-XXXX`
+7. Get the cloud ID for the AVP project using the MCP server
+8. Create the actual JIRA ticket using the MCP server (include the mirror link in `description`)
+9. Report the created ticket details including the ticket key
 
 ## Implementation
 
