@@ -58,17 +58,39 @@ Include when available:
 
 ## Implementation
 
-Use the `mcp__kata-atlassian` MCP tools (applied instance) to create tickets:
+Use the `mcp__claude_ai_Atlassian` MCP tools (cloud ID: `6461690f-d275-4167-8055-cc3dc06e03f2`, site: `appliedintuition.atlassian.net`):
 
-1. **Get Cloud ID**: Call `mcp__kata-atlassian__getAccessibleAtlassianResources` to get the cloud ID for the AVP project
-2. **Create Ticket**: Call `mcp__kata-atlassian__createJiraIssue` with these parameters:
-   - `cloudId`: from step 1
+1. **Get Cloud ID**: Call `mcp__claude_ai_Atlassian__getAccessibleAtlassianResources` (or use known cloud ID above)
+2. **Create Ticket**: Call `mcp__claude_ai_Atlassian__createJiraIssue` with these parameters:
+   - `cloudId`: `6461690f-d275-4167-8055-cc3dc06e03f2`
    - `projectKey`: "AVP"
    - `issueTypeName`: "Task" (or "Story" if specified)
    - `summary`: the ticket name
    - `description`: the description in markdown format
+   - `contentFormat`: "markdown"
    - `additional_fields`: object containing:
      - Epic link field: **AVP-5477** for documentation tickets (or user epic), omit if user specified no parent
-     - Priority field
+     - `customfield_11608`: engagement as array of option objects, e.g. `[{"id": "16667"}]` for Komatsu
      - Labels array (include engagement as a label, e.g. `komatsu`)
      - Story points
+
+### Engagement option IDs (`customfield_11608`)
+
+| Engagement | ID |
+|---|---|
+| Komatsu | 16667 |
+| Porsche | 16662 |
+| Stellantis IVI | 16663 |
+| Stellantis VOS | 16664 |
+| AVP | 16665 |
+| Traton | 16666 |
+| SDS | 16687 |
+| Isuzu | 16688 |
+| Nissan | 16711 |
+| Honda | 16712 |
+| AGCO | 16713 |
+| Ford | 16714 |
+| Toyota | 22585 |
+| GM | 22584 |
+| JLR | 22587 |
+| Mercedes | 26907 |
