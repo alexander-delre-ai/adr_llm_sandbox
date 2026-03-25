@@ -148,59 +148,63 @@ def parse_jira_tickets(jira_dir: Path, meeting_source: str) -> List[Dict[str, An
     return items
 
 def scan_workspaces(workspaces_dir: str = "/home/alexanderdelre/adr_llm_sandbox/workspaces", target_date: str = None) -> Dict[str, List[Dict[str, Any]]]:
-    """Scan workspace directories and extract action items for a specific date."""
+    """Scan workspace directories and extract action items for a specific date.
+    
+    Workspace structure: workspaces/<YYYY-MM-DD>/<meeting-slug>/
+    """
     workspaces_path = Path(workspaces_dir)
     all_items = {'slack': [], 'jira': []}
     
     if not workspaces_path.exists():
         return all_items
     
-    for workspace_dir in workspaces_path.iterdir():
-        if not workspace_dir.is_dir():
+    for date_dir in sorted(workspaces_path.iterdir()):
+        if not date_dir.is_dir():
             continue
         
-        meeting_name = workspace_dir.name
+        if target_date and date_dir.name != target_date:
+            continue
         
-        # Filter by date if target_date is provided
-        if target_date:
-            # Check if workspace directory name starts with the target date
-            if not meeting_name.startswith(target_date):
+        for workspace_dir in sorted(date_dir.iterdir()):
+            if not workspace_dir.is_dir():
                 continue
-        
-        # Parse action-items.md
-        action_items_file = workspace_dir / 'action-items.md'
-        if action_items_file.exists():
-            try:
-                with open(action_items_file, 'r') as f:
-                    content = f.read()
-                items = parse_action_items_table(content, meeting_name)
-                for item in items:
-                    if item['type'] == 'slack':
-                        all_items['slack'].append(item)
-                    else:
-                        all_items['jira'].append(item)
-            except IOError:
-                pass
-        
-        # Parse tickets.md
-        tickets_file = workspace_dir / 'tickets.md'
-        if tickets_file.exists():
-            try:
-                with open(tickets_file, 'r') as f:
-                    content = f.read()
-                items = parse_tickets_yaml(content, meeting_name)
-                for item in items:
-                    if item['type'] == 'slack':
-                        all_items['slack'].append(item)
-                    else:
-                        all_items['jira'].append(item)
-            except IOError:
-                pass
-        
-        # Parse JIRA tickets
-        jira_dir = workspace_dir / 'jira-tickets'
-        items = parse_jira_tickets(jira_dir, meeting_name)
-        all_items['jira'].extend(items)
+            
+            meeting_name = workspace_dir.name
+            
+            # Parse action-items.md
+            action_items_file = workspace_dir / 'action-items.md'
+            if action_items_file.exists():
+                try:
+                    with open(action_items_file, 'r') as f:
+                        content = f.read()
+                    items = parse_action_items_table(content, meeting_name)
+                    for item in items:
+                        if item['type'] == 'slack':
+                            all_items['slack'].append(item)
+                        else:
+                            all_items['jira'].append(item)
+                except IOError:
+                    pass
+            
+            # Parse tickets.md
+            tickets_file = workspace_dir / 'tickets.md'
+            if tickets_file.exists():
+                try:
+                    with open(tickets_file, 'r') as f:
+                        content = f.read()
+                    items = parse_tickets_yaml(content, meeting_name)
+                    for item in items:
+                        if item['type'] == 'slack':
+                            all_items['slack'].append(item)
+                        else:
+                            all_items['jira'].append(item)
+                except IOError:
+                    pass
+            
+            # Parse JIRA tickets
+            jira_dir = workspace_dir / 'jira-tickets'
+            items = parse_jira_tickets(jira_dir, meeting_name)
+            all_items['jira'].extend(items)
     
     return all_items
 

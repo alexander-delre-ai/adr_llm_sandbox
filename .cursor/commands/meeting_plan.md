@@ -29,7 +29,7 @@ If no content is provided, ask: "Please paste the meeting transcript or provide 
 2. **Extract Gemini link**: If user message contains "gemini summary: [URL]", extract and store this URL for later use in Slack summary
 3. **Identify content type**: Determine if input is a full transcript or Gemini summary link (for reference only)
 4. Switch to Plan mode so the analysis is collaborative before any artifacts are created
-5. **Create workspace directory** immediately using YYYY-MM-DD-meeting-name format
+5. **Create workspace directory** immediately using YYYY-MM-DD/meeting-name format
 6. **Store Gemini link**: If extracted in step 2, save Gemini summary URL to workspace metadata for Slack summary use
 7. **Create meeting analysis**: Read and follow `.cursor/skills/meeting-analysis/SKILL.md` to create analysis.md
 8. **Research unresolved questions**: Read and follow `.cursor/skills/meeting-research/SKILL.md` to research each unresolved question from Section 4 of analysis.md
@@ -38,11 +38,11 @@ If no content is provided, ask: "Please paste the meeting transcript or provide 
    - Compile all results into a single `research.md` in the workspace (batch format from the skill)
 9. **Create ticket proposals**: Read and follow `.cursor/skills/meeting-tickets/SKILL.md` to create tickets.md
 10. **Stage files in workspace**:
-    - `workspaces/YYYY-MM-DD-meeting-name/analysis.md` - Complete meeting analysis (context, decisions, themes, questions, action items, prioritized plan)
-    - `workspaces/YYYY-MM-DD-meeting-name/research.md` - Research findings for unresolved questions from analysis
-    - `workspaces/YYYY-MM-DD-meeting-name/tickets.md` - Editable ticket proposals with essential fields (tracking, priority, assignee, parent_id, release, story_points, description)
-    - `workspaces/YYYY-MM-DD-meeting-name/transcript.md` - Original meeting transcript
-    - `workspaces/YYYY-MM-DD-meeting-name/gemini-link.txt` - Gemini summary URL (if provided) for Slack summary reference
+    - `workspaces/YYYY-MM-DD/meeting-name/analysis.md` - Complete meeting analysis (context, decisions, themes, questions, action items, prioritized plan)
+    - `workspaces/YYYY-MM-DD/meeting-name/research.md` - Research findings for unresolved questions from analysis
+    - `workspaces/YYYY-MM-DD/meeting-name/tickets.md` - Editable ticket proposals with essential fields (tracking, priority, assignee, parent_id, release, story_points, description)
+    - `workspaces/YYYY-MM-DD/meeting-name/transcript.md` - Original meeting transcript
+    - `workspaces/YYYY-MM-DD/meeting-name/gemini-link.txt` - Gemini summary URL (if provided) for Slack summary reference
     - **Auto-assign tracking**: Items involving "schedule", "meeting", "coordinate", or "set up" default to "slack" tracking
     - **Single assignee**: Each action item assigned to one person for clear accountability
 11. Present summary with references to staged workspace files
@@ -52,9 +52,9 @@ If no content is provided, ask: "Please paste the meeting transcript or provide 
 After staging files in workspace, ask: 
 
 **"I've created the workspace and staged files for your review:**
-- **`workspaces/YYYY-MM-DD-meeting-name/analysis.md`** - Complete meeting analysis and plan
-- **`workspaces/YYYY-MM-DD-meeting-name/research.md`** - Research findings for unresolved questions
-- **`workspaces/YYYY-MM-DD-meeting-name/tickets.md`** - Editable JIRA ticket proposals
+- **`workspaces/YYYY-MM-DD/meeting-name/analysis.md`** - Complete meeting analysis and plan
+- **`workspaces/YYYY-MM-DD/meeting-name/research.md`** - Research findings for unresolved questions
+- **`workspaces/YYYY-MM-DD/meeting-name/tickets.md`** - Editable JIRA ticket proposals
 
 **Please:**
 1. **Review the analysis** for accuracy
@@ -84,7 +84,7 @@ If confirmed, execute Phase 2 using the specialized skills:
   - **Slack filtering**: Only include KATA tickets in summaries (exclude AVP mirrors)
   - Send formatted message to AlexD with workspace context
 - **TickTick Sync**: Use `.cursor/skills/ticktick-sync` to sync eligible meeting items
-  - Run: `python3 .cursor/skills/ticktick-sync/scripts/sync_meeting_items.py --tickets workspaces/<slug>/tickets.md --meeting "<Meeting Title>"`
+  - Run: `python3 .cursor/skills/ticktick-sync/scripts/sync_meeting_items.py --tickets workspaces/<YYYY-MM-DD>/<meeting-slug>/tickets.md --meeting "<Meeting Title>"`
   - Syncs only Slack-tracked items assigned to AlexD or Unassigned
   - Tasks get short titles (15 words max) with full descriptions in content
 - **Workspace Creation**: Use `.cursor/skills/meeting-workspace/SKILL.md`
@@ -120,7 +120,7 @@ If confirmed, execute Phase 2 using the specialized skills:
   - **Include Gemini notes link** (if available from workspace) as reference in Slack message
   - Include all action items (Slack-only first, then JIRA tickets)
   - Send formatted office hours thread message to AlexD
-- **TickTick Sync**: Run `python3 .cursor/skills/ticktick-sync/scripts/sync_meeting_items.py --tickets workspaces/<slug>/tickets.md --meeting "<Meeting Title>"`
+- **TickTick Sync**: Run `python3 .cursor/skills/ticktick-sync/scripts/sync_meeting_items.py --tickets workspaces/<YYYY-MM-DD>/<meeting-slug>/tickets.md --meeting "<Meeting Title>"`
   - Syncs Slack-tracked items assigned to AlexD or Unassigned to TickTick "Cursor Sync" project
   - Short titles (15 words max), full descriptions in content body
 - **Save workspace**: Read and follow `.cursor/skills/meeting-workspace/SKILL.md` to create complete workspace with TickTick sync results

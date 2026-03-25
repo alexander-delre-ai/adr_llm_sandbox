@@ -1,5 +1,4 @@
 ---
-name: ticktick-sync
 description: Syncs Slack-tracked action items to TickTick Cursor Sync project using their API. Supports two modes - daily-todos sync and meeting action item sync from tickets.md. Tasks use short titles (15 words max) with full descriptions in content.
 ---
 
@@ -13,10 +12,10 @@ This skill integrates with TickTick's API to create tasks from your daily todos.
 
 ### Prerequisites
 
-1. **TickTick Developer Account**: Register at https://developer.ticktick.com/manage
+1. **TickTick Developer Account**: Register at the TickTick developer portal
 2. **OAuth Application**: Create an application to get client credentials
 3. **Access Token**: Obtain an access token through OAuth flow
-4. **Environment Setup**: Configure token in `.env` file
+4. **Environment Setup**: Configure token in `.cursor/skills/ticktick-sync/.env` file
 
 ### Workflow
 
@@ -33,7 +32,7 @@ This skill integrates with TickTick's API to create tasks from your daily todos.
 
 **Task Title Format** (applies to all modes):
 - **15 words or less** - intelligently condensed action-oriented titles
-- Preserves key action verbs and context (e.g., "Document X" → "add documentation for X")
+- Preserves key action verbs and context (e.g., "Document X" -> "add documentation for X")
 - Natural language flow, no priority prefixes or labels
 - Full original text preserved in the content/description body
 
@@ -55,7 +54,7 @@ Meeting: [meeting-slug or meeting source]
    ```
 
 2. **Configure Environment**:
-   - Copy `.env.example` to `.env`
+   - Copy `.cursor/skills/ticktick-sync/env.example` to `.cursor/skills/ticktick-sync/.env`
    - Add your TickTick access token
    - Configure sync preferences
 
@@ -63,7 +62,7 @@ Meeting: [meeting-slug or meeting source]
    ```bash
    # Generate and sync in one command
    bash .cursor/skills/daily-todos/scripts/generate_todos.sh --sync-ticktick
-   
+
    # Or sync existing todos
    python3 .cursor/skills/ticktick-sync/scripts/sync_todos.py
    ```
@@ -78,7 +77,7 @@ Meeting: [meeting-slug or meeting source]
 
 ### Configuration Options
 
-Environment variables in `.env`:
+Environment variables in `.cursor/skills/ticktick-sync/.env`:
 ```bash
 TICKTICK_ACCESS_TOKEN=your_token_here
 TICKTICK_PROJECT_NAME=Daily Todos

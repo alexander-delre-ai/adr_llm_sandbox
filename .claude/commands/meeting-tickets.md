@@ -1,5 +1,4 @@
 ---
-name: meeting-tickets
 description: Creates editable tickets.md file from meeting action items with proper tracking categorization, defaults, and YAML format. Use after meeting analysis to generate reviewable ticket proposals.
 ---
 
@@ -34,12 +33,12 @@ For each action item, determine tracking type:
 
 For each action item, set these defaults:
 - **tracking**: Based on categorization above
-- **priority**: Map from analysis priority (High→P1, Medium→P2, Low→P3)
-- **assignee**: "Unassigned" (single person per item)
+- **priority**: Map from analysis priority (High->P1, Medium->P2, Low->P3)
+- **assignee**: "Unassigned" (single person per item). If multiple people are mentioned for one action item (e.g., "Alex and Ashli need to coordinate on X"), assign to the first person named and include the others in the description field.
 - **parent_id**: "TBD" (will become KATA-127 if unchanged)
 - **release**: "TBD" (will become Release 2026.1 if unchanged)
 - **story_points**: 0 (always default to 0)
-- **description**: Clean summary from action item
+- **description**: Clean summary from action item. If multiple people were named as owners, add a note: "Also involves: [other names]"
 
 ### Step 3 - Format action item titles
 
@@ -116,14 +115,18 @@ description: [Clean description]
 - Development work
 - Technical analysis
 
+**Documentation Detection**: A ticket is a documentation ticket if:
+- The title or description contains any of: `document`, `documentation`, `write`, `tutorial`, `guide`, `runbook`, `README`, `SDK setup`, `API doc`
+- OR the parent_id is set to `KATA-2226`
+
 **Documentation Mirroring**: Documentation tickets in KATA space are automatically mirrored to AVP space (parent: AVP-5477). AVP mirrors are excluded from Slack summaries.
 
 ## TBD Default System
 
 - **Display**: Shows "TBD" for parent_id and release in tickets.md
 - **Processing**: If user approves with TBD values, system applies defaults:
-  - `parent_id: TBD` → `KATA-127`
-  - `release: TBD` → `Release 2026.1`
+  - `parent_id: TBD` -> `KATA-127`
+  - `release: TBD` -> `Release 2026.1`
 - **Flexibility**: User can specify custom values or leave as TBD
 
 ## Usage

@@ -1,5 +1,4 @@
 ---
-name: meeting-workspace
 description: Creates a structured workspace directory under /workspaces for a meeting, saving the transcript, analysis, JIRA tickets, and action plan. Use after completing a meeting analysis to persist all artifacts to disk.
 ---
 
@@ -25,7 +24,6 @@ Example: `workspaces/2026-03-11/q1-planning-kickoff/`
 workspaces/<YYYY-MM-DD>/<meeting-slug>/
   transcript.md OR summary.md    <- original content (transcript if full transcript, summary.md if meeting summary)
   analysis.md            <- full 6-section meeting analysis (updated after ticket review)
-  research.md            <- research findings for unresolved questions from analysis Section 4
   tickets.md             <- original editable tickets file
   gemini-link.txt        <- Gemini summary URL (if provided) for Slack reference
   jira-tickets/
@@ -69,7 +67,6 @@ workspaces/<YYYY-MM-DD>/<meeting-slug>/
 |------|----------|
 | transcript.md OR summary.md | Original meeting content |
 | analysis.md | Full 6-section analysis (updated after review) |
-| research.md | Research findings for unresolved questions |
 | tickets.md | Original editable tickets file |
 | gemini-link.txt | Gemini summary URL (if provided) |
 | jira-tickets/ | JIRA JSON payloads |
@@ -82,7 +79,6 @@ workspaces/<YYYY-MM-DD>/<meeting-slug>/
 Workspace created at workspaces/<YYYY-MM-DD>/<meeting-slug>/
   transcript.md OR summary.md
   analysis.md
-  research.md
   tickets.md
   gemini-link.txt (if provided)
   jira-tickets/

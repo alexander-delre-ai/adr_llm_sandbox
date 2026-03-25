@@ -12,7 +12,7 @@ Searches Slack, Confluence (Applied + KATA), JIRA (AVP + KATA), and optionally t
 | Input | Required | Description |
 |-------|----------|-------------|
 | question | Yes | The specific question to research |
-| context | No | Meeting workspace path (e.g., `workspaces/2026-03-13-sdv-sw-oh`) or inline background context |
+| context | No | Meeting workspace path (e.g., `workspaces/2026-03-13/sdv-sw-oh`) or inline background context |
 | scope | No | Comma-separated source list: `slack`, `confluence`, `jira`, `codebase`. Defaults to all. |
 
 ## Workflow

@@ -1,5 +1,4 @@
 ---
-name: meeting-analysis
 description: Analyzes meeting content (transcripts or summaries) to extract context, decisions, themes, unresolved questions, and action items. Creates structured analysis.md file. Use for processing any meeting content into organized analysis format.
 ---
 
@@ -31,9 +30,9 @@ Pull these fields based on content type:
 | Meeting location | identify conference room names in participant list | Extract from "Invited" section or infer from context |
 | Stated objective | agenda items or opening statement | Extract from "Summary" section or main topics |
 
-**Important**: 
+**Important**:
 - Filter out meeting room names from participants list (scientist names with location codes)
-- For Gemini summaries, remove email domains from names (e.g., "nuthan.sabbani@global.komatsu" → "Nuthan Sabbani")
+- For Gemini summaries, remove email domains from names (e.g., "nuthan.sabbani@global.komatsu" -> "Nuthan Sabbani")
 
 ### Step 2 - Identify key decisions
 
@@ -80,8 +79,8 @@ Output a markdown table sorted by priority (High first):
 
 | # | Proposed Action Item | Assignee | Priority | Due | Type | Notes |
 |---|---------------------|----------|----------|-----|------|-------|
-| 1 | ...                 | ...      | High     | ... | Coordination | → Slack tracking |
-| 2 | ...                 | ...      | High     | ... | Technical | → JIRA ticket |
+| 1 | ...                 | ...      | High     | ... | Coordination | -> Slack tracking |
+| 2 | ...                 | ...      | High     | ... | Technical | -> JIRA ticket |
 
 Follow the table with a **Next steps** section: 3-5 bullet points the team should act on immediately.
 

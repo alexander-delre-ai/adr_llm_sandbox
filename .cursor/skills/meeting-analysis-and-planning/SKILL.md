@@ -203,7 +203,7 @@ First, ask any clarifying questions about unclear items, then:
 
 Read and follow `.cursor/skills/meeting-workspace/SKILL.md`.
 
-Use `workspaces/` within the current repository.
+Use `workspaces/<YYYY-MM-DD>/<meeting-slug>/` within the current repository.
 
 Pass it:
 - The original transcript

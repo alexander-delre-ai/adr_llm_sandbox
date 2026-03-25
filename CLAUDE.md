@@ -28,43 +28,53 @@ bash .cursor/skills/daily-todos/scripts/generate_todos.sh
 
 No build system, linter, or test framework is configured.
 
+## Auto-Commit Rule
+
+When any file under `.claude/commands/`, `.cursor/skills/`, `.cursor/commands/`, or `.cursor/rules/` is created or modified, commit the change immediately after the edit is complete. Use a concise commit message describing what was updated (e.g., "update ticktick-sync skill to remove assignee from task content"). Do not batch skill/command/rule changes with unrelated file changes.
+
 ## Architecture
 
-### Skills (`/.cursor/skills/`)
+### Claude Commands (`/.claude/commands/`)
 
-Reusable AI agent capabilities invoked by name. Each skill has a `SKILL.md` defining inputs, outputs, and step-by-step instructions.
+Claude Code slash commands - invoke with `/command-name`. These are the primary way to run skills and workflows in Claude Code.
 
-| Skill | Purpose |
+| Command | Purpose |
 |---|---|
-| `meeting-analysis` | Extract decisions, action items, themes from transcripts |
-| `meeting-workspace` | Create persistent `workspaces/YYYY-MM-DD-{slug}/` directories |
-| `meeting-tickets` | Stage editable JIRA ticket proposals in workspace |
-| `meeting-slack-summary` | Format and send Slack office hours messages |
-| `kata-jira-task-creation` | Create JIRA tickets in KATA project |
-| `avp-jira-task-creation` | Create JIRA tickets in AVP project |
-| `app-dev-k1-hw-ticket-creation` | K1 hardware batch manager ticket processing |
-| `daily-todos` | Generate daily task lists from workspaces |
-| `ticktick-sync` | Sync todos to TickTick API |
+| `/meeting_plan` | Full meeting workflow orchestrator (analysis, tickets, JIRA, Slack) |
+| `/meeting-analysis` | Extract decisions, action items, themes from transcripts |
+| `/meeting-workspace` | Create persistent `workspaces/YYYY-MM-DD/{slug}/` directories |
+| `/meeting-tickets` | Stage editable JIRA ticket proposals in workspace |
+| `/meeting-slack-summary` | Format and send Slack office hours messages |
+| `/kata-jira-task-creation` | Create JIRA tickets in KATA project |
+| `/avp-jira-task-creation` | Create JIRA tickets in AVP project |
+| `/app-dev-k1-hw-ticket-creation` | K1 hardware batch manager ticket processing |
+| `/daily-todos` | Generate daily task lists from workspaces |
+| `/ticktick-sync` | Sync todos to TickTick API |
+
+### Cursor Skills (`/.cursor/skills/`)
+
+Original Cursor skill definitions and supporting files (scripts, data files, mappings). The `.claude/commands/` files are Claude-compatible versions of these skills.
 
 ### Commands (`/.cursor/commands/`)
 
-High-level workflow orchestrators. The main command is `/meeting_plan` which runs in plan mode and chains: analysis → workspace creation → ticket staging → JIRA creation → Slack summary.
+Original Cursor command definitions (kept for reference).
 
 ### Workspaces (`/workspaces/`)
 
-Persistent meeting artifacts. Each directory is `YYYY-MM-DD-{meeting-slug}/` and contains: `transcript.md`, `analysis.md`, `tickets.md`, JIRA metadata JSON files, and chat history.
+Persistent meeting artifacts organized by date. Structure is `YYYY-MM-DD/{meeting-slug}/` where each meeting directory contains: `transcript.md`, `analysis.md`, `tickets.md`, JIRA metadata JSON files, and chat history.
 
 ### MCP Integrations
 
-- `user-atlassian-mcp-kata` — KATA JIRA project
-- `user-atlassian-mcp-applied` — AVP JIRA project
+- `mcp__kata-atlassian__*` — KATA JIRA project (tools: createJiraIssue, lookupJiraAccountId, getAccessibleAtlassianResources, etc.)
 - `user-Slack` — Slack messaging
 - `user-github` — GitHub
 - `user-buildkite` — CI/CD
 
+**KATA Cloud ID**: `eadd00c6-0d3f-4c89-99e3-ad95a0daaa51`
+
 ## Key Conventions
 
-- **Workspace naming**: `YYYY-MM-DD-{slug}` (lowercase, hyphens, max 60 chars)
+- **Workspace naming**: `YYYY-MM-DD/{slug}` (date directory with meeting slug subdirectory, lowercase, hyphens, max 60 chars for slug)
 - **Ticket titles**: Imperative voice, 10–255 characters
 - **KATA priorities**: P0–P3; **AVP priorities**: Highest/High/Medium/Low/Lowest
 - **Story points**: Default to 0 (always requires explicit estimation)
