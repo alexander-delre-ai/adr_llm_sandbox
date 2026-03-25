@@ -1,14 +1,22 @@
 {
   "task_titles": [
+    "Clarify CAN bus conflict behavior on hardware",
     "Clarify signal probe field name mapping from pyArch",
     "Clarify vECU-to-repository target binding mechanism",
+    "Confirm e-fuse abstraction for variable amp ratings",
     "Confirm physical signal support in local rig injector",
     "Follow up on PyArch interface constraints for interface creation",
     "Follow up on automated PDU start-bit calculation feature request",
+    "Gather AutoLube and Engine Interface IO maps and requirements while on-site in Peoria",
+    "Gather unit vs SIL test examples from other workstreams",
     "Identify how SIL start script configuration patterns for Komatsu truck variants",
+    "Investigate Ethernet packet communication options for interzonal messaging",
     "Investigate methods to detect missing runtime function implementations in automated testing",
     "Investigate multiple software component instance support with signal probes",
     "Investigate some-IP cross-zone latency for central-to-zone communication",
+    "Request photos/schematics of Komatsu test benches (brake, steering, cab)",
+    "Review Ashli's changes to integration guide document",
+    "Schedule internal follow-up meeting with Ashli, Jesus, Gregory to review apps and draft validation plans",
     "add documentation for test_only targets and mock kernel interfaces"
   ]
 }
