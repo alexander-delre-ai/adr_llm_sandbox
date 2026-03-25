@@ -78,7 +78,11 @@ def load_domain_keywords():
         return {}, set()
     with open(kw_file) as f:
         data = json.load(f)
-    ignore_list = {t.lower() for t in data.pop("_ignore", [])}
+    ignore_file = DATA_DIR / "ignore-keywords.json"
+    ignore_list = set()
+    if ignore_file.exists():
+        with open(ignore_file) as f:
+            ignore_list = {t.lower() for t in json.load(f)}
     return data, ignore_list
 
 
