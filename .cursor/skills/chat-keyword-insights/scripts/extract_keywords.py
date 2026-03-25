@@ -75,9 +75,11 @@ INTERROGATIVE_RE = re.compile(r"\b(?:how\s+(?:do|does|can|should|would|is|are|to
 def load_domain_keywords():
     kw_file = DATA_DIR / "domain-keywords.json"
     if not kw_file.exists():
-        return {}
+        return {}, set()
     with open(kw_file) as f:
-        return json.load(f)
+        data = json.load(f)
+    ignore_list = {t.lower() for t in data.pop("_ignore", [])}
+    return data, ignore_list
 
 
 def strip_xml_tags(text):
@@ -185,12 +187,14 @@ def find_todays_transcripts(transcripts_dir, target_date):
     return sorted(found, key=lambda p: p.stat().st_mtime)
 
 
-def extract_topics(all_text, domain_keywords):
+def extract_topics(all_text, domain_keywords, ignore_list):
     """Extract topics and technologies from combined text (excluding JIRA keys)."""
     topics = Counter()
 
     for category, terms in domain_keywords.items():
         for term in terms:
+            if term.lower() in ignore_list:
+                continue
             pattern = re.compile(rf"\b{re.escape(term)}\b", re.IGNORECASE)
             matches = pattern.findall(all_text)
             if matches:
@@ -222,7 +226,7 @@ def extract_jira_tickets(all_text):
     return Counter(JIRA_FULL_KEY_RE.findall(all_text))
 
 
-def extract_all_by_source(sources_data, domain_keywords):
+def extract_all_by_source(sources_data, domain_keywords, ignore_list):
     """Extract topics and JIRA tickets with source attribution."""
     global_topics = Counter()
     global_jira = Counter()
@@ -230,7 +234,7 @@ def extract_all_by_source(sources_data, domain_keywords):
     jira_attribution = defaultdict(set)
 
     for source_id, text in sources_data:
-        topics = extract_topics(text, domain_keywords)
+        topics = extract_topics(text, domain_keywords, ignore_list)
         for term, count in topics.items():
             global_topics[term] += count
             topic_attribution[term].add(source_id)
@@ -539,7 +543,7 @@ def main():
     insights_dir = Path(args.insights_dir)
     insights_dir.mkdir(parents=True, exist_ok=True)
 
-    domain_keywords = load_domain_keywords()
+    domain_keywords, ignore_list = load_domain_keywords()
     sources_count = {}
 
     all_sources_data = []
@@ -596,7 +600,7 @@ def main():
             all_debug_sessions.extend(extract_debug_sessions(claude_turns, "claude"))
 
     topics, topic_attribution, jira_tickets, jira_attribution = extract_all_by_source(
-        all_sources_data, domain_keywords
+        all_sources_data, domain_keywords, ignore_list
     )
 
     historical = load_historical_keywords(insights_dir, target_date)

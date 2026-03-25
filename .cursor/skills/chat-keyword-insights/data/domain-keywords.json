@@ -1,9 +1,12 @@
 {
+  "_ignore": [
+    "KATA", "P1", "P2", "P3", "Confluence", "Applied", "Slack", "Katana"
+  ],
   "jira": [
-    "KATA", "AVP", "epic", "sprint", "backlog", "story points",
+    "AVP", "epic", "sprint", "backlog", "story points",
     "initiative", "subtask", "issue link", "fix version", "release",
-    "P0", "P1", "P2", "P3", "Highest", "High", "Medium", "Low", "Lowest",
-    "Jira", "JIRA", "Atlassian", "Confluence"
+    "P0", "Highest", "High", "Medium", "Low", "Lowest",
+    "Jira", "JIRA", "Atlassian"
   ],
   "hardware": [
     "K1", "CAN", "ECU", "SIL", "HIL", "MIL",
@@ -13,8 +16,8 @@
     "hardware manager", "batch manager"
   ],
   "tools": [
-    "MCP", "Cursor", "Buildkite", "GitHub", "Slack", "TickTick",
-    "Confluence", "Miro", "Docker", "VS Code", "Claude",
+    "MCP", "Cursor", "Buildkite", "GitHub", "TickTick",
+    "Miro", "Docker", "VS Code", "Claude",
     "npm", "pip", "git", "cron", "systemd"
   ],
   "protocols": [
@@ -39,7 +42,7 @@
     "redundancy", "watchdog", "safe state"
   ],
   "teams": [
-    "Katana", "Applied", "App Dev", "Platform",
+    "App Dev", "Platform",
     "SDV SW", "Virtual Toolchain", "Systems"
   ],
   "concepts": [
