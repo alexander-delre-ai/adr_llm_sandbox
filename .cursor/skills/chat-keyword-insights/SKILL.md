@@ -1,18 +1,21 @@
 ---
 name: chat-keyword-insights
-description: Extracts keywords, questions, debugging sessions, and recurring themes from daily Cursor agent transcripts, Slack #ext-program-katana-sdv, and Claude chats. Runs automatically at 6pm PT weekdays via cron, or on-demand via command. Produces daily markdown reports in insights/.
+description: Extracts keywords, JIRA tickets, questions, debugging sessions, and recurring themes from Cursor agent transcripts across adr-llm-sandbox, core-stack, and vehicle-os-katana workspaces, plus Slack #ext-program-katana-sdv and optional Claude chats. Runs at 6pm PT weekdays via cron, or on-demand. Reports in insights/.
 ---
 
 # Daily Chat Keyword Insights
 
 ## Instructions
 
-This skill processes the day's chat activity across Cursor agent transcripts, Slack, and optionally Claude chats to extract structured keyword insights. It identifies topics discussed, questions asked (and whether they were resolved), debugging sessions, and themes that recur across multiple days.
+This skill processes the day's chat activity across three Cursor workspaces, Slack, and optionally Claude chats to extract structured keyword insights. It identifies JIRA tickets referenced, topics discussed, questions asked (and whether they were resolved), debugging sessions, and themes that recur across multiple days.
 
 ### Data Sources
 
-1. **Cursor agent transcripts** -- `.jsonl` files in the agent-transcripts directory, filtered by today's modification date
-2. **Slack `#ext-program-katana-sdv`** -- last 24 hours of messages via `slack_read_channel` MCP tool (on-demand) or Slack API (cron)
+1. **Cursor agent transcripts** -- `.jsonl` files from three workspaces, filtered by modification date:
+   - `adr-llm-sandbox` -- this repo (`~/.cursor/projects/home-alexanderdelre-adr-llm-sandbox/agent-transcripts`)
+   - `core-stack` -- `~/applied/core-stack` (`~/.cursor/projects/home-alexanderdelre-applied-core-stack/agent-transcripts`)
+   - `vehicle-os-katana` -- `~/applied/vehicle-os-katana` (`~/.cursor/projects/home-alexanderdelre-applied-vehicle-os-katana/agent-transcripts`)
+2. **Slack `#ext-program-katana-sdv`** -- Slack Connect channel; searched via `slack_search_public_and_private` MCP tool (on-demand only)
 3. **Claude chats** -- optional pasted text or file path when running the on-demand command
 
 ### Workflow
@@ -49,12 +52,13 @@ Also available as an interactive command. When invoked:
 
 Reports are written to `insights/YYYY-MM-DD.md` with these sections:
 
-- **Sources** -- counts of transcripts and messages processed
+- **Sources** -- workspace-level breakdown of sessions processed
+- **JIRA Tickets** -- all KATA/AVP tickets referenced, with clickable links and source attribution
 - **Topics & Technologies** -- keyword frequency table with source attribution
 - **Questions** -- user questions with resolved/open status
 - **Debugging & Errors** -- error sessions with context and resolution
 - **Recurring Themes** -- keywords appearing 3+ days in the last 7, with trend direction
-- **Session Summaries** -- per-transcript overview of turns, topics, and highlights
+- **Session Summaries** -- per-transcript overview with workspace labels
 
 ### Domain Keywords
 

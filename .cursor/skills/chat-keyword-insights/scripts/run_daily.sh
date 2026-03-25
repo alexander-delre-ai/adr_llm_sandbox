@@ -2,12 +2,13 @@
 #
 # Daily Chat Keyword Insights - Cron Entrypoint
 #
-# Runs the keyword extraction pipeline on today's Cursor agent transcripts
-# and generates a report in insights/YYYY-MM-DD.md.
+# Scans Cursor agent transcripts from three workspaces:
+#   - adr_llm_sandbox
+#   - core-stack (~/applied/core-stack)
+#   - vehicle-os-katana (~/applied/vehicle-os-katana)
 #
 # Slack messages require the on-demand Cursor/Claude command (MCP-mediated),
-# so the cron job processes transcripts only. The on-demand command merges
-# Slack data when run interactively.
+# so the cron job processes transcripts only.
 #
 # Usage:
 #   ./run_daily.sh [YYYY-MM-DD]
@@ -22,7 +23,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="/home/alexanderdelre/adr_llm_sandbox"
 INSIGHTS_DIR="$PROJECT_ROOT/insights"
 LOGS_DIR="$INSIGHTS_DIR/.logs"
-TRANSCRIPTS_DIR="/home/alexanderdelre/.cursor/projects/home-alexanderdelre-adr-llm-sandbox/agent-transcripts"
 EXTRACT_SCRIPT="$SCRIPT_DIR/extract_keywords.py"
 
 DATE="${1:-$(date +%Y-%m-%d)}"
@@ -42,21 +42,15 @@ if [ ! -f "$EXTRACT_SCRIPT" ]; then
     exit 1
 fi
 
-if [ ! -d "$TRANSCRIPTS_DIR" ]; then
-    echo "WARNING: Transcripts directory not found: $TRANSCRIPTS_DIR"
-    echo "Attempting to continue with empty transcripts..."
-fi
-
 echo ""
-echo "Running keyword extraction..."
+echo "Running keyword extraction across all workspaces..."
 echo "  Date: $DATE"
-echo "  Transcripts: $TRANSCRIPTS_DIR"
+echo "  Workspaces: adr-llm-sandbox, core-stack, vehicle-os-katana"
 echo "  Output: $INSIGHTS_DIR/$DATE.md"
 echo ""
 
 python3 "$EXTRACT_SCRIPT" \
     --date "$DATE" \
-    --transcripts-dir "$TRANSCRIPTS_DIR" \
     --insights-dir "$INSIGHTS_DIR"
 
 EXIT_CODE=$?
@@ -68,7 +62,7 @@ if [ $EXIT_CODE -eq 0 ]; then
         echo "Report generated successfully: $REPORT"
         echo ""
         echo "--- Report Preview ---"
-        head -30 "$REPORT"
+        head -40 "$REPORT"
         echo "--- End Preview ---"
     else
         echo "WARNING: Script exited 0 but report file not found"
@@ -81,7 +75,7 @@ echo ""
 echo "Finished: $(date)"
 echo "Log: $LOG_FILE"
 echo ""
-echo "NOTE: Slack messages are only available via the on-demand command"
-echo "      (requires Cursor/Claude MCP session for Slack access)."
+echo "NOTE: Slack #ext-program-katana-sdv messages are only available via"
+echo "      the on-demand command (requires Cursor/Claude MCP session)."
 
 exit $EXIT_CODE

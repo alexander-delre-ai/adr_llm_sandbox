@@ -1,16 +1,19 @@
 ---
-description: Extracts keywords, questions, debugging sessions, and recurring themes from today's Cursor agent transcripts and Slack #ext-program-katana-sdv. Generates a daily insights report in insights/YYYY-MM-DD.md. Also runs automatically at 6pm PT weekdays via cron.
+description: Extracts keywords, JIRA tickets, questions, debugging sessions, and recurring themes from Cursor agent transcripts across adr-llm-sandbox, core-stack, and vehicle-os-katana workspaces, plus Slack #ext-program-katana-sdv. Generates daily insights report in insights/YYYY-MM-DD.md.
 ---
 
 # Chat Keyword Insights
 
 ## Instructions
 
-Generate a daily keyword insights report from today's chat activity. This command processes Cursor agent transcripts, Slack messages from #ext-program-katana-sdv, and optionally pasted Claude chat content.
+Generate a daily keyword insights report from today's chat activity across all workspaces.
 
 ### Step 1: Run the Python extraction on transcripts
 
-Run the extraction script on today's agent transcripts:
+The script automatically scans transcripts from all three workspaces:
+- `adr-llm-sandbox` (this repo)
+- `core-stack` (`~/applied/core-stack`)
+- `vehicle-os-katana` (`~/applied/vehicle-os-katana`)
 
 ```bash
 python3 /home/alexanderdelre/adr_llm_sandbox/.cursor/skills/chat-keyword-insights/scripts/extract_keywords.py \
@@ -18,26 +21,21 @@ python3 /home/alexanderdelre/adr_llm_sandbox/.cursor/skills/chat-keyword-insight
     --insights-dir /home/alexanderdelre/adr_llm_sandbox/insights
 ```
 
-This processes all `.jsonl` transcripts modified today and writes the initial report.
+### Step 2: Fetch Slack #ext-program-katana-sdv messages
 
-### Step 2: Fetch Slack messages
+The channel is a Slack Connect channel and does not appear in channel search. Use keyword-based search to find today's messages.
 
-Use the Slack MCP to read recent messages from #ext-program-katana-sdv:
+1. Search for today's messages using `slack_search_public_and_private`:
+   - query: `"in:ext-program-katana-sdv after:YYYY-MM-DD"` (use today's date)
+   - If no results, try broader: `"katana SDV after:YYYY-MM-DD"`
+   - Set `sort` to `"timestamp"`, `sort_dir` to `"desc"`, `limit` to `20`
+   - Set `response_format` to `"detailed"`, `include_context` to `false`
 
-1. First, find the channel ID:
-   - Call `slack_search_channels` with query "ext-program-katana-sdv"
-   - Note the channel_id from the result
-
-2. Read today's messages:
-   - Call `slack_read_channel` with the channel_id
-   - Set `oldest` to the start of today (midnight epoch timestamp)
-   - Set `limit` to 100
-
-3. Save the Slack messages to a temp file as JSON:
-   - Write the messages array to `/tmp/slack-chat-insights-YYYY-MM-DD.json`
+2. If messages are found, extract the text from each result and save as JSON:
+   - Write to `/tmp/slack-chat-insights-YYYY-MM-DD.json`
    - Format: `[{"text": "message text", "user": "U12345", "ts": "1234567890.123456"}, ...]`
 
-4. Re-run the extraction with Slack data included:
+3. Re-run extraction with Slack data:
 
 ```bash
 python3 /home/alexanderdelre/adr_llm_sandbox/.cursor/skills/chat-keyword-insights/scripts/extract_keywords.py \
@@ -51,51 +49,52 @@ python3 /home/alexanderdelre/adr_llm_sandbox/.cursor/skills/chat-keyword-insight
 If the user provides pasted Claude chat text or a file path:
 
 1. Save the content to `/tmp/claude-chat-insights-YYYY-MM-DD.txt`
-2. Re-run with the `--claude-file` flag:
-
-```bash
-python3 /home/alexanderdelre/adr_llm_sandbox/.cursor/skills/chat-keyword-insights/scripts/extract_keywords.py \
-    --date "$(date +%Y-%m-%d)" \
-    --slack-file "/tmp/slack-chat-insights-$(date +%Y-%m-%d).json" \
-    --claude-file "/tmp/claude-chat-insights-$(date +%Y-%m-%d).txt" \
-    --insights-dir /home/alexanderdelre/adr_llm_sandbox/insights
-```
+2. Re-run with the `--claude-file` flag added to the command above.
 
 ### Step 4: Present the report
 
-Read the generated report from `insights/YYYY-MM-DD.md` and present a summary to the user, highlighting:
+Read the generated report from `insights/YYYY-MM-DD.md` and present a summary highlighting:
+- JIRA tickets referenced (with clickable links)
 - Top 10 most frequent topics/keywords
 - Any open (unresolved) questions
 - Debugging sessions and their resolutions
 - Recurring themes trending across the week
+- Which workspaces generated the most activity
 
 ### Scheduling
 
-This command also runs automatically via cron at 6:00 PM PT on weekdays (transcript-only mode, no Slack). The cron entrypoint is:
+Also runs automatically via cron at 6:00 PM PT weekdays (transcripts only, no Slack):
 
 ```bash
 /home/alexanderdelre/adr_llm_sandbox/.cursor/skills/chat-keyword-insights/scripts/run_daily.sh
 ```
 
-Cron logs are at `insights/.logs/YYYY-MM-DD.log`.
-
 ### Output
 
-Reports are written to `insights/YYYY-MM-DD.md` with sections for:
-- Sources processed
-- Topics & Technologies (keyword frequency table)
-- Questions (with resolved/open status)
-- Debugging & Errors (with context and resolution)
-- Recurring Themes (last 7 days, with trend direction)
-- Session Summaries (per-transcript overview)
+Reports in `insights/YYYY-MM-DD.md` contain:
+- **Sources** -- workspace-level breakdown of sessions processed
+- **JIRA Tickets** -- all KATA/AVP tickets referenced, with clickable links and source attribution
+- **Topics & Technologies** -- keyword frequency table (domain terms, tools, protocols)
+- **Questions** -- user questions with resolved/open status
+- **Debugging & Errors** -- error sessions with context and resolution
+- **Recurring Themes** -- keywords appearing 3+ days in the last 7
+- **Session Summaries** -- per-session overview with workspace labels
+
+### Workspaces Scanned
+
+| Workspace | Transcript Path |
+|-----------|----------------|
+| adr-llm-sandbox | `~/.cursor/projects/home-alexanderdelre-adr-llm-sandbox/agent-transcripts` |
+| core-stack | `~/.cursor/projects/home-alexanderdelre-applied-core-stack/agent-transcripts` |
+| vehicle-os-katana | `~/.cursor/projects/home-alexanderdelre-applied-vehicle-os-katana/agent-transcripts` |
 
 ### Domain Keywords
 
-The extraction uses a curated dictionary at `.cursor/skills/chat-keyword-insights/data/domain-keywords.json`. To add new domain terms, edit that file and add terms to the appropriate category.
+Curated dictionary at `.cursor/skills/chat-keyword-insights/data/domain-keywords.json`. Add new domain terms by editing that file.
 
 ## Usage Examples
 
-**Generate today's insights** (default):
+**Generate today's insights**:
 ```
 Generate today's chat keyword insights
 ```
@@ -108,14 +107,4 @@ Generate chat keyword insights for March 20, 2026
 **Include Claude chat**:
 ```
 Generate chat keyword insights -- here's my Claude chat: [paste content]
-```
-
-**Check trends**:
-```
-What are the recurring themes from this week's chat insights?
-```
-
-**View recent reports**:
-```
-Show me yesterday's chat insights report
 ```

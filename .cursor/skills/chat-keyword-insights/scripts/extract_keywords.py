@@ -24,8 +24,15 @@ from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).parent
 DATA_DIR = SCRIPT_DIR.parent / "data"
-DEFAULT_TRANSCRIPTS_DIR = Path.home() / ".cursor/projects/home-alexanderdelre-adr-llm-sandbox/agent-transcripts"
 DEFAULT_INSIGHTS_DIR = Path.home() / "adr_llm_sandbox/insights"
+
+WORKSPACE_TRANSCRIPT_DIRS = {
+    "adr-llm-sandbox": Path.home() / ".cursor/projects/home-alexanderdelre-adr-llm-sandbox/agent-transcripts",
+    "core-stack": Path.home() / ".cursor/projects/home-alexanderdelre-applied-core-stack/agent-transcripts",
+    "vehicle-os-katana": Path.home() / ".cursor/projects/home-alexanderdelre-applied-vehicle-os-katana/agent-transcripts",
+}
+
+JIRA_FULL_KEY_RE = re.compile(r"\b(KATA-\d+|AVP-\d+)\b")
 
 STRIP_BLOCK_TAGS = {
     "attached_files", "code_selection", "system_reminder",
@@ -179,15 +186,8 @@ def find_todays_transcripts(transcripts_dir, target_date):
 
 
 def extract_topics(all_text, domain_keywords):
-    """Extract topics and technologies from combined text."""
+    """Extract topics and technologies from combined text (excluding JIRA keys)."""
     topics = Counter()
-    sources_map = defaultdict(set)
-
-    jira_keys = JIRA_KEY_RE.findall(all_text)
-    for key in jira_keys:
-        full_matches = re.findall(rf"\b{key}-\d+\b", all_text)
-        for m in full_matches:
-            topics[m] += 1
 
     for category, terms in domain_keywords.items():
         for term in terms:
@@ -217,18 +217,30 @@ def extract_topics(all_text, domain_keywords):
     return topics
 
 
-def extract_topics_by_source(sources_data, domain_keywords):
-    """Extract topics with source attribution."""
+def extract_jira_tickets(all_text):
+    """Extract JIRA ticket keys and their mention counts."""
+    return Counter(JIRA_FULL_KEY_RE.findall(all_text))
+
+
+def extract_all_by_source(sources_data, domain_keywords):
+    """Extract topics and JIRA tickets with source attribution."""
     global_topics = Counter()
-    source_attribution = defaultdict(set)
+    global_jira = Counter()
+    topic_attribution = defaultdict(set)
+    jira_attribution = defaultdict(set)
 
     for source_id, text in sources_data:
         topics = extract_topics(text, domain_keywords)
         for term, count in topics.items():
             global_topics[term] += count
-            source_attribution[term].add(source_id)
+            topic_attribution[term].add(source_id)
 
-    return global_topics, source_attribution
+        jira = extract_jira_tickets(text)
+        for key, count in jira.items():
+            global_jira[key] += count
+            jira_attribution[key].add(source_id)
+
+    return global_topics, topic_attribution, global_jira, jira_attribution
 
 
 NOISE_PATTERNS = re.compile(
@@ -396,7 +408,7 @@ def compute_recurring_themes(today_topics, historical, lookback_days=7):
     return themes
 
 
-def summarize_session(transcript_path, turns):
+def summarize_session(transcript_path, turns, workspace_name=""):
     """Generate a brief summary for one transcript session."""
     session_id = transcript_path.stem[:8]
     total_turns = len(turns)
@@ -412,13 +424,21 @@ def summarize_session(transcript_path, turns):
     return {
         "session_id": session_id,
         "full_id": transcript_path.stem,
+        "workspace": workspace_name,
         "total_turns": total_turns,
         "user_turns": len(user_turns),
         "first_query": first_query,
     }
 
 
-def generate_report(date_str, sources_count, topics, source_attribution,
+JIRA_BASE_URLS = {
+    "KATA": "https://appliedint-katana.atlassian.net/browse",
+    "AVP": "https://appliedint.atlassian.net/browse",
+}
+
+
+def generate_report(date_str, sources_count, topics, topic_attribution,
+                     jira_tickets, jira_attribution,
                      questions, debug_sessions, recurring_themes,
                      session_summaries):
     """Generate the markdown report."""
@@ -434,11 +454,24 @@ def generate_report(date_str, sources_count, topics, source_attribution,
         lines.append(f"- {src_type}: {count}")
     lines.append("")
 
+    lines.append("## JIRA Tickets")
+    lines.append("| Ticket | Count | Sources |")
+    lines.append("|--------|-------|---------|")
+    for key, count in jira_tickets.most_common(30):
+        prefix = key.split("-")[0]
+        base_url = JIRA_BASE_URLS.get(prefix, "")
+        link = f"[{key}]({base_url}/{key})" if base_url else key
+        srcs = ", ".join(sorted(jira_attribution.get(key, set())))
+        lines.append(f"| {link} | {count} | {srcs} |")
+    if not jira_tickets:
+        lines.append("| (none) | - | - |")
+    lines.append("")
+
     lines.append("## Topics & Technologies")
     lines.append("| Keyword | Count | Sources |")
     lines.append("|---------|-------|---------|")
     for keyword, count in topics.most_common(30):
-        srcs = ", ".join(sorted(source_attribution.get(keyword, set())))
+        srcs = ", ".join(sorted(topic_attribution.get(keyword, set())))
         lines.append(f"| {keyword} | {count} | {srcs} |")
     lines.append("")
 
@@ -478,7 +511,8 @@ def generate_report(date_str, sources_count, topics, source_attribution,
 
     lines.append("## Session Summaries")
     for s in session_summaries:
-        lines.append(f"### [{s['session_id']}] {s['first_query']}")
+        ws_label = f" ({s['workspace']})" if s.get("workspace") else ""
+        lines.append(f"### [{s['session_id']}]{ws_label} {s['first_query']}")
         lines.append(f"- {s['total_turns']} turns ({s['user_turns']} user messages)")
     lines.append("")
 
@@ -489,8 +523,8 @@ def main():
     parser = argparse.ArgumentParser(description="Extract keywords from daily chat activity")
     parser.add_argument("--date", default=datetime.now().strftime("%Y-%m-%d"),
                         help="Target date (YYYY-MM-DD, default: today)")
-    parser.add_argument("--transcripts-dir", default=str(DEFAULT_TRANSCRIPTS_DIR),
-                        help="Path to agent-transcripts directory")
+    parser.add_argument("--extra-transcripts-dir", action="append", default=[],
+                        help="Additional transcript dirs as name:path (can repeat)")
     parser.add_argument("--slack-file", default=None,
                         help="Path to JSON file with Slack messages")
     parser.add_argument("--claude-file", default=None,
@@ -513,24 +547,39 @@ def main():
     all_debug_sessions = []
     session_summaries = []
 
-    transcripts = find_todays_transcripts(args.transcripts_dir, target_date)
-    sources_count["Agent transcripts"] = f"{len(transcripts)} sessions processed"
+    workspace_dirs = dict(WORKSPACE_TRANSCRIPT_DIRS)
+    for extra in args.extra_transcripts_dir:
+        if ":" in extra:
+            name, path = extra.split(":", 1)
+            workspace_dirs[name] = Path(path)
 
-    for t_path in transcripts:
-        source_id = f"transcript:{t_path.stem[:8]}"
-        turns = parse_transcript(t_path)
-        if not turns:
+    total_transcripts = 0
+    for ws_name, ws_dir in workspace_dirs.items():
+        transcripts = find_todays_transcripts(str(ws_dir), target_date)
+        if not transcripts:
             continue
+        total_transcripts += len(transcripts)
+        sources_count[f"  {ws_name}"] = f"{len(transcripts)} sessions"
 
-        full_text = " ".join(text for _, text in turns)
-        all_sources_data.append((source_id, full_text))
-        all_questions.extend(extract_questions(turns, source_id))
-        all_debug_sessions.extend(extract_debug_sessions(turns, source_id))
-        session_summaries.append(summarize_session(t_path, turns))
+        for t_path in transcripts:
+            source_id = f"{ws_name}:{t_path.stem[:8]}"
+            turns = parse_transcript(t_path)
+            if not turns:
+                continue
+
+            full_text = " ".join(text for _, text in turns)
+            all_sources_data.append((source_id, full_text))
+            all_questions.extend(extract_questions(turns, source_id))
+            all_debug_sessions.extend(extract_debug_sessions(turns, source_id))
+            session_summaries.append(summarize_session(t_path, turns, ws_name))
+
+    final_sources = {"Agent transcripts": f"{total_transcripts} sessions across {len(workspace_dirs)} workspaces"}
+    for k, v in sources_count.items():
+        final_sources[k] = v
 
     if args.slack_file:
         slack_turns = parse_slack_messages(args.slack_file)
-        sources_count["Slack #ext-program-katana-sdv"] = f"{len(slack_turns)} messages scanned"
+        final_sources["Slack #ext-program-katana-sdv"] = f"{len(slack_turns)} messages scanned"
         if slack_turns:
             full_text = " ".join(text for _, text in slack_turns)
             all_sources_data.append(("slack", full_text))
@@ -539,20 +588,23 @@ def main():
 
     if args.claude_file:
         claude_turns = parse_claude_chat(args.claude_file)
-        sources_count["Claude chats"] = f"{len(claude_turns)} turns processed"
+        final_sources["Claude chats"] = f"{len(claude_turns)} turns processed"
         if claude_turns:
             full_text = " ".join(text for _, text in claude_turns)
             all_sources_data.append(("claude", full_text))
             all_questions.extend(extract_questions(claude_turns, "claude"))
             all_debug_sessions.extend(extract_debug_sessions(claude_turns, "claude"))
 
-    topics, source_attribution = extract_topics_by_source(all_sources_data, domain_keywords)
+    topics, topic_attribution, jira_tickets, jira_attribution = extract_all_by_source(
+        all_sources_data, domain_keywords
+    )
 
     historical = load_historical_keywords(insights_dir, target_date)
     recurring_themes = compute_recurring_themes(topics, historical)
 
     report = generate_report(
-        args.date, sources_count, topics, source_attribution,
+        args.date, final_sources, topics, topic_attribution,
+        jira_tickets, jira_attribution,
         all_questions, all_debug_sessions, recurring_themes,
         session_summaries
     )
