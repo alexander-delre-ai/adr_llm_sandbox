@@ -25,8 +25,8 @@ If no content is provided, ask: "Please paste the meeting transcript or provide 
 
 ## Steps
 
-1. **Rename chat window**: If input is a temp file, rename the chat window to the temp file's name without the extension (e.g., `temp/2026-03-26-vt-ml-meeting.md` becomes "2026-03-26-vt-ml-meeting")
-2. Accept the meeting content (transcript) or Gemini summary link using one of the input methods above
+1. Accept the meeting content (transcript) or Gemini summary link using one of the input methods above
+2. **Rename chat window**: If input is a temp file, rename the chat window to the temp file's name without the extension (e.g., `temp/2026-03-26-vt-ml-meeting.md` becomes "2026-03-26-vt-ml-meeting")
 3. **Extract Gemini link**: If user message contains "gemini summary: [URL]", extract and store this URL for later use in Slack summary
 4. **Identify content type**: Determine if input is a full transcript or Gemini summary link (for reference only)
 5. Switch to Plan mode so the analysis is collaborative before any artifacts are created
