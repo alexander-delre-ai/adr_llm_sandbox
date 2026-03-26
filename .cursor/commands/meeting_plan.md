@@ -26,18 +26,19 @@ If no content is provided, ask: "Please paste the meeting transcript or provide 
 ## Steps
 
 1. Accept the meeting content (transcript) or Gemini summary link using one of the input methods above
-2. **Extract Gemini link**: If user message contains "gemini summary: [URL]", extract and store this URL for later use in Slack summary
-3. **Identify content type**: Determine if input is a full transcript or Gemini summary link (for reference only)
-4. Switch to Plan mode so the analysis is collaborative before any artifacts are created
-5. **Create workspace directory** immediately using YYYY-MM-DD/meeting-name format
-6. **Store Gemini link**: If extracted in step 2, save Gemini summary URL to workspace metadata for Slack summary use
-7. **Create meeting analysis**: Read and follow `.cursor/skills/meeting-analysis/SKILL.md` to create analysis.md
-8. **Research unresolved questions**: Read and follow `.cursor/skills/meeting-research/SKILL.md` to research each unresolved question from Section 4 of analysis.md
+2. **Rename chat window**: If input is a temp file, rename the chat window to the temp file's name without the extension (e.g., `temp/2026-03-26-vt-ml-meeting.md` becomes "2026-03-26-vt-ml-meeting")
+3. **Extract Gemini link**: If user message contains "gemini summary: [URL]", extract and store this URL for later use in Slack summary
+4. **Identify content type**: Determine if input is a full transcript or Gemini summary link (for reference only)
+5. Switch to Plan mode so the analysis is collaborative before any artifacts are created
+6. **Create workspace directory** immediately using YYYY-MM-DD/meeting-name format
+7. **Store Gemini link**: If extracted in step 3, save Gemini summary URL to workspace metadata for Slack summary use
+8. **Create meeting analysis**: Read and follow `.cursor/skills/meeting-analysis/SKILL.md` to create analysis.md
+9. **Research unresolved questions**: Read and follow `.cursor/skills/meeting-research/SKILL.md` to research each unresolved question from Section 4 of analysis.md
    - Parse each bullet from Section 4 (Unresolved Questions) as a separate question
    - Run the meeting-research skill for each question with the workspace path as context
    - Compile all results into a single `research.md` in the workspace (batch format from the skill)
-9. **Create ticket proposals**: Read and follow `.cursor/skills/meeting-tickets/SKILL.md` to create tickets.md
-10. **Stage files in workspace**:
+10. **Create ticket proposals**: Read and follow `.cursor/skills/meeting-tickets/SKILL.md` to create tickets.md
+11. **Stage files in workspace**:
     - `workspaces/YYYY-MM-DD/meeting-name/analysis.md` - Complete meeting analysis (context, decisions, themes, questions, action items, prioritized plan)
     - `workspaces/YYYY-MM-DD/meeting-name/research.md` - Research findings for unresolved questions from analysis
     - `workspaces/YYYY-MM-DD/meeting-name/tickets.md` - Editable ticket proposals with essential fields (tracking, priority, assignee, parent_id, release, story_points, description)
@@ -45,7 +46,7 @@ If no content is provided, ask: "Please paste the meeting transcript or provide 
     - `workspaces/YYYY-MM-DD/meeting-name/gemini-link.txt` - Gemini summary URL (if provided) for Slack summary reference
     - **Auto-assign tracking**: Items involving "schedule", "meeting", "coordinate", or "set up" default to "slack" tracking
     - **Single assignee**: Each action item assigned to one person for clear accountability
-11. Present summary with references to staged workspace files
+12. Present summary with references to staged workspace files
 
 ## Review and Execution Phase
 
