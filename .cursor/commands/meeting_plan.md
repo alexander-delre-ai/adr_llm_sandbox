@@ -21,7 +21,7 @@ If no content is provided, ask: "Please paste the meeting transcript or provide 
 
 **Gemini Link Extraction**: When user provides "gemini summary: [URL]" in their message, extract and store this URL for inclusion in the Slack summary. The link is for reference only and not processed for content.
 
-**Temp Directory Support**: Files in `temp/` directory will be copied to the meeting workspace and then deleted after workflow completion (keeps temp directory clean).
+**Temp Directory Support**: The specific temp file referenced in the command input will be copied to the meeting workspace as transcript.md, then the original temp file is deleted after workflow completion. Other files in `temp/` are left untouched.
 
 ## Steps
 
@@ -124,7 +124,7 @@ If confirmed, execute Phase 2 using the specialized skills:
   - Syncs Slack-tracked items assigned to AlexD or Unassigned to TickTick "Cursor Sync" project
   - Short titles (15 words max), full descriptions in content body
 - **Save workspace**: Read and follow `.cursor/skills/meeting-workspace/SKILL.md` to create complete workspace with TickTick sync results
-- **Clean up temp files**: If input was from `temp/` directory, copy content to workspace as transcript.md, then delete the original temp file
+- **Clean up temp file**: If input was a specific file from `temp/`, copy that file to workspace as transcript.md, then delete only that temp file (do not touch other files in `temp/`)
 - Provide immediate actionability with workspace path and ticket URLs
 
 ## Benefits
