@@ -38,7 +38,7 @@ If no content is provided, ask: "Please paste the meeting transcript or provide 
    - For researched questions: run the meeting-research skill with the workspace path as context
    - For skipped questions: add a note in research.md: "Skipped -- coordination/scheduling question, not researchable via Slack/Confluence/JIRA."
    - Compile all results into a single `research.md` in the workspace (batch format from the skill)
-9. **Pause only if critical**: If there are crucial ambiguities (e.g., completely unclear assignees, conflicting action items, missing context that prevents ticket creation), pause and ask the user. Otherwise, proceed automatically.
+9. **Pause only if critical during analysis**: If there are crucial ambiguities (e.g., completely unclear assignees, conflicting action items, missing context that prevents ticket proposal generation), pause and ask the user. Otherwise, proceed automatically through analysis and ticket staging.
 10. **Create ticket proposals**: Read and follow `.cursor/skills/meeting-tickets/SKILL.md` to create tickets.md. The tickets skill will:
     - Infer `parent_id` from meeting title via `.cursor/skills/meeting-tickets/meeting-epic-mapping.json`
     - Normalize assignee names via `.cursor/skills/meeting-slack-summary/user-mapping.md`
@@ -53,11 +53,11 @@ If no content is provided, ask: "Please paste the meeting transcript or provide 
     - `workspaces/YYYY-MM-DD/meeting-name/gemini-link.txt` - Gemini summary URL (if provided) for Slack summary reference
     - **Auto-assign tracking**: Conversations and follow-ups default to "slack"; technical work defaults to "jira"
     - **Single assignee**: Each action item assigned to one person (normalized to canonical name)
-12. Present summary with references to staged workspace files
+12. **Present summary and wait for user review**: Present a summary with references to staged workspace files. Explicitly tell the user to review and edit `tickets.md`, then confirm when ready to proceed.
 
 ## Review and Execution Phase
 
-After staging files in workspace, automatically proceed to execution. Present a brief summary of staged files and immediately continue to Phase 2:
+**IMPORTANT**: After staging files in workspace, do NOT automatically proceed to execution. Present a summary of staged files and **wait for the user to review and confirm `tickets.md`** before creating any JIRA tickets. The user may edit ticket titles, descriptions, priorities, tracking types, assignees, or remove items entirely. Only proceed to Phase 2 after the user explicitly confirms (e.g., "looks good", "go ahead", "create tickets", "confirmed").
 
 Execute using the specialized skills:
 - **Duplicate detection**: Before creating each JIRA ticket, search for existing open tickets with similar summary text under the same epic:
@@ -108,10 +108,11 @@ Execute using the specialized skills:
 - **Auto-categorize tracking** - conversations/follow-ups default to "slack"; technical work defaults to "jira"
 - **Ticket grouping suggestions** - identify related tickets and suggest groupings at bottom of tickets.md
 - **Single assignee per item** - ensure clear accountability with one person responsible per action
-- **Pause only if critical** - only stop to ask the user if there are crucial ambiguities that block ticket creation. Otherwise proceed automatically.
+- **Pause only if critical during Phase 1** - only stop to ask the user if there are crucial ambiguities that block ticket proposal generation. Otherwise proceed automatically through analysis and ticket staging.
+- **Always pause between Phase 1 and Phase 2** - present staged files summary and wait for user to review and confirm `tickets.md` before any JIRA ticket creation
 
 ### Phase 2: Execution
-- Automatically proceeds after Phase 1 (no manual confirmation required)
+- **Requires explicit user confirmation** before proceeding -- user must review and approve `tickets.md` first
 - **Duplicate detection** - search JIRA for existing open tickets with similar titles under the same epic; auto-skip duplicates
 - **Generate JIRA payloads** - write `jira-payloads.json` with full MCP payloads before creating tickets
 - **Create JIRA tickets**: Read and follow appropriate JIRA creation skill based on project space:
@@ -137,7 +138,7 @@ Execute using the specialized skills:
 
 ## Benefits
 
-- **Automatic progression**: Runs straight through analysis, tickets, and execution without pausing
+- **User-gated execution**: Completes analysis and ticket proposals automatically, then pauses for user review before creating JIRA tickets
 - **Smart defaults**: Epic, release, story points, and tracking inferred from meeting context
 - **Assignee normalization**: Consistent names across tickets and JIRA lookups
 - **Duplicate detection**: Auto-skips tickets that already exist in JIRA
