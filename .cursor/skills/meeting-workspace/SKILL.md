@@ -28,6 +28,7 @@ workspaces/<YYYY-MM-DD>/<meeting-slug>/
   research.md            <- research findings for unresolved questions from analysis Section 4
   tickets.md             <- original editable tickets file
   gemini-link.txt        <- Gemini summary URL (if provided) for Slack reference
+  jira-payloads.json     <- full MCP payloads for all tickets with creation status (pending/created/failed)
   jira-tickets/
     <slug-of-ticket-name>.json   <- JIRA ticket metadata with actual keys and URLs
   slack-message.md       <- office hours thread content and AlexD message
@@ -72,6 +73,7 @@ workspaces/<YYYY-MM-DD>/<meeting-slug>/
 | research.md | Research findings for unresolved questions |
 | tickets.md | Original editable tickets file |
 | gemini-link.txt | Gemini summary URL (if provided) |
+| jira-payloads.json | Full MCP payloads with creation status |
 | jira-tickets/ | JIRA JSON payloads |
 | ticktick-sync.md | TickTick sync results |
 ```
@@ -85,6 +87,7 @@ Workspace created at workspaces/<YYYY-MM-DD>/<meeting-slug>/
   research.md
   tickets.md
   gemini-link.txt (if provided)
+  jira-payloads.json (ticket payloads with creation status)
   jira-tickets/
     <n> ticket(s) with actual JIRA keys saved
   slack-message.md

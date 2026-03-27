@@ -1,0 +1,31 @@
+{
+  "description": "Maps recurring meeting names/patterns to default parent epic IDs. Patterns are matched case-insensitively against the meeting title or workspace slug.",
+  "mappings": [
+    {
+      "pattern": "vt-standup|virtual toolchain standup|vt standup",
+      "parent_id": "KATA-797",
+      "description": "Virtual Toolchain"
+    },
+    {
+      "pattern": "sdv-sw-oh|sdv sw office hours|sdv-sw office hours",
+      "parent_id": "KATA-127",
+      "description": "SDV SW"
+    },
+    {
+      "pattern": "adaptive-app|adaptive architecture",
+      "parent_id": "KATA-127",
+      "description": "Adaptive App"
+    },
+    {
+      "pattern": "sil-walkthrough|sil overview|sil sync",
+      "parent_id": "KATA-127",
+      "description": "SIL"
+    }
+  ],
+  "notes": [
+    "Patterns use regex alternation (pipe-separated). Matched case-insensitively.",
+    "If a meeting matches, the parent_id is used as the default instead of TBD.",
+    "User can still override parent_id per-ticket in tickets.md.",
+    "Add new mappings as recurring meetings are identified."
+  ]
+}

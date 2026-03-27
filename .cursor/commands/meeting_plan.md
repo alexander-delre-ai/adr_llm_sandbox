@@ -32,20 +32,27 @@ If no content is provided, ask: "Please paste the meeting transcript or provide 
 5. **Create workspace directory** immediately using YYYY-MM-DD/meeting-name format
 6. **Store Gemini link**: If extracted in step 3, save Gemini summary URL to workspace metadata for Slack summary use
 7. **Create meeting analysis**: Read and follow `.cursor/skills/meeting-analysis/SKILL.md` to create analysis.md
-8. **Research unresolved questions**: Read and follow `.cursor/skills/meeting-research/SKILL.md` to research each unresolved question from Section 4 of analysis.md
-   - Parse each bullet from Section 4 (Unresolved Questions) as a separate question
-   - Run the meeting-research skill for each question with the workspace path as context
+8. **Research unresolved questions**: Read and follow `.cursor/skills/meeting-research/SKILL.md`, but first classify each question from Section 4 of analysis.md:
+   - **Research** (run through meeting-research skill): Questions about architecture, implementation, technical decisions, prior art, existing tickets, design patterns, or system behavior
+   - **Skip** (note in research.md only): Questions about scheduling, coordination, "who will attend", meeting logistics, or items requiring human action (e.g., "Who from Komatsu defines the manufacturing workflows?")
+   - For researched questions: run the meeting-research skill with the workspace path as context
+   - For skipped questions: add a note in research.md: "Skipped -- coordination/scheduling question, not researchable via Slack/Confluence/JIRA."
    - Compile all results into a single `research.md` in the workspace (batch format from the skill)
 9. **Pause only if critical**: If there are crucial ambiguities (e.g., completely unclear assignees, conflicting action items, missing context that prevents ticket creation), pause and ask the user. Otherwise, proceed automatically.
-10. **Create ticket proposals**: Read and follow `.cursor/skills/meeting-tickets/SKILL.md` to create tickets.md
+10. **Create ticket proposals**: Read and follow `.cursor/skills/meeting-tickets/SKILL.md` to create tickets.md. The tickets skill will:
+    - Infer `parent_id` from meeting title via `.cursor/skills/meeting-tickets/meeting-epic-mapping.json`
+    - Normalize assignee names via `.cursor/skills/meeting-slack-summary/user-mapping.md`
+    - Estimate story points from description heuristics
+    - Infer release from timeline mentions via `.cursor/skills/kata-jira-task-creation/release-mapping.json`
+    - Suggest ticket groupings for related items
 11. **Stage files in workspace**:
     - `workspaces/YYYY-MM-DD/meeting-name/analysis.md` - Complete meeting analysis (context, decisions, themes, questions, action items, prioritized plan)
     - `workspaces/YYYY-MM-DD/meeting-name/research.md` - Research findings for unresolved questions from analysis
-    - `workspaces/YYYY-MM-DD/meeting-name/tickets.md` - Editable ticket proposals with essential fields (tracking, priority, assignee, parent_id, release, story_points, description)
+    - `workspaces/YYYY-MM-DD/meeting-name/tickets.md` - Editable ticket proposals with smart defaults and suggested groupings
     - `workspaces/YYYY-MM-DD/meeting-name/transcript.md` - Original meeting transcript
     - `workspaces/YYYY-MM-DD/meeting-name/gemini-link.txt` - Gemini summary URL (if provided) for Slack summary reference
-    - **Auto-assign tracking**: Items involving "schedule", "meeting", "coordinate", or "set up" default to "slack" tracking
-    - **Single assignee**: Each action item assigned to one person for clear accountability
+    - **Auto-assign tracking**: Conversations and follow-ups default to "slack"; technical work defaults to "jira"
+    - **Single assignee**: Each action item assigned to one person (normalized to canonical name)
 12. Present summary with references to staged workspace files
 
 ## Review and Execution Phase
@@ -53,6 +60,11 @@ If no content is provided, ask: "Please paste the meeting transcript or provide 
 After staging files in workspace, automatically proceed to execution. Present a brief summary of staged files and immediately continue to Phase 2:
 
 Execute using the specialized skills:
+- **Duplicate detection**: Before creating each JIRA ticket, search for existing open tickets with similar summary text under the same epic:
+  - Use `searchJiraIssuesUsingJql` with: `project = KATA AND parent = <epic> AND status != Done AND status != Closed AND summary ~ "<key terms>"`
+  - If a match is found (same epic, open status, similar title), auto-skip that ticket and log it in a `## Skipped Duplicates` section appended to `tickets.md` with the matching JIRA key and link
+  - No user prompt needed -- skip silently and report all skips at the end
+- **Generate JIRA payloads**: Before creating tickets, write `jira-payloads.json` to the workspace containing the full MCP call payload for each ticket (tool name, arguments, all field values). Each entry starts with `"status": "pending"`.
 - **JIRA Ticket Creation**: Use appropriate skill based on parent_id project space:
   - `.cursor/skills/kata-jira-task-creation/SKILL.md` for KATA-XXXX parent_ids
   - `.cursor/skills/avp-jira-task-creation/SKILL.md` for AVP-XXXX parent_ids
@@ -61,10 +73,13 @@ Execute using the specialized skills:
   - Apply proper field mappings (P0-P3 priorities, release IDs)
   - Lookup and set assignees from tickets.md (skip if "Unassigned" or lookup fails)
   - Use defaults: assignee="Unassigned", parent_id="KATA-127" (if TBD), release="Release 2026.1" (if TBD), story_points=0 (always default to 0)
-  - Auto-format releases: prepend "Release " if only version number provided (e.g., "2025.3" → "Release 2025.3")
+  - Auto-format releases: prepend "Release " if only version number provided (e.g., "2025.3" -> "Release 2025.3")
   - **Documentation ticket routing**: Any tickets with parent_id="KATA-2226" are documentation tickets
   - **Ticket title validation**: Ensure ticket summaries match the updated action item names from tickets.md after user review
   - **Create AVP mirrors**: Automatically create AVP copies for documentation tickets (parent: AVP-5477, engagement: "Komatsu")
+  - **On success**: Update the ticket's entry in `jira-payloads.json` with `"status": "created"`, the JIRA key, and URL
+  - **On failure**: Update the ticket's entry with `"status": "failed"` and the error message. Continue creating remaining tickets.
+  - **After all tickets**: If any failed, note in the output: "N ticket(s) failed. Payloads saved to `jira-payloads.json` for manual creation or retry."
 - **Update analysis.md**: Re-read the final `tickets.md` and update sections 5 (Action Items) and 6 (Prioritized Action Plan + Next Steps) in `analysis.md` to match the final reviewed ticket content
 - **Slack Summary Generation**: Use `.cursor/skills/meeting-slack-summary/SKILL.md`
   - **Read Gemini link**: Check for `gemini-link.txt` in workspace and pass URL to Slack summary skill
@@ -85,23 +100,29 @@ Execute using the specialized skills:
 ### Phase 1: Analysis & Planning
 - **Create workspace directory** immediately for staging files
 - Complete meeting analysis with proposed tickets
-- **Research unresolved questions** - search Slack, Confluence, JIRA, and codebase for answers to open questions from analysis Section 4
-- **Stage files in workspace** - analysis, research, and editable tickets ready for review
-- **Auto-categorize tracking** - scheduling/meeting items default to "slack", others to "jira"
-- **Single assignee per item** - ensure clear accountability with one person responsible per action (defaults to "Unassigned")
-- **Pause only if critical** - only stop to ask the user if there are crucial ambiguities that block ticket creation (e.g., conflicting action items, completely missing context). Otherwise proceed automatically.
+- **Smart research filtering** - classify unresolved questions as technical (research) or coordination (skip), only research actionable questions
+- **Epic inference** - match meeting title against `.cursor/skills/meeting-tickets/meeting-epic-mapping.json` for default parent_id
+- **Assignee normalization** - resolve transcript names to canonical names via `user-mapping.md`
+- **Story point estimation** - estimate from description heuristics (0.2-2 range, default 0.5)
+- **Release inference** - map timeline mentions to releases via `release-mapping.json`
+- **Auto-categorize tracking** - conversations/follow-ups default to "slack"; technical work defaults to "jira"
+- **Ticket grouping suggestions** - identify related tickets and suggest groupings at bottom of tickets.md
+- **Single assignee per item** - ensure clear accountability with one person responsible per action
+- **Pause only if critical** - only stop to ask the user if there are crucial ambiguities that block ticket creation. Otherwise proceed automatically.
 
 ### Phase 2: Execution
 - Automatically proceeds after Phase 1 (no manual confirmation required)
-- Process tracking preferences (JIRA tickets vs Slack-only items)
+- **Duplicate detection** - search JIRA for existing open tickets with similar titles under the same epic; auto-skip duplicates
+- **Generate JIRA payloads** - write `jira-payloads.json` with full MCP payloads before creating tickets
 - **Create JIRA tickets**: Read and follow appropriate JIRA creation skill based on project space:
   - `.cursor/skills/kata-jira-task-creation/SKILL.md` for KATA project tickets
   - `.cursor/skills/avp-jira-task-creation/SKILL.md` for AVP project tickets
-  - Apply proper field mappings and epic routing (defaults: Unassigned, KATA-127 if TBD, Release 2026.1 if TBD, story_points=0 always)
+  - Apply proper field mappings and epic routing
   - **Validate ticket titles**: Confirm ticket summaries match the action item names from the final edited tickets.md
   - Auto-format release names (prepend "Release " if needed)
   - Create AVP mirrors for documentation tickets (parent: AVP-5477, engagement: "Komatsu")
-- **Update analysis.md**: Re-read the final `tickets.md` and rewrite sections 5 (Action Items) and 6 (Prioritized Action Plan + Next Steps) in `analysis.md` to reflect the user-reviewed ticket content
+  - **Failure recovery**: Update `jira-payloads.json` with creation status (created/failed); continue on failure
+- **Update analysis.md**: Re-read the final `tickets.md` and rewrite sections 5 (Action Items) and 6 (Prioritized Action Plan + Next Steps) in `analysis.md` to reflect the final ticket content
 - **Generate Slack summary**: Read and follow `.cursor/skills/meeting-slack-summary/SKILL.md`
   - **Read Gemini link**: Check for `gemini-link.txt` in workspace and include URL in Slack message
   - **Include Gemini notes link** (if available from workspace) as reference in Slack message
@@ -116,8 +137,11 @@ Execute using the specialized skills:
 
 ## Benefits
 
-- ✅ **Automatic progression**: Runs straight through analysis, tickets, and execution without pausing
-- ✅ **Smart interrupts**: Only pauses for crucial ambiguities that block ticket creation
-- ✅ **Post-execution review**: Workspace files available for review and adjustment after completion
-- ✅ **MCP integration**: Creates real tickets automatically
-- ✅ **Complete automation**: Full end-to-end workflow from transcript to tickets and Slack summary
+- **Automatic progression**: Runs straight through analysis, tickets, and execution without pausing
+- **Smart defaults**: Epic, release, story points, and tracking inferred from meeting context
+- **Assignee normalization**: Consistent names across tickets and JIRA lookups
+- **Duplicate detection**: Auto-skips tickets that already exist in JIRA
+- **Smart research**: Only researches technical questions, skips coordination items
+- **Ticket grouping**: Suggests related tickets that could share a parent
+- **Failure recovery**: Saves JIRA payloads to `jira-payloads.json` for retry on failure
+- **Complete automation**: Full end-to-end workflow from transcript to tickets, Slack, and TickTick
