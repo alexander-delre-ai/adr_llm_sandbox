@@ -10,29 +10,44 @@ Accept a meeting transcript or Gemini summary link and produce a full meeting an
 
 The meeting content may be provided as:
 - **Full transcript**: Complete meeting recording transcript with detailed conversation
-- **Gemini summary link**: Google Docs link to AI-generated meeting summary - used as the analysis source when no transcript is provided
+- **Gemini/Google Docs link**: Google Docs link to AI-generated meeting notes (fetched via Google Drive MCP and used as analysis source)
 - Inline text pasted directly in the message
 - A file path - read the file using the Read tool (supports `temp/` directory files)
+- A file path that contains a Gemini link inside it (the link is extracted and fetched via Google Drive MCP)
 
 **Input Format Examples:**
-- `@temp/meeting-transcript.md` (file path)
-- `@temp/meeting-transcript.md gemini summary: https://docs.google.com/document/d/...` (transcript + Gemini link)
-- `gemini summary: https://docs.google.com/document/d/...` (Gemini link only - fetch and use as analysis source)
+- `@temp/meeting-transcript.md` (file path -- read and use as transcript)
+- `@temp/meeting-transcript.md gemini summary: https://docs.google.com/document/d/...` (transcript file + Gemini link -- use transcript for analysis, fetch Gemini doc for Slack reference)
+- `gemini summary: https://docs.google.com/document/d/.../edit?tab=...` (Gemini link only -- fetch via Google Drive MCP and use as primary analysis source)
+- `https://docs.google.com/document/d/.../edit?tab=...` (bare Google Docs URL -- same as above)
 
-If no content is provided, ask: "Please paste the meeting transcript or provide a file path."
+If no content is provided, ask: "Please paste the meeting transcript, provide a file path, or share a Google Docs/Gemini link."
 
-**Gemini Link Extraction**: When user provides "gemini summary: [URL]" in their message, extract and store this URL. If a transcript is also provided, the Gemini link is stored for Slack reference only. If no transcript is provided, fetch the Gemini document and use it as the analysis source (treat as a Gemini Summary content type).
+**Google Docs / Gemini Link Handling**: When the user provides a Google Docs URL (either directly, via `gemini summary: [URL]`, or embedded inside a transcript file):
+
+1. **Extract the document ID** from the URL. The ID is the segment between `/d/` and the next `/` in the URL (e.g., from `https://docs.google.com/document/d/1XBcQmsTCAU0mHwVhY7b0q_2EKxlmoLoMvmeRZtq_J8w/edit?tab=t.abc` extract `1XBcQmsTCAU0mHwVhY7b0q_2EKxlmoLoMvmeRZtq_J8w`).
+2. **Fetch the document** using the Google Drive MCP: call `FetchMcpResource` with server `user-google-drive` and URI `gdrive:///<document-id>`. This returns the full document content as markdown.
+3. **Determine role based on context**:
+   - If the Gemini link is the **only input** (no transcript file or inline text), use the fetched content as the **primary analysis source**.
+   - If a transcript file is **also provided**, use the transcript for analysis and store the Gemini link for Slack summary reference. The fetched Gemini content can supplement the analysis if the transcript is sparse.
+   - If a transcript file **contains a Gemini link** inside it (e.g., a line like `gemini summary: https://docs.google.com/...`), extract the link, fetch it via Google Drive MCP, and use the transcript text (minus the link line) as the primary source. Store the Gemini link for Slack reference.
 
 **Temp Directory Support**: Files in `temp/` directory will be moved to the meeting workspace after successful analysis (saves processing time by avoiding content duplication).
 
 ## Steps
 
-1. Accept the meeting content (transcript) or Gemini summary link using one of the input methods above
-2. **Extract Gemini link**: If user message contains "gemini summary: [URL]", extract and store this URL for later use in Slack summary
-3. **Identify content type**: Determine if input is a full transcript or Gemini summary. If only a Gemini link is provided, fetch the document and treat it as a Gemini Summary for analysis.
+1. Accept the meeting content (transcript, Gemini link, or both) using one of the input methods above
+2. **Extract and fetch Google Docs links**: Scan the user message (and transcript file contents, if a file was provided) for Google Docs URLs. For each link found:
+   - Extract the document ID from the URL (the segment between `/d/` and the next `/`)
+   - Fetch the document content using `FetchMcpResource` with server `user-google-drive` and URI `gdrive:///<document-id>`
+   - Store the original URL for Slack summary use
+3. **Identify content type and primary source**:
+   - If a transcript file or inline text was provided, use that as the primary analysis source
+   - If only a Google Docs link was provided (no transcript), use the fetched document content as the primary analysis source
+   - If both a transcript and a Google Docs link were provided, use the transcript as primary and the fetched Gemini content as supplementary context
 4. Switch to Plan mode so the analysis is collaborative before any artifacts are created
 5. **Create workspace directory** immediately using YYYY-MM-DD/meeting-name format
-6. **Store Gemini link**: If extracted in step 2, save Gemini summary URL to workspace metadata for Slack summary use
+6. **Store Gemini link**: Save the Google Docs URL (if any) to `gemini-link.txt` in the workspace for Slack summary use
 7. **Create meeting analysis**: Read and follow `.claude/commands/meeting-analysis.md` to create analysis.md
 8. **Create ticket proposals**: Read and follow `.claude/commands/meeting-tickets.md` to create tickets.md
 9. **Stage files in workspace**:
