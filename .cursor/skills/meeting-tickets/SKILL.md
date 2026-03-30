@@ -192,6 +192,14 @@ description: [Clean description]
 
 This skill focuses purely on ticket file creation and does not create JIRA tickets or workspaces. It produces an editable tickets.md file that can be reviewed and modified before ticket creation.
 
+## Contract with Downstream Skills
+
+The `tracking` field is the authoritative gate for what happens after user approval:
+- `tracking: jira` or `tracking: both` -- the kata-jira-task-creation skill will create a JIRA ticket
+- `tracking: slack` -- Slack summary and TickTick sync only; **no JIRA ticket must be created**
+
+The user may change any field (including `tracking`) between generation and approval. Downstream skills (kata-jira-task-creation, meeting-slack-summary, ticktick-sync) **must re-read tickets.md immediately before processing** and respect the final `tracking` value. See kata-jira-task-creation SKILL.md "MANDATORY RE-READ GATE" and "MANDATORY TRACKING FILTER" for enforcement details.
+
 ## Integration
 
 - **Input**: Action items from meeting analysis

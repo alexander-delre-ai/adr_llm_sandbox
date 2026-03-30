@@ -34,14 +34,15 @@ Include when available:
 
 ## Workflow
 
-1. **CRITICAL**: If working from tickets.md file, read the final edited version to get user-modified titles and descriptions
-2. **Validate ticket titles**: Ensure ticket summaries match the action item names from tickets.md exactly
-3. Confirm all mandatory fields are present; prompt for any that are missing
-4. Reject any `epic_id` that does not start with `KATA-`
-5. Fill optional fields with defaults when absent
-5. **IMPORTANT**: Check if KATA MCP server has tools available
-6. If tools are available, create the actual JIRA ticket using the MCP server with **final edited content**
-7. If tools are not available, output the JSON payload for manual creation
+1. **MANDATORY RE-READ GATE**: When working from a tickets.md file, you MUST call the Read tool on the tickets.md file path **immediately before creating any JIRA tickets** -- even if you read it earlier in the conversation. The user may have edited titles, descriptions, tracking types, or removed items since your last read. Never rely on cached/in-memory contents of tickets.md.
+2. **MANDATORY TRACKING FILTER**: After re-reading, parse each action item's `tracking` field. **Only create JIRA tickets for items where `tracking` is `jira` or `both`**. Skip any item where `tracking` is `slack` -- those are Slack-only action items and must not produce JIRA tickets. Log skipped items so the user can see what was filtered out.
+3. **Validate ticket titles**: Ensure ticket summaries match the action item heading from the freshly-read tickets.md exactly (not from memory or a prior read)
+4. Confirm all mandatory fields are present; prompt for any that are missing
+5. Reject any `epic_id` that does not start with `KATA-`
+6. Fill optional fields with defaults when absent
+7. **IMPORTANT**: Check if KATA MCP server has tools available
+8. If tools are available, create the actual JIRA ticket using the MCP server with **final edited content from the re-read**
+9. If tools are not available, output the JSON payload for manual creation
 
 ## Release Mapping
 
