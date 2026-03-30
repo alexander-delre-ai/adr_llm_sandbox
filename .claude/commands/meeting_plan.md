@@ -41,23 +41,24 @@ If no content is provided, ask: "Please paste the meeting transcript, provide a 
    - Extract the document ID from the URL (the segment between `/d/` and the next `/`)
    - Fetch the document content using `FetchMcpResource` with server `user-google-drive` and URI `gdrive:///<document-id>`
    - Store the original URL for Slack summary use
-3. **Identify content type and primary source**:
+3. **Rename chat window**: Once the meeting title is known (extracted from transcript metadata, Gemini doc title/header, or inferred from content), rename the chat to `YYYY-MM-DD <meeting-title>` (e.g., "2026-03-30 TruckSim Sync"). Use the same title that will become the workspace slug. For temp file inputs without a Google Doc link, use the temp file's name without the extension (e.g., `temp/2026-03-26-vt-ml-meeting.md` becomes "2026-03-26 vt-ml-meeting").
+4. **Identify content type and primary source**:
    - If a transcript file or inline text was provided, use that as the primary analysis source
    - If only a Google Docs link was provided (no transcript), use the fetched document content as the primary analysis source
    - If both a transcript and a Google Docs link were provided, use the transcript as primary and the fetched Gemini content as supplementary context
-4. Switch to Plan mode so the analysis is collaborative before any artifacts are created
-5. **Create workspace directory** immediately using YYYY-MM-DD/meeting-name format
-6. **Store Gemini link**: Save the Google Docs URL (if any) to `gemini-link.txt` in the workspace for Slack summary use
-7. **Create meeting analysis**: Read and follow `.claude/commands/meeting-analysis.md` to create analysis.md
-8. **Create ticket proposals**: Read and follow `.claude/commands/meeting-tickets.md` to create tickets.md
-9. **Stage files in workspace**:
+5. Switch to Plan mode so the analysis is collaborative before any artifacts are created
+6. **Create workspace directory** immediately using YYYY-MM-DD/meeting-name format
+7. **Store Gemini link**: Save the Google Docs URL (if any) to `gemini-link.txt` in the workspace for Slack summary use
+8. **Create meeting analysis**: Read and follow `.claude/commands/meeting-analysis.md` to create analysis.md
+9. **Create ticket proposals**: Read and follow `.claude/commands/meeting-tickets.md` to create tickets.md
+10. **Stage files in workspace**:
    - `workspaces/YYYY-MM-DD/meeting-name/analysis.md` - Complete meeting analysis (context, decisions, themes, questions, action items, prioritized plan)
    - `workspaces/YYYY-MM-DD/meeting-name/tickets.md` - Editable ticket proposals with essential fields (tracking, priority, assignee, parent_id, release, story_points, description)
    - `workspaces/YYYY-MM-DD/meeting-name/transcript.md` - Original meeting transcript
    - `workspaces/YYYY-MM-DD/meeting-name/gemini-link.txt` - Gemini summary URL (if provided) for Slack summary reference
    - **Auto-assign tracking**: Items involving "schedule", "meeting", "coordinate", or "set up" default to "slack" tracking
    - **Single assignee**: Each action item assigned to one person for clear accountability. If multiple people are mentioned for one item (e.g., "Alex and Ashli need to..."), assign to the first person named and note the others in the description field.
-10. Present summary with references to staged workspace files
+11. Present summary with references to staged workspace files
 
 ## Review and Execution Phase
 

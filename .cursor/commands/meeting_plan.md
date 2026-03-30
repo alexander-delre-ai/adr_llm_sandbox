@@ -35,11 +35,11 @@ If no content is provided, ask: "Please paste the meeting transcript, provide a 
 ## Steps
 
 1. Accept the meeting content (transcript, Gemini link, or both) using one of the input methods above
-2. **Rename chat window**: If input is a temp file, rename the chat window to the temp file's name without the extension (e.g., `temp/2026-03-26-vt-ml-meeting.md` becomes "2026-03-26-vt-ml-meeting")
-3. **Extract and fetch Google Docs links**: Scan the user message (and transcript file contents, if a file was provided) for Google Docs URLs. For each link found:
+2. **Extract and fetch Google Docs links**: Scan the user message (and transcript file contents, if a file was provided) for Google Docs URLs. For each link found:
    - Extract the document ID from the URL (the segment between `/d/` and the next `/`)
    - Fetch the document content using `FetchMcpResource` with server `user-google-drive` and URI `gdrive:///<document-id>`
    - Store the original URL for Slack summary use
+3. **Rename chat window**: Once the meeting title is known (extracted from transcript metadata, Gemini doc title/header, or inferred from content), rename the chat to `YYYY-MM-DD <meeting-title>` (e.g., "2026-03-30 TruckSim Sync"). Use the same title that will become the workspace slug. For temp file inputs without a Google Doc link, use the temp file's name without the extension (e.g., `temp/2026-03-26-vt-ml-meeting.md` becomes "2026-03-26 vt-ml-meeting").
 4. **Identify content type and primary source**:
    - If a transcript file or inline text was provided, use that as the primary analysis source
    - If only a Google Docs link was provided (no transcript), use the fetched document content as the primary analysis source
