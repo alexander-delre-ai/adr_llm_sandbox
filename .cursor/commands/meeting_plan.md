@@ -2,17 +2,20 @@
 
 **Mode: Agent**
 
-Accept a Google Docs link to meeting notes and produce a full meeting analysis with reviewable JIRA ticket plans, then optionally create actual tickets via MCP integration.
+Accept a Google Docs link or temp file transcript and produce a full meeting analysis with reviewable JIRA ticket plans, then optionally create actual tickets via MCP integration.
 
 ## Input
 
-The meeting content is provided as a **Google Docs link** (Gemini-generated meeting notes or manually written). The fetched document content is the primary and sole analysis source.
+The meeting content may be provided as:
+- **Google Docs link**: Gemini-generated meeting notes or manually written doc (fetched via Google Drive MCP)
+- **Temp file**: A file path in `temp/` containing a full transcript (read via the Read tool)
 
 **Input Format Examples:**
 - `gemini summary: https://docs.google.com/document/d/.../edit?tab=...` (Gemini link with prefix)
-- `https://docs.google.com/document/d/.../edit?tab=...` (bare Google Docs URL / transcript link)
+- `https://docs.google.com/document/d/.../edit?tab=...` (bare Google Docs URL)
+- `@temp/meeting-transcript.md` (temp file path)
 
-If no content is provided, ask: "Please share a Google Docs link to the meeting notes."
+If no content is provided, ask: "Please share a Google Docs link to the meeting notes, or provide a temp file path."
 
 **Google Docs Link Handling**:
 
@@ -20,13 +23,20 @@ If no content is provided, ask: "Please share a Google Docs link to the meeting 
 2. **Fetch the document** using the Google Drive MCP: call `FetchMcpResource` with server `user-google-drive` and URI `gdrive:///<document-id>`. This returns the full document content as markdown.
 3. Use the fetched content as the **primary analysis source**. The Google Doc link is also stored in the workspace for Slack summary and doc sharing use.
 
+**Temp File Handling**: Read the file using the Read tool. Use its content as the primary analysis source. The temp file name (without extension) is used to derive the meeting title if no other title is available (e.g., `temp/2026-03-26-vt-ml-meeting.md` becomes "vt-ml-meeting").
+
 ## Steps
 
-1. Accept the Google Docs link from the user message
-2. **Extract and fetch the Google Doc**: Parse the URL to extract the document ID (segment between `/d/` and the next `/`). Fetch the document content using `FetchMcpResource` with server `user-google-drive` and URI `gdrive:///<document-id>`. Store the original URL for Slack summary and doc sharing use.
-3. **Rename chat window**: Once the meeting title is known (extracted from the Gemini doc title/header or inferred from content), rename the chat to `YYYY-MM-DD <meeting-title>` (e.g., "2026-03-30 TruckSim Sync"). Use the same title that will become the workspace slug.
+1. Accept the input from the user message (Google Docs link or temp file path)
+2. **Fetch meeting content**:
+   - **Google Docs link**: Parse the URL to extract the document ID (segment between `/d/` and the next `/`). Fetch the document content using `FetchMcpResource` with server `user-google-drive` and URI `gdrive:///<document-id>`. Store the original URL for Slack summary and doc sharing use.
+   - **Temp file**: Read the file content using the Read tool. Use it as the primary analysis source.
+3. **Rename chat window**: Once the meeting title is known (extracted from the Gemini doc title/header, temp file name, or inferred from content), rename the chat to `YYYY-MM-DD <meeting-title>` (e.g., "2026-03-30 TruckSim Sync"). Use the same title that will become the workspace slug.
 4. **Create workspace directory** using YYYY-MM-DD/meeting-name format. Before creating, check if `workspaces/YYYY-MM-DD/meeting-name/` already exists. If it does, ask the user: "A workspace already exists at `workspaces/YYYY-MM-DD/meeting-name/`. Overwrite it, or create a versioned copy (e.g., `meeting-name-v2`)?" Proceed based on the answer.
-5. **Store Google Doc link**: Save the Google Docs URL to `gemini-link.txt` in the workspace for Slack summary and doc sharing use
+5. **Store Google Doc link**: If a Google Docs URL was provided, save it to `gemini-link.txt` in the workspace for Slack summary and doc sharing use
+5a. **Create transcript.md** in the workspace:
+    - **If input was a Google Docs link**: Write a single-line file containing just the Google Docs URL (a reference link, not the fetched content)
+    - **If input was a temp file**: Copy the temp file contents to `transcript.md`, then delete the original temp file. Other files in `temp/` are left untouched.
 6. **Create meeting analysis**: Read and follow `.cursor/skills/meeting-analysis/SKILL.md` to create analysis.md
 7. **Research unresolved questions**: Read and follow `.cursor/skills/meeting-research/SKILL.md`, but first classify each question from Section 4 of analysis.md:
    - **Research** (run through meeting-research skill): Questions about architecture, implementation, technical decisions, prior art, existing tickets, design patterns, or system behavior
@@ -45,7 +55,8 @@ If no content is provided, ask: "Please share a Google Docs link to the meeting 
     - `workspaces/YYYY-MM-DD/meeting-name/analysis.md` - Complete meeting analysis (context, decisions, themes, questions, action items, prioritized plan)
     - `workspaces/YYYY-MM-DD/meeting-name/research.md` - Research findings for unresolved questions from analysis
     - `workspaces/YYYY-MM-DD/meeting-name/tickets.md` - Editable ticket proposals with smart defaults and suggested groupings
-    - `workspaces/YYYY-MM-DD/meeting-name/gemini-link.txt` - Google Docs URL for Slack summary and doc sharing reference
+    - `workspaces/YYYY-MM-DD/meeting-name/transcript.md` - Google Docs URL (if link input) or full transcript content (if temp file input)
+    - `workspaces/YYYY-MM-DD/meeting-name/gemini-link.txt` - Google Docs URL for Slack summary and doc sharing reference (only if link input)
     - **Auto-assign tracking**: Conversations and follow-ups default to "slack"; technical work defaults to "jira"
     - **Single assignee**: Each action item assigned to one person (normalized to canonical name)
 11. **Present summary and wait for user review**:
