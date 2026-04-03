@@ -106,6 +106,12 @@ This file contains the mapping of users between Komatsu and Applied organization
   - Role: VehicleOS team member
   - Expertise: Adaptive architecture
 
+- **Noopur Divekar**
+  - Slack ID: `U08HEKDEEKH`
+  - Email: noopur.divekar@applied.co
+  - Role: System Engineer
+  - Expertise: Diagnostics architecture (DEM/FIM, UDS, J1939)
+
 ### Resolved Slack IDs
 - **U080A6CFRAQ** - Srishti Dhamija (srishti.dhamija@applied.co, Software Engineer)
 
