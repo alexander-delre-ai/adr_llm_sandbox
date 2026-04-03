@@ -31,8 +31,7 @@ If no content is provided, ask: "Please share a Google Docs link to the meeting 
 2. **Fetch meeting content**:
    - **Google Docs link**: Parse the URL to extract the document ID (segment between `/d/` and the next `/`). Fetch the document content using `FetchMcpResource` with server `user-google-drive` and URI `gdrive:///<document-id>`. Store the original URL for Slack summary and doc sharing use.
    - **Temp file**: Read the file content using the Read tool. Use it as the primary analysis source.
-3. **Rename chat window**: Once the meeting title is known (extracted from the Gemini doc title/header, temp file name, or inferred from content), rename the chat to `YYYY-MM-DD <meeting-title>` (e.g., "2026-03-30 TruckSim Sync"). Use the same title that will become the workspace slug.
-4. **Create workspace directory** using YYYY-MM-DD/meeting-name format. Before creating, check if `workspaces/YYYY-MM-DD/meeting-name/` already exists. If it does, ask the user: "A workspace already exists at `workspaces/YYYY-MM-DD/meeting-name/`. Overwrite it, or create a versioned copy (e.g., `meeting-name-v2`)?" Proceed based on the answer.
+3. **Create workspace directory** using YYYY-MM-DD/meeting-name format. Before creating, check if `workspaces/YYYY-MM-DD/meeting-name/` already exists. If it does, ask the user: "A workspace already exists at `workspaces/YYYY-MM-DD/meeting-name/`. Overwrite it, or create a versioned copy (e.g., `meeting-name-v2`)?" Proceed based on the answer.
 5. **Store Google Doc link**: If a Google Docs URL was provided, save it to `gemini-link.txt` in the workspace for Slack summary and doc sharing use
 5a. **Create transcript.md** in the workspace:
     - **If input was a Google Docs link**: Write a single-line file containing just the Google Docs URL (a reference link, not the fetched content)
