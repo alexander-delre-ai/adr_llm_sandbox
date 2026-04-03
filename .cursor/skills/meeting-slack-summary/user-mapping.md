@@ -94,6 +94,13 @@ This file contains the mapping of users between Komatsu and Applied organization
 - **Greg** - Manager (Lauren's supervisor for admin permissions)
 - **Applied TPM** - Technical Program Manager (release coordination)
 
+### Hardware/System Architecture
+- **Nick Tokarz** (also: Nicholas Tokarz, NickT)
+  - Slack ID: `U0871MMMEAK`
+  - Email: nicholas.tokarz@applied.co
+  - Role: System Architect
+  - Notes: Leads HW <> SW sync, device bring-up planning for Juniper/Walnut
+
 ### VehicleOS/SVL Team
 - **Srishti Dhamija**
   - Role: VehicleOS team member
@@ -152,4 +159,4 @@ This mapping should be updated when:
 - Organizational changes occur
 - Name corrections are identified
 
-Last updated: March 27, 2026
+Last updated: April 3, 2026
