@@ -63,7 +63,9 @@ If no content is provided, ask: "Please share a Google Docs link to the meeting 
 
 ## Review and Execution Phase
 
-**IMPORTANT**: After staging files in workspace, do NOT automatically proceed to execution. Present a summary of staged files and **wait for the user to review and confirm `tickets.md`** before creating any JIRA tickets. The user may edit ticket titles, descriptions, priorities, tracking types, assignees, or remove items entirely. Only proceed to Phase 2 after the user explicitly confirms (e.g., "looks good", "go ahead", "create tickets", "confirmed").
+**IMPORTANT**: After staging files in workspace, do NOT automatically proceed to execution. Present a summary of staged files and **wait for the user to review `tickets.md`**. The user may edit ticket titles, descriptions, priorities, tracking types, assignees, or remove items entirely. After review, the user will respond with one of two keywords:
+- **"continue"**: Proceed to Phase 2 execution (JIRA ticket creation, Slack summary, doc sharing, TickTick sync)
+- **"stop"**: End the workflow here. All staged workspace files (analysis.md, research.md, tickets.md, transcript.md) are kept as-is. No tickets are created, no Slack messages are sent, and no doc sharing occurs.
 
 Execute using the specialized skills:
 - **Duplicate detection**: Before creating each JIRA ticket, search for existing open tickets with similar summary text under the same epic:
