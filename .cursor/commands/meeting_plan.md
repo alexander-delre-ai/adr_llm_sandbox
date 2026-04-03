@@ -21,7 +21,7 @@ If no content is provided, ask: "Please share a Google Docs link to the meeting 
 
 1. **Extract the document ID** from the URL. The ID is the segment between `/d/` and the next `/` in the URL (e.g., from `https://docs.google.com/document/d/1XBcQmsTCAU0mHwVhY7b0q_2EKxlmoLoMvmeRZtq_J8w/edit?tab=t.abc` extract `1XBcQmsTCAU0mHwVhY7b0q_2EKxlmoLoMvmeRZtq_J8w`).
 2. **Fetch the document** using the Google Drive MCP: call `FetchMcpResource` with server `user-google-drive` and URI `gdrive:///<document-id>`. This returns the full document content as markdown.
-3. Use the fetched content as the **primary analysis source**. The Google Doc link is also stored in the workspace for Slack summary and doc sharing use.
+3. Use the fetched content as the **primary analysis source**. The Google Doc link is stored in `transcript.md` in the workspace.
 
 **Temp File Handling**: Read the file using the Read tool. Use its content as the primary analysis source. The temp file name (without extension) is used to derive the meeting title if no other title is available (e.g., `temp/2026-03-26-vt-ml-meeting.md` becomes "vt-ml-meeting").
 
@@ -29,36 +29,34 @@ If no content is provided, ask: "Please share a Google Docs link to the meeting 
 
 1. Accept the input from the user message (Google Docs link or temp file path)
 2. **Fetch meeting content**:
-   - **Google Docs link**: Parse the URL to extract the document ID (segment between `/d/` and the next `/`). Fetch the document content using `FetchMcpResource` with server `user-google-drive` and URI `gdrive:///<document-id>`. Store the original URL for Slack summary and doc sharing use.
+   - **Google Docs link**: Parse the URL to extract the document ID (segment between `/d/` and the next `/`). Fetch the document content using `FetchMcpResource` with server `user-google-drive` and URI `gdrive:///<document-id>`.
    - **Temp file**: Read the file content using the Read tool. Use it as the primary analysis source.
 3. **Create workspace directory** using YYYY-MM-DD/meeting-name format. Before creating, check if `workspaces/YYYY-MM-DD/meeting-name/` already exists. If it does, ask the user: "A workspace already exists at `workspaces/YYYY-MM-DD/meeting-name/`. Overwrite it, or create a versioned copy (e.g., `meeting-name-v2`)?" Proceed based on the answer.
-5. **Store Google Doc link**: If a Google Docs URL was provided, save it to `gemini-link.txt` in the workspace for Slack summary and doc sharing use
-5a. **Create transcript.md** in the workspace:
-    - **If input was a Google Docs link**: Write a single-line file containing just the Google Docs URL (a reference link, not the fetched content)
+4. **Create transcript.md** in the workspace:
+    - **If input was a Google Docs link**: Write a single-line file containing just the Google Docs URL (a reference link, not the fetched content). This URL is used by later steps for Slack summary and doc sharing.
     - **If input was a temp file**: Copy the temp file contents to `transcript.md`, then delete the original temp file. Other files in `temp/` are left untouched.
-6. **Create meeting analysis**: Read and follow `.cursor/skills/meeting-analysis/SKILL.md` to create analysis.md
-7. **Research unresolved questions**: Read and follow `.cursor/skills/meeting-research/SKILL.md`, but first classify each question from Section 4 of analysis.md:
+5. **Create meeting analysis**: Read and follow `.cursor/skills/meeting-analysis/SKILL.md` to create analysis.md
+6. **Research unresolved questions**: Read and follow `.cursor/skills/meeting-research/SKILL.md`, but first classify each question from Section 4 of analysis.md:
    - **Research** (run through meeting-research skill): Questions about architecture, implementation, technical decisions, prior art, existing tickets, design patterns, or system behavior
    - **Skip** (note in research.md only): Questions about scheduling, coordination, "who will attend", meeting logistics, or items requiring human action (e.g., "Who from Komatsu defines the manufacturing workflows?")
    - **Run research in parallel**: Launch all "Research" classified questions concurrently using parallel subagent invocations (one per question, each running the meeting-research skill with the workspace path as context). Collect all results when complete.
    - For skipped questions: add a note in research.md: "Skipped -- coordination/scheduling question, not researchable via Slack/Confluence/JIRA."
    - Compile all results (parallel + skipped) into a single `research.md` in the workspace (batch format from the skill)
-8. **Pause only if critical during analysis**: If there are crucial ambiguities (e.g., completely unclear assignees, conflicting action items, missing context that prevents ticket proposal generation), pause and ask the user. Otherwise, proceed automatically through analysis and ticket staging.
-9. **Create ticket proposals**: Read and follow `.cursor/skills/meeting-tickets/SKILL.md` to create tickets.md. The tickets skill will:
+7. **Pause only if critical during analysis**: If there are crucial ambiguities (e.g., completely unclear assignees, conflicting action items, missing context that prevents ticket proposal generation), pause and ask the user. Otherwise, proceed automatically through analysis and ticket staging.
+8. **Create ticket proposals**: Read and follow `.cursor/skills/meeting-tickets/SKILL.md` to create tickets.md. The tickets skill will:
     - Infer `parent_id` from meeting title via `.cursor/skills/meeting-tickets/meeting-epic-mapping.json`
     - Normalize assignee names via `.cursor/skills/meeting-slack-summary/user-mapping.md`
     - Estimate story points from description heuristics
     - Infer release from timeline mentions via `.cursor/skills/kata-jira-task-creation/release-mapping.json`
     - Suggest ticket groupings for related items
-10. **Stage files in workspace**:
+9. **Stage files in workspace**:
     - `workspaces/YYYY-MM-DD/meeting-name/analysis.md` - Complete meeting analysis (context, decisions, themes, questions, action items, prioritized plan)
     - `workspaces/YYYY-MM-DD/meeting-name/research.md` - Research findings for unresolved questions from analysis
     - `workspaces/YYYY-MM-DD/meeting-name/tickets.md` - Editable ticket proposals with smart defaults and suggested groupings
-    - `workspaces/YYYY-MM-DD/meeting-name/transcript.md` - Google Docs URL (if link input) or full transcript content (if temp file input)
-    - `workspaces/YYYY-MM-DD/meeting-name/gemini-link.txt` - Google Docs URL for Slack summary and doc sharing reference (only if link input)
+    - `workspaces/YYYY-MM-DD/meeting-name/transcript.md` - Google Docs URL (if link input) or full transcript content (if temp file input). Used by Slack summary and doc sharing steps to find the Google Doc link.
     - **Auto-assign tracking**: Conversations and follow-ups default to "slack"; technical work defaults to "jira"
     - **Single assignee**: Each action item assigned to one person (normalized to canonical name)
-11. **Present summary and wait for user review**:
+10. **Present summary and wait for user review**:
     - Generate an interactive canvas (via browser MCP canvas tool) that renders all tickets from `tickets.md` in a compact review table. Columns: ticket title, assignee, priority, tracking (jira/slack/both), epic, release, story points. The canvas is read-only and informational; edits are still made directly in `tickets.md`.
     - Present the canvas alongside references to the staged workspace files.
     - Explicitly tell the user to review the canvas overview, edit `tickets.md` if changes are needed, then confirm when ready to proceed.
@@ -90,14 +88,14 @@ Execute using the specialized skills:
   - **After all tickets**: If any failed, note in the output: "N ticket(s) failed. Payloads saved to `jira-payloads.json` for manual creation or retry."
 - **Update analysis.md**: Re-read the final `tickets.md` and update sections 5 (Action Items) and 6 (Prioritized Action Plan + Next Steps) in `analysis.md` to match the final reviewed ticket content
 - **Slack Summary Generation**: Use `.cursor/skills/meeting-slack-summary/SKILL.md`
-  - **Read Gemini link**: Check for `gemini-link.txt` in workspace and pass URL to Slack summary skill
+  - **Read Google Doc link**: Check `transcript.md` in workspace; if it contains a Google Docs URL (single-line file), pass the URL to the Slack summary skill
   - Include all action items (Slack-only first, then JIRA tickets)
-  - **Include Gemini summary link** (if available from workspace) as reference in Slack message
+  - **Include Google Doc link** (if available from `transcript.md`) as reference in Slack message
   - **Slack filtering**: Only include KATA tickets in summaries (exclude AVP mirrors)
   - Send formatted message to AlexD with workspace context
-- **Share Google Doc with participants**: If a Google Docs/Gemini link was provided, grant access to the document for all meeting attendees and action item assignees:
-  - **Skip if no link**: Only run this step when `gemini-link.txt` exists in the workspace
-  - **Extract document ID**: Parse the Google Docs URL from `gemini-link.txt` to get the file ID (segment between `/d/` and the next `/`)
+- **Share Google Doc with participants**: If the input was a Google Docs link, grant access to the document for all meeting attendees and action item assignees:
+  - **Skip if no link**: Only run this step when `transcript.md` contains a Google Docs URL (not full transcript content)
+  - **Extract document ID**: Parse the Google Docs URL from `transcript.md` to get the file ID (segment between `/d/` and the next `/`)
   - **Build recipient list**: Collect a unique set of people from:
     1. All attendees listed in analysis.md (Section 1)
     2. All action item assignees from the final tickets.md
@@ -152,11 +150,11 @@ Execute using the specialized skills:
   - **Failure recovery**: Update `jira-payloads.json` with creation status (created/failed); continue on failure
 - **Update analysis.md**: Re-read the final `tickets.md` and rewrite sections 5 (Action Items) and 6 (Prioritized Action Plan + Next Steps) in `analysis.md` to reflect the final ticket content
 - **Generate Slack summary**: Read and follow `.cursor/skills/meeting-slack-summary/SKILL.md`
-  - **Read Gemini link**: Check for `gemini-link.txt` in workspace and include URL in Slack message
-  - **Include Gemini notes link** (if available from workspace) as reference in Slack message
+  - **Read Google Doc link**: Check `transcript.md` in workspace; if it contains a Google Docs URL, include it in Slack message
+  - **Include Google Doc link** (if available from `transcript.md`) as reference in Slack message
   - Include all action items (Slack-only first, then JIRA tickets)
   - Send formatted office hours thread message to AlexD
-- **Share Google Doc with participants**: If `gemini-link.txt` exists in workspace, resolve emails from `user-mapping.md` (with Slack profile fallback for unknowns), present recipient list for user confirmation, then grant writer access via `shareFile` MCP with notification emails
+- **Share Google Doc with participants**: If `transcript.md` contains a Google Docs URL, resolve emails from `user-mapping.md` (with Slack profile fallback for unknowns), present recipient list for user confirmation, then grant writer access via `shareFile` MCP with notification emails
 - **TickTick Sync**: Run `python3 .cursor/skills/ticktick-sync/scripts/sync_meeting_items.py --tickets workspaces/<YYYY-MM-DD>/<meeting-slug>/tickets.md --meeting "<Meeting Title>"`
   - Syncs Slack-tracked items assigned to AlexD or Unassigned to TickTick "Cursor Sync" project
   - Short titles (15 words max), full descriptions in content body
