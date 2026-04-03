@@ -43,6 +43,7 @@ If no content is provided, ask: "Please share a Google Docs link to the meeting 
    - For skipped questions: add a note in research.md: "Skipped -- coordination/scheduling question, not researchable via Slack/Confluence/JIRA."
    - Compile all results (parallel + skipped) into a single `research.md` in the workspace (batch format from the skill)
 7. **Pause only if critical during analysis**: If there are crucial ambiguities (e.g., completely unclear assignees, conflicting action items, missing context that prevents ticket proposal generation), pause and ask the user. Otherwise, proceed automatically through analysis and ticket staging.
+7a. **Check for action items**: If the analysis contains zero action items (pure status update, demo, or informational meeting), skip ticket staging (Steps 8-10) and proceed directly to Phase 2 execution (Slack summary and doc sharing only, no JIRA tickets). Inform the user: "No action items found. Sending Slack summary only."
 8. **Create ticket proposals**: Read and follow `.cursor/skills/meeting-tickets/SKILL.md` to create tickets.md. The tickets skill will:
     - Infer `parent_id` from meeting title via `.cursor/skills/meeting-tickets/meeting-epic-mapping.json`
     - Normalize assignee names via `.cursor/skills/meeting-slack-summary/user-mapping.md`
@@ -57,9 +58,11 @@ If no content is provided, ask: "Please share a Google Docs link to the meeting 
     - **Auto-assign tracking**: Conversations and follow-ups default to "slack"; technical work defaults to "jira"
     - **Single assignee**: Each action item assigned to one person (normalized to canonical name)
 10. **Present summary and wait for user review**:
-    - Generate an interactive canvas (via browser MCP canvas tool) that renders all tickets from `tickets.md` in a compact review table. Columns: ticket title, assignee, priority, tracking (jira/slack/both), epic, release, story points. The canvas is read-only and informational; edits are still made directly in `tickets.md`.
+    - **Show inferred epic**: Display the default epic inferred from `meeting-epic-mapping.json` so the user can verify or correct it before ticket creation.
+    - Generate an interactive canvas (via browser MCP canvas tool) that renders all tickets from `tickets.md` in an editable review table. Columns: ticket title, assignee, priority, tracking (jira/slack/both), epic, release, story points. The user can edit fields directly in the canvas. After the user responds with "continue", read the canvas state and write any changes back to `tickets.md` before proceeding to Phase 2.
+    - **Show Google Doc sharing recipients**: If `transcript.md` contains a Google Docs URL, resolve the recipient list (attendees + action item assignees, with email lookup) and present it alongside the ticket review. The user can note any recipients to add or remove.
     - Present the canvas alongside references to the staged workspace files.
-    - Explicitly tell the user to review the canvas overview, edit `tickets.md` if changes are needed, then confirm when ready to proceed.
+    - Explicitly tell the user to review the canvas overview and the recipient list, edit `tickets.md` if changes are needed, then respond with "continue" or "stop".
 
 ## Review and Execution Phase
 
@@ -72,7 +75,6 @@ Execute using the specialized skills:
   - Use `searchJiraIssuesUsingJql` with: `project = KATA AND parent = <epic> AND status != Done AND status != Closed AND summary ~ "<key terms>"`
   - If a match is found (same epic, open status, similar title), auto-skip that ticket and log it in a `## Skipped Duplicates` section appended to `tickets.md` with the matching JIRA key and link
   - No user prompt needed -- skip silently and report all skips at the end
-- **Generate JIRA payloads**: Before creating tickets, write `jira-payloads.json` to the workspace containing the full MCP call payload for each ticket (tool name, arguments, all field values). Each entry starts with `"status": "pending"`.
 - **JIRA Ticket Creation**: Use appropriate skill based on parent_id project space:
   - `.cursor/skills/kata-jira-task-creation/SKILL.md` for KATA-XXXX parent_ids
   - `.cursor/skills/avp-jira-task-creation/SKILL.md` for AVP-XXXX parent_ids
@@ -85,9 +87,7 @@ Execute using the specialized skills:
   - **Documentation ticket routing**: Any tickets with parent_id="KATA-2226" are documentation tickets
   - **Ticket title validation**: Ensure ticket summaries match the updated action item names from tickets.md after user review
   - **Create AVP mirrors**: Automatically create AVP copies for documentation tickets (parent: AVP-5477, engagement: "Komatsu")
-  - **On success**: Update the ticket's entry in `jira-payloads.json` with `"status": "created"`, the JIRA key, and URL
-  - **On failure**: Update the ticket's entry with `"status": "failed"` and the error message. Continue creating remaining tickets.
-  - **After all tickets**: If any failed, note in the output: "N ticket(s) failed. Payloads saved to `jira-payloads.json` for manual creation or retry."
+  - **On failure**: Log the error and continue creating remaining tickets. Report all failures at the end.
 - **Update analysis.md**: Re-read the final `tickets.md` and update sections 5 (Action Items) and 6 (Prioritized Action Plan + Next Steps) in `analysis.md` to match the final reviewed ticket content
 - **Slack Summary Generation**: Use `.cursor/skills/meeting-slack-summary/SKILL.md`
   - **Read Google Doc link**: Check `transcript.md` in workspace; if it contains a Google Docs URL (single-line file), pass the URL to the Slack summary skill
@@ -107,8 +107,8 @@ Execute using the specialized skills:
     - For Applied users, use their known email (e.g., `timothy.kyung@applied.co`)
     - If email is not in `user-mapping.md`, use `slack_search_users` to find the person's Slack user ID by name, then `slack_read_user_profile` to retrieve their email. If found, update `user-mapping.md` with the discovery.
     - Skip anyone whose email still cannot be determined
-  - **Confirm recipient list**: Present the resolved recipient list (name + email) to the user and wait for explicit approval before granting access. The user may remove people or adjust the list.
-  - **Grant access**: After confirmation, for each approved email, call Google Drive MCP `shareFile` with:
+  - **Recipients were already confirmed** during Phase 1 review (Step 10). Apply any adjustments the user noted.
+  - **Grant access**: For each approved email, call Google Drive MCP `shareFile` with:
     - `fileId`: the extracted document ID
     - `emailAddress`: the person's email
     - `role`: `"writer"`
@@ -137,7 +137,6 @@ Execute using the specialized skills:
 ### Phase 2: Execution
 - **Requires explicit user confirmation** before proceeding -- user must review and approve `tickets.md` first
 - **Duplicate detection** - search JIRA for existing open tickets with similar titles under the same epic; auto-skip duplicates
-- **Generate JIRA payloads** - write `jira-payloads.json` with full MCP payloads before creating tickets
 - **Create JIRA tickets**: Read and follow appropriate JIRA creation skill based on project space:
   - `.cursor/skills/kata-jira-task-creation/SKILL.md` for KATA project tickets
   - `.cursor/skills/avp-jira-task-creation/SKILL.md` for AVP project tickets
@@ -145,14 +144,14 @@ Execute using the specialized skills:
   - **Validate ticket titles**: Confirm ticket summaries match the action item names from the final edited tickets.md
   - Auto-format release names (prepend "Release " if needed)
   - Create AVP mirrors for documentation tickets (parent: AVP-5477, engagement: "Komatsu")
-  - **Failure recovery**: Update `jira-payloads.json` with creation status (created/failed); continue on failure
+  - **Failure recovery**: Log failures and continue creating remaining tickets; report all failures at the end
 - **Update analysis.md**: Re-read the final `tickets.md` and rewrite sections 5 (Action Items) and 6 (Prioritized Action Plan + Next Steps) in `analysis.md` to reflect the final ticket content
 - **Generate Slack summary**: Read and follow `.cursor/skills/meeting-slack-summary/SKILL.md`
   - **Read Google Doc link**: Check `transcript.md` in workspace; if it contains a Google Docs URL, include it in Slack message
   - **Include Google Doc link** (if available from `transcript.md`) as reference in Slack message
   - Include all action items (Slack-only first, then JIRA tickets)
   - Send formatted office hours thread message to AlexD
-- **Share Google Doc with participants**: If `transcript.md` contains a Google Docs URL, resolve emails from `user-mapping.md` (with Slack profile fallback for unknowns), present recipient list for user confirmation, then grant writer access via `shareFile` MCP with notification emails
+- **Share Google Doc with participants**: If `transcript.md` contains a Google Docs URL, grant writer access to the recipient list confirmed during Phase 1 review via `shareFile` MCP with notification emails
 - **Save workspace**: Read and follow `.cursor/skills/meeting-workspace/SKILL.md` to create complete workspace with all artifacts
 - Provide immediate actionability with workspace path and ticket URLs
 
@@ -164,6 +163,6 @@ Execute using the specialized skills:
 - **Duplicate detection**: Auto-skips tickets that already exist in JIRA
 - **Smart research**: Only researches technical questions, skips coordination items
 - **Ticket grouping**: Suggests related tickets that could share a parent
-- **Failure recovery**: Saves JIRA payloads to `jira-payloads.json` for retry on failure
+- **Failure recovery**: Logs ticket creation failures and continues; reports all failures at the end
 - **Auto-share meeting notes**: Grants Google Doc access to all attendees and assignees so they get notified with a link
 - **Complete automation**: Full end-to-end workflow from Google Doc to tickets, Slack, and doc sharing
