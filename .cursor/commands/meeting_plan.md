@@ -102,6 +102,23 @@ Execute using the specialized skills:
   - **Include Gemini summary link** (if available from workspace) as reference in Slack message
   - **Slack filtering**: Only include KATA tickets in summaries (exclude AVP mirrors)
   - Send formatted message to AlexD with workspace context
+- **Share Google Doc with participants**: If a Google Docs/Gemini link was provided, grant access to the document for all meeting attendees and action item assignees:
+  - **Skip if no link**: Only run this step when `gemini-link.txt` exists in the workspace
+  - **Extract document ID**: Parse the Google Docs URL from `gemini-link.txt` to get the file ID (segment between `/d/` and the next `/`)
+  - **Build recipient list**: Collect a unique set of people from:
+    1. All attendees listed in analysis.md (Section 1)
+    2. All action item assignees from the final tickets.md
+  - **Resolve email addresses**: For each person in the recipient list:
+    - Look up their email in `.cursor/skills/meeting-slack-summary/user-mapping.md`
+    - For Komatsu users, use the `firstname.lastname@global.komatsu` pattern
+    - For Applied users, use their known email (e.g., `timothy.kyung@applied.co`)
+    - Skip anyone whose email cannot be determined
+  - **Grant access**: For each resolved email, call Google Drive MCP `shareFile` with:
+    - `fileId`: the extracted document ID
+    - `emailAddress`: the person's email
+    - `role`: `"commenter"`
+    - `sendNotificationEmail`: `true` (so they receive a link in their inbox)
+  - **Log results**: Note in the workspace summary how many participants were granted access and any that were skipped (no email found)
 - **TickTick Sync**: Use `.cursor/skills/ticktick-sync` to sync eligible meeting items
   - Run: `python3 .cursor/skills/ticktick-sync/scripts/sync_meeting_items.py --tickets workspaces/<YYYY-MM-DD>/<meeting-slug>/tickets.md --meeting "<Meeting Title>"`
   - Syncs only Slack-tracked items assigned to AlexD or Unassigned
@@ -144,6 +161,7 @@ Execute using the specialized skills:
   - **Include Gemini notes link** (if available from workspace) as reference in Slack message
   - Include all action items (Slack-only first, then JIRA tickets)
   - Send formatted office hours thread message to AlexD
+- **Share Google Doc with participants**: If `gemini-link.txt` exists in workspace, grant commenter access on the Google Doc to all attendees and action item assignees via `shareFile` MCP (resolves emails from `user-mapping.md`, sends notification email so recipients get a link)
 - **TickTick Sync**: Run `python3 .cursor/skills/ticktick-sync/scripts/sync_meeting_items.py --tickets workspaces/<YYYY-MM-DD>/<meeting-slug>/tickets.md --meeting "<Meeting Title>"`
   - Syncs Slack-tracked items assigned to AlexD or Unassigned to TickTick "Cursor Sync" project
   - Short titles (15 words max), full descriptions in content body
@@ -160,4 +178,5 @@ Execute using the specialized skills:
 - **Smart research**: Only researches technical questions, skips coordination items
 - **Ticket grouping**: Suggests related tickets that could share a parent
 - **Failure recovery**: Saves JIRA payloads to `jira-payloads.json` for retry on failure
+- **Auto-share meeting notes**: Grants Google Doc access to all attendees and assignees so they get notified with a link
 - **Complete automation**: Full end-to-end workflow from transcript to tickets, Slack, and TickTick
