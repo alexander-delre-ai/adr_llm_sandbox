@@ -64,7 +64,7 @@ If no content is provided, ask: "Please share a Google Docs link to the meeting 
 ## Review and Execution Phase
 
 **IMPORTANT**: After staging files in workspace, do NOT automatically proceed to execution. Present a summary of staged files and **wait for the user to review `tickets.md`**. The user may edit ticket titles, descriptions, priorities, tracking types, assignees, or remove items entirely. After review, the user will respond with one of two keywords:
-- **"continue"**: Proceed to Phase 2 execution (JIRA ticket creation, Slack summary, doc sharing, TickTick sync)
+- **"continue"**: Proceed to Phase 2 execution (JIRA ticket creation, Slack summary, doc sharing)
 - **"stop"**: End the workflow here. All staged workspace files (analysis.md, research.md, tickets.md, transcript.md) are kept as-is. No tickets are created, no Slack messages are sent, and no doc sharing occurs.
 
 Execute using the specialized skills:
@@ -114,12 +114,8 @@ Execute using the specialized skills:
     - `role`: `"writer"`
     - `sendNotificationEmail`: `true` (so they receive a link in their inbox)
   - **Log results**: Note in the workspace summary how many participants were granted access and any that were skipped (no email found)
-- **TickTick Sync**: Use `.cursor/skills/ticktick-sync` to sync eligible meeting items
-  - Run: `python3 .cursor/skills/ticktick-sync/scripts/sync_meeting_items.py --tickets workspaces/<YYYY-MM-DD>/<meeting-slug>/tickets.md --meeting "<Meeting Title>"`
-  - Syncs only Slack-tracked items assigned to AlexD or Unassigned
-  - Tasks get short titles (15 words max) with full descriptions in content
 - **Workspace Creation**: Use `.cursor/skills/meeting-workspace/SKILL.md`
-  - Save complete workspace with all artifacts, JIRA ticket metadata, and TickTick sync results
+  - Save complete workspace with all artifacts and JIRA ticket metadata
   - Return workspace path and real ticket URLs for immediate actionability
 
 ## Two-Phase Workflow
@@ -157,10 +153,7 @@ Execute using the specialized skills:
   - Include all action items (Slack-only first, then JIRA tickets)
   - Send formatted office hours thread message to AlexD
 - **Share Google Doc with participants**: If `transcript.md` contains a Google Docs URL, resolve emails from `user-mapping.md` (with Slack profile fallback for unknowns), present recipient list for user confirmation, then grant writer access via `shareFile` MCP with notification emails
-- **TickTick Sync**: Run `python3 .cursor/skills/ticktick-sync/scripts/sync_meeting_items.py --tickets workspaces/<YYYY-MM-DD>/<meeting-slug>/tickets.md --meeting "<Meeting Title>"`
-  - Syncs Slack-tracked items assigned to AlexD or Unassigned to TickTick "Cursor Sync" project
-  - Short titles (15 words max), full descriptions in content body
-- **Save workspace**: Read and follow `.cursor/skills/meeting-workspace/SKILL.md` to create complete workspace with TickTick sync results
+- **Save workspace**: Read and follow `.cursor/skills/meeting-workspace/SKILL.md` to create complete workspace with all artifacts
 - Provide immediate actionability with workspace path and ticket URLs
 
 ## Benefits
@@ -173,4 +166,4 @@ Execute using the specialized skills:
 - **Ticket grouping**: Suggests related tickets that could share a parent
 - **Failure recovery**: Saves JIRA payloads to `jira-payloads.json` for retry on failure
 - **Auto-share meeting notes**: Grants Google Doc access to all attendees and assignees so they get notified with a link
-- **Complete automation**: Full end-to-end workflow from Google Doc to tickets, Slack, and TickTick
+- **Complete automation**: Full end-to-end workflow from Google Doc to tickets, Slack, and doc sharing
