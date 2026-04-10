@@ -172,13 +172,13 @@ description: [Clean description]
 
 ### JIRA Tracking (Technical)
 - "Research X technology"
-- "Create Y documentation" (will be mirrored to AVP space)
+- "Create Y documentation" (KATA only unless user requests AVP mirror)
 - "Implement Z feature"
 - "Define requirements for..."
 - Development work
 - Technical analysis
 
-**Documentation Mirroring**: Documentation tickets in KATA space are automatically mirrored to AVP space (parent: AVP-5477). AVP mirrors are excluded from Slack summaries.
+**Documentation and AVP**: KATA documentation tickets do **not** get AVP mirrors by default. Set `avp_mirror: true` in the YAML for an item, or ask the agent to mirror, if you want an AVP task. Slack summaries list KATA keys only.
 
 ## TBD Default System
 

@@ -86,7 +86,7 @@ Execute using the specialized skills:
   - Auto-format releases: prepend "Release " if only version number provided (e.g., "2025.3" -> "Release 2025.3")
   - **Documentation ticket routing**: Any tickets with parent_id="KATA-2226" are documentation tickets
   - **Ticket title validation**: Ensure ticket summaries match the updated action item names from tickets.md after user review
-  - **Create AVP mirrors**: Automatically create AVP copies for documentation tickets (parent: AVP-5477, engagement: "Komatsu")
+  - **AVP mirrors**: Do **not** create AVP copies by default. Only if the user asks or `tickets.md` sets `avp_mirror: true` on an item (see kata-jira-task-creation skill).
   - **On failure**: Log the error and continue creating remaining tickets. Report all failures at the end.
 - **Update analysis.md**: Re-read the final `tickets.md` and update sections 5 (Action Items) and 6 (Prioritized Action Plan + Next Steps) in `analysis.md` to match the final reviewed ticket content
 - **Slack Summary Generation**: Use `.cursor/skills/meeting-slack-summary/SKILL.md`
@@ -143,7 +143,7 @@ Execute using the specialized skills:
   - Apply proper field mappings and epic routing
   - **Validate ticket titles**: Confirm ticket summaries match the action item names from the final edited tickets.md
   - Auto-format release names (prepend "Release " if needed)
-  - Create AVP mirrors for documentation tickets (parent: AVP-5477, engagement: "Komatsu")
+  - Do not create AVP mirrors unless explicitly requested (see kata-jira-task-creation skill)
   - **Failure recovery**: Log failures and continue creating remaining tickets; report all failures at the end
 - **Update analysis.md**: Re-read the final `tickets.md` and rewrite sections 5 (Action Items) and 6 (Prioritized Action Plan + Next Steps) in `analysis.md` to reflect the final ticket content
 - **Generate Slack summary**: Read and follow `.cursor/skills/meeting-slack-summary/SKILL.md`
