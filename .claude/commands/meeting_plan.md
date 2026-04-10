@@ -89,7 +89,7 @@ If Phase 2 is triggered, execute using the specialized skills:
   - Auto-format releases: prepend "Release " if only version number provided (e.g., "2025.3" -> "Release 2025.3")
   - **Documentation ticket routing**: A ticket is a documentation ticket if parent_id="KATA-2226" OR if the title/description contains any of these keywords: `document`, `documentation`, `write`, `tutorial`, `guide`, `runbook`, `README`, `SDK setup`, `API doc`
   - **Ticket title validation**: Ensure ticket summaries match the updated action item names from tickets.md after user review
-  - **Create AVP mirrors**: Automatically create AVP copies for documentation tickets (parent: AVP-5477, engagement: "Komatsu")
+  - **AVP mirrors**: Do **not** create AVP copies by default. Only if the user asks or `tickets.md` sets `avp_mirror: true` on an item (see kata-jira-task-creation command).
 - **Slack Summary Generation**: Use `.claude/commands/meeting-slack-summary.md`
   - **Read Gemini link**: Check for `gemini-link.txt` in workspace and pass URL to Slack summary skill
   - Include all action items (Slack-only first, then JIRA tickets)
@@ -131,7 +131,7 @@ Execute in this order:
    - **Validate ticket titles**: Confirm ticket summaries match the action item names from the final edited tickets.md
    - Auto-format release names (prepend "Release " if needed)
    - **Documentation tickets**: A ticket is documentation if parent_id="KATA-2226" OR title/description contains: `document`, `documentation`, `write`, `tutorial`, `guide`, `runbook`, `README`, `SDK setup`, `API doc`
-   - Create AVP mirrors for all documentation tickets (parent: AVP-5477, engagement: "Komatsu")
+   - Do not create AVP mirrors unless explicitly requested (see kata-jira-task-creation command)
 3. **Generate Slack summary**: Read and follow `.claude/commands/meeting-slack-summary.md`
    - Check for `gemini-link.txt` in workspace and include URL in Slack message
    - Include all action items (Slack-only first, then JIRA tickets)

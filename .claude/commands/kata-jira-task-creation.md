@@ -62,19 +62,13 @@ The Release field uses `customfield_10104` with these available versions:
 - **KATA-2561**: General meeting follow-up tickets
 - **KATA-379**: Uprev tickets (any ticket related to version/dependency uprevs)
 
-## AVP Documentation Mirroring
+## AVP documentation mirroring (opt in only)
 
-**CRITICAL**: When creating documentation tickets in KATA space:
-1. **Identify documentation tickets**: A ticket is a documentation ticket if:
-   - parent_id is "KATA-2226", OR
-   - The ticket title or description contains any of these keywords: `document`, `documentation`, `write`, `tutorial`, `guide`, `runbook`, `README`, `SDK setup`, `API doc`
-   - If detected by keyword but parent_id is TBD, automatically set parent_id to "KATA-2226"
-2. **Create AVP mirror ticket**: Automatically create corresponding ticket in AVP space
-3. **AVP ticket details**:
-   - Parent epic: **AVP-5477** (AVP documentation epic)
-   - Description: Include link to original KATA ticket
-   - Same priority, story points, and assignee as KATA ticket
-4. **Slack exclusion**: AVP documentation tickets should NOT appear in Slack summaries (only KATA tickets)
+**Default: do not create AVP mirror tickets** for KATA work, including documentation tickets (KATA-2226 or documentation keyword matches).
+
+**Mirror to AVP only when** the user explicitly asks, or when `tickets.md` sets `avp_mirror: true` on that item.
+
+When mirroring is requested: epic **AVP-5477**, engagement **Komatsu**, link to the KATA issue in the description. Slack summaries still list **KATA keys only**.
 
 ## Implementation
 
@@ -93,7 +87,7 @@ Use the `mcp__kata-atlassian` MCP tools to create tickets:
    - `projectKey`: "KATA"
    - `issueTypeName`: "Task" (or "Story" if specified)
    - `summary`: the ticket name
-   - `description`: the description in plain markdown text. Append a blank line followed by "Created via JIRA MCP" as a separate paragraph — do NOT use `\n` escape sequences; pass the text with real line breaks or as separate sentences
+   - `description`: the description in plain markdown text. Append a blank line followed by "Created via JIRA MCP" as a separate paragraph. Do not use `\n` escape sequences; pass the text with real line breaks or as separate sentences
    - `contentFormat`: "markdown"
    - `assignee_account_id`: account ID from lookup (omit if "Unassigned" or lookup failed)
    - `additional_fields`: object with required fields:
@@ -101,15 +95,7 @@ Use the `mcp__kata-atlassian` MCP tools to create tickets:
      - `parent`: {"key": "KATA-XXXX"} (epic ID)
      - `customfield_10104`: {"id": "10002"} (release ID from mapping above)
      - `customfield_10137`: 0 (story points, required field)
-4. **Create AVP Mirror** (if documentation ticket):
-   - Check if parent epic is "KATA-2226" or ticket involves documentation work
-   - If yes, create corresponding ticket in AVP space using the applied MCP server:
-     - Same summary and assignee as KATA ticket
-     - Description: Original description + "\n\nMirror of KATA ticket: [KATA-XXXX](https://appliedint-katana.atlassian.net/browse/KATA-XXXX)\n\nCreated via JIRA MCP"
-     - Parent epic: "AVP-5477"
-     - Same priority and story points
-     - **Engagement**: "Komatsu" (required field for AVP project)
-   - AVP tickets are for internal tracking only and should NOT appear in Slack summaries
+4. **AVP mirrors**: Skip by default. Only create AVP issues when explicitly requested (see section above).
 
 ### Fallback: JSON Output
 If MCP server is unavailable, produce a structured JIRA ticket payload as a fenced JSON block:
