@@ -13,7 +13,7 @@ Each `.claude/commands/` file has a corresponding source in `.cursor/`:
 | Claude Command | Cursor Counterpart |
 |---|---|
 | `.claude/commands/meeting_plan.md` | `.cursor/commands/meeting_plan.md` |
-| `.claude/commands/meeting_transcript_summary.md` | `.cursor/commands/meeting_transcript_summary.md` |
+| `.claude/commands/meeting_summary.md` | `.cursor/skills/meeting_summary/SKILL.md` |
 | `.claude/commands/meeting-analysis.md` | `.cursor/skills/meeting-analysis/SKILL.md` |
 | `.claude/commands/meeting-workspace.md` | `.cursor/skills/meeting-workspace/SKILL.md` |
 | `.claude/commands/meeting-tickets.md` | `.cursor/skills/meeting-tickets/SKILL.md` |
@@ -33,6 +33,7 @@ The Claude versions have deliberate modifications that are not drift - do not fl
 - **Em-dashes**: `.cursor` files may contain em-dashes (`—`); `.claude` files replace them with commas, colons, or hyphens
 - **Frontmatter**: `.cursor` files use `name:` + `description:`; `.claude` files use only `description:`
 - **Script paths**: Both reference `.cursor/skills/*/scripts/` - this is correct and intentional
+- **meeting_summary stub**: `.cursor/commands/meeting_summary.md` only points to `.cursor/skills/meeting_summary/SKILL.md`. Substantive workflow lives in the skill; compare it to `.claude/commands/meeting_summary.md`
 
 ## Workflow
 

@@ -2,7 +2,7 @@
 description: Transcript-only meeting workflow. Accepts a pasted transcript or file path, writes workspace transcript.md and structured analysis.md via meeting-analysis. No Google Docs fetch, research, tickets, JIRA, Slack, or TickTick.
 ---
 
-# /meeting_transcript_summary
+# /meeting_summary
 
 Slim alternative to `/meeting_plan` for when you already have a **full transcript** (text) and only want a structured **summary and analysis** on disk. Reuses the same `analysis.md` format as `/meeting-analysis`.
 
