@@ -41,6 +41,7 @@ Claude Code slash commands - invoke with `/command-name`. These are the primary 
 | Command | Purpose |
 |---|---|
 | `/meeting_plan` | Full meeting workflow orchestrator (analysis, tickets, JIRA, Slack) |
+| `/meeting_transcript_summary` | Transcript-only: writes `analysis.md` (no tickets, JIRA, or Slack) |
 | `/meeting-analysis` | Extract decisions, action items, themes from transcripts |
 | `/meeting-workspace` | Create persistent `workspaces/YYYY-MM-DD/{slug}/` directories |
 | `/meeting-tickets` | Stage editable JIRA ticket proposals in workspace |

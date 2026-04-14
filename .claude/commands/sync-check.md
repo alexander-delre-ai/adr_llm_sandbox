@@ -13,6 +13,7 @@ Each `.claude/commands/` file has a corresponding source in `.cursor/`:
 | Claude Command | Cursor Counterpart |
 |---|---|
 | `.claude/commands/meeting_plan.md` | `.cursor/commands/meeting_plan.md` |
+| `.claude/commands/meeting_transcript_summary.md` | `.cursor/commands/meeting_transcript_summary.md` |
 | `.claude/commands/meeting-analysis.md` | `.cursor/skills/meeting-analysis/SKILL.md` |
 | `.claude/commands/meeting-workspace.md` | `.cursor/skills/meeting-workspace/SKILL.md` |
 | `.claude/commands/meeting-tickets.md` | `.cursor/skills/meeting-tickets/SKILL.md` |
