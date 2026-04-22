@@ -1,4 +1,5 @@
 ---
+name: ticktick-sync
 description: Syncs Slack-tracked action items to TickTick Cursor Sync project using their API. Supports two modes - daily-todos sync and meeting action item sync from tickets.md. Tasks use short titles (15 words max) with full descriptions in content.
 ---
 
@@ -134,4 +135,4 @@ Setup TickTick integration
 
 This skill integrates with:
 - **daily-todos skill**: Syncs generated daily Slack todos to TickTick
-- **meeting-plan command**: After Slack summary is sent, syncs eligible meeting action items to TickTick as follow-up tasks
+- **meeting-plan skill**: After Slack summary is sent, syncs eligible meeting action items to TickTick as follow-up tasks

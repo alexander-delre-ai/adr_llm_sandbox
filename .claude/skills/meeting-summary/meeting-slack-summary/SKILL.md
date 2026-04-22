@@ -1,4 +1,5 @@
 ---
+name: meeting-slack-summary
 description: Composes a Slack message summarizing a completed meeting analysis and sends notification to AlexD. Includes attendees, action items, and corresponding JIRA ticket links in office hours thread format. Use after meeting-workspace has run and the workspace path is known.
 ---
 

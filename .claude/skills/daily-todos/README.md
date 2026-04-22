@@ -87,7 +87,7 @@ The skill parses these files from each workspace:
 
 ```
 daily-todos/
-├── (slash command: .claude/commands/daily-todos.md)
+├── (slash command: .claude/skills/daily-todos/SKILL.md)
 ├── README.md             # This documentation
 ├── examples.md           # Usage examples and formats
 └── scripts/

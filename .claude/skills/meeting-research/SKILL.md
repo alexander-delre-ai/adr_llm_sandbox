@@ -1,4 +1,5 @@
 ---
+name: meeting-research
 description: Searches Slack, Confluence, JIRA, and the codebase to answer questions arising from meetings. Takes a question and optional meeting context, runs multi-source searches, and synthesizes findings into a structured response with sources. Use when researching unresolved questions, looking up prior decisions, or finding implementation details related to meeting discussions.
 ---
 

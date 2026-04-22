@@ -1,4 +1,5 @@
 ---
+name: chat-keyword-insights
 description: Extracts keywords, JIRA tickets, questions, debugging sessions, and recurring themes from Cursor agent transcripts across adr-llm-sandbox, core-stack, and vehicle-os-katana workspaces, plus Slack #ext-program-katana-sdv. Generates daily insights report in insights/YYYY-MM-DD.md.
 ---
 

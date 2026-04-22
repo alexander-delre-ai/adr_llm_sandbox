@@ -2,4 +2,4 @@
 alwaysApply: true
 ---
 
-When any file under `.claude/commands/`, `.claude/skills/`, or `.cursor/rules/` is created or modified, commit the change immediately after the edit is complete. Use a concise commit message describing what was updated (e.g., "update ticktick-sync scripts to remove assignee from task content"). Do not batch skill or command or rule changes with unrelated file changes.
+When any file under `.claude/skills/` or `.cursor/rules/` is created or modified, commit the change immediately after the edit is complete. Use a concise commit message describing what was updated (e.g., "update ticktick-sync scripts to remove assignee from task content"). Do not batch skill or rule changes with unrelated file changes.

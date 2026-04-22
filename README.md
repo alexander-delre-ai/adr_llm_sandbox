@@ -1,6 +1,6 @@
 # ADR LLM Sandbox
 
-A Cursor-based AI development environment with specialized rules, skills, and commands for meeting analysis, JIRA integration, and team collaboration workflows.
+A Cursor-based AI development environment with specialized rules and **Agent Skills** (`.claude/skills/**/SKILL.md`) for meeting analysis, JIRA integration, and team collaboration workflows.
 
 ## Overview
 
@@ -15,13 +15,13 @@ The `.cursor/rules/` directory contains workspace-level rules that are always ap
 - **Purpose**: Enforces consistent response formatting
 - **Rule**: Never use em-dashes (—) in responses
 
-## Claude commands and skills assets
+## Agent skills
 
-Slash commands live in `.claude/commands/`. Scripts, JSON, and data files live in `.claude/skills/`.
+Workflow instructions live in each skill's `SKILL.md` under [`.claude/skills/`](.claude/skills/). The same directory holds scripts, JSON mappings, and supporting data. See [CLAUDE.md](CLAUDE.md) for a full table of skills.
 
 ### Meeting Analysis Pipeline
 
-#### `/meeting-analysis` (`.claude/commands/meeting-analysis.md`)
+#### meeting-analysis (`.claude/skills/meeting-analysis/SKILL.md`)
 - **Purpose**: Analyzes meeting content (transcripts or summaries) to extract structured insights
 - **Input**: Full transcripts or AI-generated summaries
 - **Output**: Structured `analysis.md` with 6 sections:
@@ -33,7 +33,7 @@ Slash commands live in `.claude/commands/`. Scripts, JSON, and data files live i
   6. Prioritized Action Plan
 - **Features**: Handles both full transcripts and Gemini summaries, filters meeting rooms from participants
 
-#### `/meeting-workspace`
+#### meeting-workspace (`.claude/skills/meeting-workspace/SKILL.md`)
 - **Purpose**: Creates persistent directory structure for meeting artifacts
 - **Directory Pattern**: `workspaces/<YYYY-MM-DD>-<slugified-title>/`
 - **Artifacts Saved**:
@@ -46,8 +46,8 @@ Slash commands live in `.claude/commands/`. Scripts, JSON, and data files live i
   - Session history (`chat-history.md`)
 
 #### `meeting-summary` (and `meeting-slack-summary`)
-- **`/meeting-summary`**: Transcript, file, or Google Doc to `workspaces/.../transcript.md` and `analysis.md` (see `.claude/commands/meeting-summary.md`)
-- **`/meeting-slack-summary`**: Slack office-hours message; assets under `.claude/skills/meeting-summary/meeting-slack-summary/` (for example `user-mapping.md`). See `.claude/commands/meeting-slack-summary.md`
+- **meeting-summary**: Transcript, file, or Google Doc to `workspaces/.../transcript.md` and `analysis.md` (see `.claude/skills/meeting-summary/SKILL.md`)
+- **meeting-slack-summary**: Slack office-hours message; assets under `.claude/skills/meeting-summary/meeting-slack-summary/` (for example `user-mapping.md`). See `.claude/skills/meeting-summary/meeting-slack-summary/SKILL.md`
 - **Slack sub-skill features**:
   - Separates Komatsu vs Applied attendees
   - Uses Slack mentions for Applied team members
@@ -56,7 +56,7 @@ Slash commands live in `.claude/commands/`. Scripts, JSON, and data files live i
 
 ### JIRA Integration
 
-#### `/kata-jira-task-creation`
+#### kata-jira-task-creation (`.claude/skills/kata-jira-task-creation/SKILL.md`)
 - **Project**: KATA (prefix: `KATA-`)
 - **Mandatory Fields**: `epic_id`, `release`, `name`
 - **Priority System**: P0 (critical), P1 (high), P2 (medium), P3 (low)
@@ -66,7 +66,7 @@ Slash commands live in `.claude/commands/`. Scripts, JSON, and data files live i
   - KATA-2226: Documentation tickets
   - KATA-2561: General meeting follow-up
 
-#### `/avp-jira-task-creation`
+#### avp-jira-task-creation (`.claude/skills/avp-jira-task-creation/SKILL.md`)
 - **Project**: AVP (prefix: `AVP-`)
 - **Mandatory Fields**: `epic_id`, `release`, `name`
 - **Priority System**: Highest, High, Medium, Low, Lowest
@@ -77,11 +77,11 @@ Slash commands live in `.claude/commands/`. Scripts, JSON, and data files live i
 
 #### Deprecated monolith
 
-- **`meeting-analysis-and-planning`**: Deprecated. Use `/meeting-analysis` and `/meeting-tickets` (see `.claude/skills/meeting-analysis-and-planning/README.md`).
+- **meeting-analysis-and-planning**: Deprecated. Use the `meeting-analysis` and `meeting-tickets` skills (see `.claude/skills/meeting-analysis-and-planning/README.md`).
 
 ## Orchestrator
 
-### `/meeting-plan` (`.claude/commands/meeting-plan.md`)
+### meeting-plan (`.claude/skills/meeting-plan/SKILL.md`)
 
 - **Purpose**: Full pipeline from content to staged `tickets.md`, then optional JIRA, Slack, TickTick, Google Doc share, workspace bundle
 - **Phases**: Phase 1 stages `analysis.md`, `research.md`, `tickets.md`; Phase 2 runs after `continue` or `confirm`
@@ -91,8 +91,7 @@ Slash commands live in `.claude/commands/`. Scripts, JSON, and data files live i
 
 ```
 .claude/
-├── commands/           # Slash command definitions (workflow text)
-└── skills/             # Scripts, JSON, env.example, user-mapping, etc.
+└── skills/             # SKILL.md per workflow, plus scripts, JSON, env templates, data
 
 .cursor/
 └── rules/              # Workspace rules (always applied)
@@ -129,20 +128,16 @@ temp/
 
 ## 🚀 Usage Examples
 
-### Meeting Analysis Workflow
-```
-/meeting-plan
-```
-1. Provide meeting transcript or summary
-2. System creates workspace and analysis
-3. Review and edit proposed tickets
-4. Confirm to create actual JIRA tickets
-5. Receive Slack summary for team notification
+### Meeting analysis workflow
 
-### Direct command usage
+1. Open `.claude/skills/meeting-plan/SKILL.md` and follow the steps (or have the agent load that skill).
+2. Provide meeting transcript, Google Doc link, or file path.
+3. Review staged `tickets.md`, then continue to Phase 2 to create JIRA tickets, Slack summary, and TickTick sync as described in the skill.
+
+### Direct skill usage
 
 ```
-Read and follow .claude/commands/meeting-analysis.md
+Read and follow .claude/skills/meeting-analysis/SKILL.md
 ```
 
 ## 📝 File Conventions
@@ -166,8 +161,7 @@ Read and follow .claude/commands/meeting-analysis.md
 ## 📊 Current Status
 
 - **Active Rules**: 1 (response formatting)
-- **Active Skills**: 6 (meeting pipeline + JIRA integration)
-- **Active Commands**: multiple (see `.claude/commands/`, for example `meeting-plan`, `meeting-summary`)
+- **Active Skills**: see [CLAUDE.md](CLAUDE.md) skills table; workflows live under `.claude/skills/`
 - **Supported Projects**: KATA, AVP
 - **MCP Servers**: 6 configured and functional
 - **Workspace Pattern**: Established and tested

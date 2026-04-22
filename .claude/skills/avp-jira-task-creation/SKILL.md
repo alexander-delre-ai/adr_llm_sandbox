@@ -1,4 +1,5 @@
 ---
+name: avp-jira-task-creation
 description: Creates a new JIRA ticket in the AVP project space. Use when converting a meeting action item or planned task into an AVP JIRA issue. Epic IDs must use the AVP- prefix. Documentation tickets default to epic AVP-5477. Requires epic ID (or documentation default), engagement, and ticket name as mandatory fields where applicable.
 ---
 

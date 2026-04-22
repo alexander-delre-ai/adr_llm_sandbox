@@ -1,4 +1,5 @@
 ---
+name: kata-sprint-ticket-factory
 description: Creates multiple KATA JIRA tickets for an upcoming sprint. Mandatory fields are release, sprint, and assignee. Infers ticket title and description from context. Suggests epics from active (In Progress or Backlog) Virtual Toolchain and SDV SW initiative epics, then confirms with the user before creating.
 ---
 

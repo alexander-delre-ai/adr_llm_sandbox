@@ -2,8 +2,8 @@
 
 Use Claude Code slash commands instead:
 
-- `.claude/commands/meeting-analysis.md`
-- `.claude/commands/meeting-tickets.md`
-- `.claude/commands/meeting-plan.md`
+- `.claude/skills/meeting-analysis/SKILL.md`
+- `.claude/skills/meeting-tickets/SKILL.md`
+- `.claude/skills/meeting-plan/SKILL.md`
 
 Optional reference data: `meeting-rooms-reference.md` in this folder (if present).

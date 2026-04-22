@@ -1,4 +1,5 @@
 ---
+name: meeting-tickets
 description: Creates editable tickets.md file from meeting action items with proper tracking categorization, defaults, and YAML format. Use after meeting analysis to generate reviewable ticket proposals.
 ---
 
@@ -199,16 +200,16 @@ description: [Clean description]
 
 ## Usage
 
-This command focuses on ticket file creation only. It does not create JIRA tickets or full workspace bundles. It produces an editable tickets.md file that can be reviewed and modified before ticket creation.
+This skill focuses on ticket file creation only. It does not create JIRA tickets or full workspace bundles. It produces an editable tickets.md file that can be reviewed and modified before ticket creation.
 
-## Contract with downstream commands
+## Contract with downstream skills
 
 The `tracking` field is the authoritative gate for what happens after user approval:
 
-- `tracking: jira` or `tracking: both`: `.claude/commands/kata-jira-task-creation.md` creates a JIRA ticket when applicable
+- `tracking: jira` or `tracking: both`: `.claude/skills/kata-jira-task-creation/SKILL.md` creates a JIRA ticket when applicable
 - `tracking: slack`: Slack summary and TickTick sync only, **no JIRA ticket**
 
-The user may change any field (including `tracking`) between generation and approval. Downstream commands **must re-read tickets.md immediately before processing** and respect the final `tracking` value. See `.claude/commands/kata-jira-task-creation.md` for re-read and tracking filter rules.
+The user may change any field (including `tracking`) between generation and approval. Downstream skills **must re-read tickets.md immediately before processing** and respect the final `tracking` value. See `.claude/skills/kata-jira-task-creation/SKILL.md` for re-read and tracking filter rules.
 
 ## Integration
 

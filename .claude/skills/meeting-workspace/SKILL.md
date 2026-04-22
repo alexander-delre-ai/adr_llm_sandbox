@@ -1,4 +1,5 @@
 ---
+name: meeting-workspace
 description: Creates a structured workspace directory under /workspaces for a meeting, saving the transcript, analysis, JIRA tickets, and action plan. Use after completing a meeting analysis to persist all artifacts to disk.
 ---
 

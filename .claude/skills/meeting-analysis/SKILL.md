@@ -1,4 +1,5 @@
 ---
+name: meeting-analysis
 description: Analyzes meeting content (transcripts or summaries) to extract context, decisions, themes, unresolved questions, and action items. Creates structured analysis.md file. Use for processing any meeting content into organized analysis format.
 ---
 

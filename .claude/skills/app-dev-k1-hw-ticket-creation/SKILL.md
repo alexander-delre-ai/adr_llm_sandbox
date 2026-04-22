@@ -1,4 +1,5 @@
 ---
+name: app-dev-k1-hw-ticket-creation
 description: Enhanced JIRA ticket creation for K1 hardware application development with smart validation, customizable story points, error recovery, and batch processing. Features historical learning, checkpoint-based recovery, and interactive plan customization. Use for K1 hardware development workflows, batch manager processing, or when you need robust ticket creation with failure recovery.
 ---
 

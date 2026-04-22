@@ -1,4 +1,5 @@
 ---
+name: remarkable-feature-request
 description: Crafts a compelling feature request for reMarkable's Wishes & Ideas support portal and guides the user through submitting the static form.
 ---
 

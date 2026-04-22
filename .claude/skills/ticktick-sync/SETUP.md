@@ -171,7 +171,7 @@ TICKTICK_AUTO_CLEANUP=false  # Keep all projects
 
 ```
 .claude/skills/ticktick-sync/
-├── README.md             # Detailed documentation (slash command: .claude/commands/ticktick-sync.md)
+├── README.md             # Detailed documentation (slash command: .claude/skills/ticktick-sync/SKILL.md)
 ├── SETUP.md              # This quick setup guide
 ├── env.example           # Environment template
 ├── .env                  # Your configuration (created during setup)

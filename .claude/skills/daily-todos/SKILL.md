@@ -1,4 +1,5 @@
 ---
+name: daily-todos
 description: Generates daily to-do lists for AlexD by scanning workspace directories for Slack action items and syncing them directly to TickTick Cursor Sync project. Optionally creates markdown files. Use when creating daily task lists, syncing todos to TickTick, or organizing action items.
 ---
 

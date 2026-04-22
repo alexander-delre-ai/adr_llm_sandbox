@@ -1,4 +1,5 @@
 ---
+name: kata-jira-task-creation
 description: Creates a new JIRA ticket in the KATA project space. Use when converting a meeting action item or planned task into a KATA JIRA issue. Epic IDs must use the KATA- prefix. Requires epic ID, release, and ticket name as mandatory fields.
 ---
 

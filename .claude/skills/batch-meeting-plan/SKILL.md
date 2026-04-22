@@ -34,7 +34,7 @@ Report the count: "Found N meeting links. Launching N parallel agents."
 
 For each link, launch a `Task` subagent with `subagent_type="generalPurpose"` and `run_in_background=true`. Each subagent receives a self-contained prompt that includes:
 
-1. The full text of the `meeting-plan` command (from `.claude/commands/meeting-plan.md`)
+1. The full text of the `meeting-plan` skill (from `.claude/skills/meeting-plan/SKILL.md`)
 2. The specific Google Docs URL to process
 3. Instruction to execute **Phase 1 only** (analysis, research, workspace creation, ticket staging)
 4. Instruction to **stop after staging files** and report back the workspace path and a summary of action items found
@@ -47,14 +47,14 @@ You are running a meeting-plan workflow for a single meeting. Follow these instr
 INPUT: Google Docs link: <URL>
 
 INSTRUCTIONS:
-1. Read and follow the meeting-plan command at .claude/commands/meeting-plan.md
+1. Read and follow the meeting-plan skill at .claude/skills/meeting-plan/SKILL.md
 2. Use the Google Docs link as your input (fetch via FetchMcpResource with server "user-google-drive" and URI "gdrive:///<document-id>")
 3. Execute Phase 1 ONLY:
    - Fetch the document content
    - Create the workspace directory
-   - Run meeting analysis (read .claude/commands/meeting-analysis.md)
-   - Research unresolved questions (read .claude/commands/meeting-research.md)
-   - Create ticket proposals (read .claude/commands/meeting-tickets.md)
+   - Run meeting analysis (read .claude/skills/meeting-analysis/SKILL.md)
+   - Research unresolved questions (read .claude/skills/meeting-research/SKILL.md)
+   - Create ticket proposals (read .claude/skills/meeting-tickets/SKILL.md)
    - Stage all files in the workspace
 4. STOP after Phase 1. Do NOT create JIRA tickets, send Slack messages, or run TickTick sync.
 5. Return a summary containing:

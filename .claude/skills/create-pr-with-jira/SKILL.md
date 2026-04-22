@@ -1,4 +1,5 @@
 ---
+name: create-pr-with-jira
 description: Creates a KATA JIRA ticket for a GitHub PR, updates the PR title to prepend the ticket ID, and comments the JIRA link on the PR. Auto-detects epic from PR content (uprev -> KATA-379, docs -> KATA-2226). Prompts for release.
 ---
 
