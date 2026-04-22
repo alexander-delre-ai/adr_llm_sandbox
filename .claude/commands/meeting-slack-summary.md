@@ -18,11 +18,11 @@ Collect these before composing the message:
 | Workspace path | Output of `meeting-workspace` skill |
 | Action items | Step 5 of analysis (What, Who, Priority) |
 | JIRA ticket keys + URLs | Step 6 of analysis (optional - omit row if no tickets were created) |
-| User organization mapping | Read `.cursor/skills/meeting-slack-summary/user-mapping.md` |
+| User organization mapping | Read `.cursor/skills/meeting-summary/meeting-slack-summary/user-mapping.md` |
 
 If the workspace path is not yet known, run the `meeting-workspace` skill first.
 
-**IMPORTANT**: Before processing attendees, read the `user-mapping.md` file at `.cursor/skills/meeting-slack-summary/user-mapping.md` to get the latest user organization assignments and known Slack IDs.
+**IMPORTANT**: Before processing attendees, read the `user-mapping.md` file at `.cursor/skills/meeting-summary/meeting-slack-summary/user-mapping.md` to get the latest user organization assignments and known Slack IDs.
 
 **Check for Gemini link in workspace**:
 - Look for `gemini-link.txt` file in the workspace directory
@@ -61,7 +61,7 @@ Ask the user for optional inputs (if not already provided):
    - Store for use in step 3 (message generation)
 
 2. **Parse attendees by organization and find Slack IDs**:
-   - **Reference user mapping**: Read `.cursor/skills/meeting-slack-summary/user-mapping.md` for comprehensive user organization assignments and known Slack IDs
+   - **Reference user mapping**: Read `.cursor/skills/meeting-summary/meeting-slack-summary/user-mapping.md` for comprehensive user organization assignments and known Slack IDs
    - **Filter out meeting rooms**: Remove entries with location codes (e.g., "Coulomb's Law (SVL-WCAL-HQ, FL3)")
    - **Komatsu attendees**: Use plain names (no Slack mentions)
      - Examples: Jonas Hageman, Mike Lemm, Joseph Boyer, Nuthan Sabbani, Joshua Rohman
@@ -70,7 +70,7 @@ Ask the user for optional inputs (if not already provided):
    - **Name corrections**: "Ashley" should be "Ashli Forbes"
    - **Special cases**: "Coulomb's Law/Alex (SVL)" or "Alex (SVL)" refers to Alex Del Re
    - Use `slack_search_users` to find Slack user IDs for new Applied attendees not in mapping
-   - Update `.cursor/skills/meeting-slack-summary/user-mapping.md` when new users are discovered
+   - Update `.cursor/skills/meeting-summary/meeting-slack-summary/user-mapping.md` when new users are discovered
 
 3. **Format the date and thread title**:
    - Convert from meeting date to DD/MM/YYYY format
@@ -99,7 +99,7 @@ Ask the user for optional inputs (if not already provided):
 7. **Update user mapping (if needed)**:
    - If new users were discovered during Slack ID lookup
    - If organizational assignments were clarified
-   - Update `.cursor/skills/meeting-slack-summary/user-mapping.md` with new information
+   - Update `.cursor/skills/meeting-summary/meeting-slack-summary/user-mapping.md` with new information
    - **Auto-commit**: If the file was changed, commit it immediately with message: `update user-mapping with attendees from <meeting-slug>`
 
 ## Rules

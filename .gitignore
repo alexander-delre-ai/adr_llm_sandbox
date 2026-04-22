@@ -2,6 +2,8 @@ workspaces/
 temp/
 testing/
 todos/
+docs-questions/
+insights/
 
 .cursor/skills/meeting-summary/meeting-slack-summary/user-mapping.md
 

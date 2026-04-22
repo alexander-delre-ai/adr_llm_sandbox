@@ -103,7 +103,7 @@ If Phase 2 is triggered, execute using the specialized skills:
 - **Workspace Creation**: Use `.claude/commands/meeting-workspace.md`
   - Save complete workspace with all artifacts, JIRA ticket metadata, and TickTick sync results
   - Return workspace path and real ticket URLs for immediate actionability
-- **Auto-update user mapping**: If any new Applied attendees were discovered during Slack summary generation, commit the updated `.cursor/skills/meeting-slack-summary/user-mapping.md`
+- **Auto-update user mapping**: If any new Applied attendees were discovered during Slack summary generation, commit the updated `.cursor/skills/meeting-summary/meeting-slack-summary/user-mapping.md`
 - **Update analysis.md** (final step): Re-read the final `tickets.md` and update sections 5 (Action Items) and 6 (Prioritized Action Plan + Next Steps) in `analysis.md` with real KATA-XXXX ticket keys and final reviewed content
 
 ## Two-Phase Workflow
@@ -141,7 +141,7 @@ Execute in this order:
    - Short titles (15 words max), full descriptions in content body
 5. **Save workspace**: Read and follow `.claude/commands/meeting-workspace.md` to create complete workspace with TickTick sync results
    - **Move temp files**: If input was from `temp/` directory, move original file to workspace as transcript.md
-6. **Auto-update user mapping**: If new Applied attendees were discovered, update `.cursor/skills/meeting-slack-summary/user-mapping.md` and commit it with message: `update user-mapping with attendees from <meeting-slug>`
+6. **Auto-update user mapping**: If new Applied attendees were discovered, update `.cursor/skills/meeting-summary/meeting-slack-summary/user-mapping.md` and commit it with message: `update user-mapping with attendees from <meeting-slug>`
 7. **Update analysis.md** (final step): Re-read final `tickets.md` and rewrite sections 5 (Action Items) and 6 (Prioritized Action Plan + Next Steps) with real KATA-XXXX ticket keys and final reviewed content. Provide workspace path and ticket URLs.
 
 ## Benefits
