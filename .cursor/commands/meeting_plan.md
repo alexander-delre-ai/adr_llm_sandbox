@@ -46,7 +46,7 @@ If no content is provided, ask: "Please share a Google Docs link to the meeting 
 7a. **Check for action items**: If the analysis contains zero action items (pure status update, demo, or informational meeting), skip ticket staging (Steps 8-10) and proceed directly to Phase 2 execution (Slack summary and doc sharing only, no JIRA tickets). Inform the user: "No action items found. Sending Slack summary only."
 8. **Create ticket proposals**: Read and follow `.cursor/skills/meeting-tickets/SKILL.md` to create tickets.md. The tickets skill will:
     - Infer `parent_id` from meeting title via `.cursor/skills/meeting-tickets/meeting-epic-mapping.json`
-    - Normalize assignee names via `.cursor/skills/meeting-slack-summary/user-mapping.md`
+    - Normalize assignee names via `.cursor/skills/meeting-summary/meeting-slack-summary/user-mapping.md`
     - Estimate story points from description heuristics
     - Infer release from timeline mentions via `.cursor/skills/kata-jira-task-creation/release-mapping.json`
     - Suggest ticket groupings for related items
@@ -89,7 +89,7 @@ Execute using the specialized skills:
   - **AVP mirrors**: Do **not** create AVP copies by default. Only if the user asks or `tickets.md` sets `avp_mirror: true` on an item (see kata-jira-task-creation skill).
   - **On failure**: Log the error and continue creating remaining tickets. Report all failures at the end.
 - **Update analysis.md**: Re-read the final `tickets.md` and update sections 5 (Action Items) and 6 (Prioritized Action Plan + Next Steps) in `analysis.md` to match the final reviewed ticket content
-- **Slack Summary Generation**: Use `.cursor/skills/meeting-slack-summary/SKILL.md`
+- **Slack Summary Generation**: Use `.cursor/skills/meeting-summary/meeting-slack-summary/SKILL.md`
   - **Read Google Doc link**: Check `transcript.md` in workspace; if it contains a Google Docs URL (single-line file), pass the URL to the Slack summary skill
   - Include all action items (Slack-only first, then JIRA tickets)
   - **Include Google Doc link** (if available from `transcript.md`) as reference in Slack message
@@ -102,7 +102,7 @@ Execute using the specialized skills:
     1. All attendees listed in analysis.md (Section 1)
     2. All action item assignees from the final tickets.md
   - **Resolve email addresses**: For each person in the recipient list:
-    - Look up their email in `.cursor/skills/meeting-slack-summary/user-mapping.md`
+    - Look up their email in `.cursor/skills/meeting-summary/meeting-slack-summary/user-mapping.md`
     - For Komatsu users, use the `firstname.lastname@global.komatsu` pattern
     - For Applied users, use their known email (e.g., `timothy.kyung@applied.co`)
     - If email is not in `user-mapping.md`, use `slack_search_users` to find the person's Slack user ID by name, then `slack_read_user_profile` to retrieve their email. If found, update `user-mapping.md` with the discovery.
@@ -146,7 +146,7 @@ Execute using the specialized skills:
   - Do not create AVP mirrors unless explicitly requested (see kata-jira-task-creation skill)
   - **Failure recovery**: Log failures and continue creating remaining tickets; report all failures at the end
 - **Update analysis.md**: Re-read the final `tickets.md` and rewrite sections 5 (Action Items) and 6 (Prioritized Action Plan + Next Steps) in `analysis.md` to reflect the final ticket content
-- **Generate Slack summary**: Read and follow `.cursor/skills/meeting-slack-summary/SKILL.md`
+- **Generate Slack summary**: Read and follow `.cursor/skills/meeting-summary/meeting-slack-summary/SKILL.md`
   - **Read Google Doc link**: Check `transcript.md` in workspace; if it contains a Google Docs URL, include it in Slack message
   - **Include Google Doc link** (if available from `transcript.md`) as reference in Slack message
   - Include all action items (Slack-only first, then JIRA tickets)

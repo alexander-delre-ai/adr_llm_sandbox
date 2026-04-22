@@ -1,15 +1,19 @@
 ---
 name: meeting-summary
-description: Loads meeting text from a pasted transcript, file path, or Google Docs URL (fetched via Google Drive MCP), writes workspaces transcript.md and structured analysis.md via meeting-analysis. No research, tickets, JIRA, Slack, or TickTick.
+description: Loads meeting text from a pasted transcript, file path, or Google Docs URL (fetched via Google Drive MCP), writes workspaces transcript.md and structured analysis.md via meeting-analysis. No research, tickets, JIRA, or TickTick by default. Optional sub-skill meeting-slack-summary adds office-hours Slack DMs to AlexD after analysis (often with meeting_plan or meeting-workspace).
 ---
 
 # Meeting summary
 
-Slim alternative to `meeting_plan` when you want **structured analysis** under `workspaces/` only. Produces the same six-section `analysis.md` as the meeting-analysis skill. No tickets, JIRA, Slack, or TickTick.
+Slim alternative to `meeting_plan` when you want **structured analysis** under `workspaces/` only. Produces the same six-section `analysis.md` as the meeting-analysis skill. No research, tickets, JIRA, or TickTick in the base path.
 
-## What this skill skips
+## Sub-skill: Slack office hours message
 
-- No `research.md`, `tickets.md`, Phase 2, or execution steps
+**`.cursor/skills/meeting-summary/meeting-slack-summary/SKILL.md`** is the sub-skill for **formatting and sending** a single office-hours style Slack message to AlexD, using `analysis.md`, optional `tickets.md` (for JIRA links from `meeting_plan`), and `transcript.md` (Google Doc line). It does not replace this skill; use it when you have a workspace path and need the Slack step (for example after `meeting-workspace` or `meeting_plan` Phase 2). See that file for `user-mapping.md` and message format.
+
+## What this base skill skips
+
+- No `research.md`, `tickets.md`, Phase 2, or execution steps. Sub-skill `meeting-slack-summary` covers the Slack follow-on when invoked separately or from `meeting_plan`.
 
 ## Input
 

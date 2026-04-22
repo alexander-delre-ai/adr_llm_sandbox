@@ -3,7 +3,7 @@ temp/
 testing/
 todos/
 
-.cursor/skills/meeting-slack-summary/user-mapping.md
+.cursor/skills/meeting-summary/meeting-slack-summary/user-mapping.md
 
 .cursor/skills/ticktick-sync/.env
 *.pyc

@@ -72,7 +72,7 @@ For each action item, set these defaults:
 
 ### Step 3 - Normalize assignee names
 
-Read `.cursor/skills/meeting-slack-summary/user-mapping.md` and resolve each assignee to their canonical name:
+Read `.cursor/skills/meeting-summary/meeting-slack-summary/user-mapping.md` and resolve each assignee to their canonical name:
 
 - Match transcript names, nicknames, and aliases to the canonical entry (e.g., "NickT" -> "Nick Sturm", "Juan" -> "Hwan Chul Kang", "Ashley" -> "Ashli Forbes", "Nathan" -> "Nuthan Sabbani")
 - Use the canonical name consistently in tickets.md for both display and JIRA lookup

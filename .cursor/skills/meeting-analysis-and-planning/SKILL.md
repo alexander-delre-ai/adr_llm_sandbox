@@ -217,7 +217,7 @@ Pass it:
 
 After workspace creation, automatically ask: "Would you like me to generate a Slack message for the office hours thread?"
 
-If yes, read and follow `.cursor/skills/meeting-slack-summary/SKILL.md`.
+If yes, read and follow `.cursor/skills/meeting-summary/meeting-slack-summary/SKILL.md`.
 
 Pass it:
 - Meeting title and date (from Step 1) 

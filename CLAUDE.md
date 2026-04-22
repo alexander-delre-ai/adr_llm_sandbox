@@ -45,7 +45,7 @@ Claude Code slash commands - invoke with `/command-name`. These are the primary 
 | `/meeting-analysis` | Extract decisions, action items, themes from transcripts |
 | `/meeting-workspace` | Create persistent `workspaces/YYYY-MM-DD/{slug}/` directories |
 | `/meeting-tickets` | Stage editable JIRA ticket proposals in workspace |
-| `/meeting-slack-summary` | Format and send Slack office hours messages |
+| `/meeting-slack-summary` | Slack office hours DMs; sub-skill of `meeting-summary` (path: `meeting-summary/meeting-slack-summary/`) |
 | `/kata-jira-task-creation` | Create JIRA tickets in KATA project |
 | `/avp-jira-task-creation` | Create JIRA tickets in AVP project |
 | `/app-dev-k1-hw-ticket-creation` | K1 hardware batch manager ticket processing |

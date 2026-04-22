@@ -1,11 +1,13 @@
 ---
 name: meeting-slack-summary
-description: Composes a single Slack message summarizing a completed meeting analysis and sends it to AlexD. Includes attendees, action items, and corresponding JIRA ticket links. Use after meeting-workspace has run and the workspace path is known.
+description: Sub-skill of meeting-summary. Composes a single Slack message summarizing a completed meeting analysis and sends it to AlexD. Includes attendees, action items, and corresponding JIRA ticket links. Use after meeting-workspace has run and the workspace path is known.
 ---
 
-# Meeting Slack Summary
+# Meeting Slack Summary (sub-skill of meeting-summary)
 
-Produces a single Slack message summarizing the meeting and sends it directly to AlexD.
+**Parent**: `.cursor/skills/meeting-summary/SKILL.md`. This folder lives at `.cursor/skills/meeting-summary/meeting-slack-summary/`.
+
+Produces a single Slack message summarizing the meeting and sends it directly to AlexD. Load this skill when the Slack step is needed; the main meeting text and `analysis.md` still come from the **meeting-summary** workflow (or a full `meeting_plan` run) before this step.
 
 ## Required inputs
 

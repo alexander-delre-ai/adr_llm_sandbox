@@ -45,14 +45,14 @@ The `.cursor/skills/` directory contains modular capabilities that can be invoke
   - Slack message content (`slack-message.md`)
   - Session history (`chat-history.md`)
 
-#### `meeting-slack-summary`
-- **Purpose**: Generates office hours thread format for Slack
-- **Features**: 
+#### `meeting-summary` (and sub-skill `meeting-slack-summary`)
+- **`meeting-summary`**: Transcript, file, or Google Doc to `workspaces/.../transcript.md` and `analysis.md` (see `.cursor/skills/meeting-summary/SKILL.md`)
+- **Sub-skill `meeting-slack-summary`**: On-disk path `.cursor/skills/meeting-summary/meeting-slack-summary/`. Formats a single office-hours style Slack message and sends to AlexD
+- **Slack sub-skill features**:
   - Separates Komatsu vs Applied attendees
   - Uses Slack mentions for Applied team members
   - Includes JIRA ticket links in hyperlink format
   - Sends notification to AlexD
-- **Format**: Thread starter + detailed reply with action items
 
 ### JIRA Integration
 
@@ -107,7 +107,8 @@ The `.cursor/commands/` directory contains high-level workflow orchestrators:
 ├── skills/
 │   ├── meeting-analysis/
 │   ├── meeting-workspace/
-│   ├── meeting-slack-summary/
+│   ├── meeting-summary/
+│   │   └── meeting-slack-summary/   # sub-skill
 │   ├── kata-jira-task-creation/
 │   ├── avp-jira-task-creation/
 │   └── meeting-analysis-and-planning/ (deprecated)
