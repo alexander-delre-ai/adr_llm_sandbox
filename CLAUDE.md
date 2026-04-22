@@ -67,10 +67,15 @@ Persistent meeting artifacts organized by date. Structure is `YYYY-MM-DD/{meetin
 
 ### MCP Integrations
 
-- `mcp__kata-atlassian__*` — KATA JIRA project (tools: createJiraIssue, lookupJiraAccountId, getAccessibleAtlassianResources, etc.)
-- `user-Slack` — Slack messaging
-- `user-github` — GitHub
-- `user-buildkite` — CI/CD
+Defined in `~/.claude/settings.json`:
+
+| Server key | Transport | Purpose | Tool prefix |
+|---|---|---|---|
+| `github` | Docker (github-mcp-server) | GitHub issues, PRs, context | `mcp__github__*` |
+| `buildkite` | Docker (buildkite-mcp-server) | CI/CD pipelines | `mcp__buildkite__*` |
+| `atlassian-mcp-jira-api-token` | SSE (mcp.atlassian.com) | KATA JIRA + Confluence | `mcp__kata-atlassian__*` |
+| `Slack` | SSE (mcp.slack.com) | Slack messaging | `mcp__Slack__*` |
+| `google-drive` | npx (@piotr-agier/google-drive-mcp) | Google Drive file access | `mcp__google-drive__*` |
 
 **KATA Cloud ID**: `eadd00c6-0d3f-4c89-99e3-ad95a0daaa51`
 
