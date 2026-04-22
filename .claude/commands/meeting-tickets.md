@@ -14,38 +14,79 @@ Converts meeting action items into editable tickets.md file with proper tracking
 
 ## Workflow
 
-### Step 1 - Categorize tracking types
+### Step 1: Categorize tracking types
 
 For each action item, determine tracking type:
 
 **Auto-assign to "slack":**
-- Items involving "schedule", "meeting", "coordinate", "set up"
+
+- Items involving: "schedule", "meeting", "coordinate", "set up", "discuss", "follow up", "check with", "bring up", "talk to", "sync with", "ping", "ask about", "confirm with"
 - Coordination and planning tasks
 - Administrative follow-ups
+- Conversational actions (discussions, check-ins, raising topics with someone)
 
 **Auto-assign to "jira":**
+
 - Technical development work
 - Research and analysis tasks
 - Documentation creation
 - Implementation work
 
-### Step 2 - Apply field defaults
+### Step 2: Apply field defaults
+
+**Epic inference**: Read `.claude/skills/meeting-tickets/meeting-epic-mapping.json` and match the meeting title or slug against the patterns. If a match is found, use the mapped `parent_id` as the default instead of TBD. Individual tickets can still override this value.
 
 For each action item, set these defaults:
+
 - **tracking**: Based on categorization above
-- **priority**: Map from analysis priority (High->P1, Medium->P2, Low->P3)
+- **priority**: Map from analysis priority (High to P1, Medium to P2, Low to P3)
 - **assignee**: "Unassigned" (single person per item). If multiple people are mentioned for one action item (e.g., "Alex and Ashli need to coordinate on X"), assign to the first person named and include the others in the description field.
-- **parent_id**: "TBD" (will become KATA-127 if unchanged)
-- **release**: "TBD" (will become Release 2026.1 if unchanged)
-- **story_points**: 0 (always default to 0)
+- **parent_id**: Inferred from `meeting-epic-mapping.json` if the meeting matches a pattern, otherwise "TBD" (will become KATA-127 if unchanged)
+- **release**: Inferred from timeline mentions in the action item or transcript (see table below), otherwise "TBD" (will become Release 2026.1 if unchanged)
+- **story_points**: Estimated from description heuristics (see table below), editable by user
 - **description**: Clean summary from action item. If multiple people were named as owners, add a note: "Also involves: [other names]"
 
-### Step 3 - Format action item titles
+**Story point estimation heuristics:**
+
+| Points | Signals in title or description | Examples |
+|--------|----------------------------------|----------|
+| 0.2 | "follow up", "check", "confirm", "ask", "ping", single-step coordination | "Follow up on HDR plugin delivery" |
+| 0.5 | "investigate", "research", "define", "review", multi-person coordination | "Investigate steering system architecture" |
+| 1 | "implement", "create", "build", "design", technical deliverables | "Create JIRA ticket for variable naming convention" |
+| 2 | Multiple sub-tasks implied, cross-team dependency | "Define inter-zonal communication interface and signal gateway approach" |
+
+- Default to 0.5 if the description does not clearly match any category
+- Never estimate above 2 without explicit scope signals in the transcript
+- User can always override in tickets.md
+
+**Release inference from timeline mentions**: Read `.claude/skills/kata-jira-task-creation/release-mapping.json` and map timeline mentions from the action item description or transcript context to release versions:
+
+| Timeline mention | Mapped release | Reasoning |
+|------------------|----------------|-----------|
+| "next sprint", "this sprint", "next 2 weeks" | Release 25.3 | Nearest upcoming release (releaseDate: 2026-04-03) |
+| "sprint 15", "Apr 6", "April", "Q2 2026" | Release 26.1 | Mid-2026 release (releaseDate: 2026-06-26) |
+| "end of Q3", "September", "Q3 2026" | Release 26.2 | Late-2026 release (releaseDate: 2026-09-18) |
+| "Aug 2027", "before Peoria build", dates beyond 2026 | TBD | Beyond current release schedule |
+
+- If no timeline is mentioned, keep "TBD"
+- Set the inferred release in tickets.md (still editable by user)
+- When the meeting date is close to a release date, prefer the next release rather than one that is nearly past
+
+### Step 3: Normalize assignee names
+
+Read `.claude/skills/meeting-summary/meeting-slack-summary/user-mapping.md` and resolve each assignee to their canonical name:
+
+- Match transcript names, nicknames, and aliases to the canonical entry (e.g., "NickT" to "Nick Sturm", "Juan" to "Hwan Chul Kang", "Ashley" to "Ashli Forbes", "Nathan" to "Nuthan Sabbani")
+- Use the canonical name consistently in tickets.md for both display and JIRA lookup
+- If a name has no match in the mapping, keep the original name as-is
+- Names with organization context (Komatsu vs Applied) help with JIRA assignee lookup accuracy
+
+### Step 4: Format action item titles
 
 - **No numbering**: Do not prefix headings with "Action Item 1:", "Action Item 2:", etc.
 - **Sentence case**: Use natural sentence case for headings (e.g., "Follow up on build system documentation"), not Title Case
 
-### Step 4 - Generate YAML format
+### Step 5: Generate YAML format
 
 Create clean YAML blocks for each action item:
 
@@ -58,6 +99,24 @@ release: TBD
 story_points: 0
 description: Clear description of the work to be done.
 ```
+
+### Step 6: Suggest ticket groupings
+
+After generating all tickets, scan for related items that could be grouped:
+
+- **Shared keywords**: Tickets with overlapping technical terms (e.g., "signal", "interface", "naming convention" all relate to signal architecture)
+- **Same assignee + same epic**: Multiple tickets assigned to the same person under the same parent epic
+- **Sequential dependencies**: One ticket's output is another ticket's input (e.g., "define naming conventions" before "create DBC or ARXML files")
+
+If two or more tickets appear related, append a `## Suggested Groupings` section at the bottom of `tickets.md`:
+
+```markdown
+## Suggested Groupings
+
+- **Signal architecture**: "Create JIRA ticket for variable naming convention definition" + "Define inter-zonal communication interface", both address signal or interface architecture for MVP UI
+```
+
+This is advisory only: the workflow does not auto-create parent tickets. The user can choose to group them manually in JIRA.
 
 ## Output Format
 
@@ -72,12 +131,12 @@ Edit the fields below as needed. When ready, confirm with the agent to create th
 **Field Guide:**
 
 - **tracking**: "jira" (create JIRA ticket + include in Slack), "slack" (Slack summary only, no JIRA ticket), "both" (same as jira)
-  - Auto-assigned: Items involving scheduling/meetings default to "slack", others to "jira"
+  - Auto-assigned: Items involving scheduling or meetings default to "slack", others to "jira"
 - **priority**: P0 (Critical), P1 (High), P2 (Medium), P3 (Low)
-- **assignee**: Single person responsible for the action item (one assignee per item) - defaults to "Unassigned"
-- **parent_id**: Epic ID (KATA-XXXX or AVP-XXXX format) - leave as "TBD" to use default "KATA-127"
-- **release**: Target release - leave as "TBD" to use default "Release 2026.1". Can use short format (e.g., "2025.3" will become "Release 2025.3")
-- **story_points**: 0.2 (1 day), 0.5 (2.5 days), 1 (1 week), 2 (2 weeks), 3 (3 weeks), 5 (5 weeks), 8 (8 weeks) - always defaults to 0
+- **assignee**: Single person responsible for the action item (one assignee per item), defaults to "Unassigned"
+- **parent_id**: Epic ID (KATA-XXXX or AVP-XXXX format), leave as "TBD" to use default "KATA-127"
+- **release**: Target release, leave as "TBD" to use default "Release 2026.1". Can use short format (e.g., "2025.3" will become "Release 2025.3")
+- **story_points**: 0.2 (1 day), 0.5 (2.5 days), 1 (1 week), 2 (2 weeks), 3 (3 weeks), 5 (5 weeks), 8 (8 weeks), always defaults to 0 in the template if you prefer explicit user entry
 - **description**: Brief summary of the work
 
 ---
@@ -94,20 +153,28 @@ story_points: 0
 description: [Clean description]
 ```
 
-[Continue for each action item - no numbering, sentence case headings]
+[Continue for each action item, no numbering, sentence case headings]
 ```
 
 ## Smart Categorization Rules
 
 ### Slack Tracking (Coordination)
+
 - "Schedule X meeting"
 - "Follow up on Y"
 - "Coordinate with Z team"
 - "Set up discussion about..."
+- "Discuss X with Y"
+- "Check with Z about..."
+- "Bring up X to Y"
+- "Talk to", "sync with", "ping Z"
+- "Ask about", "confirm with..."
 - Administrative tasks
 - Planning and coordination
+- Conversational actions (anything that is a discussion, not a deliverable)
 
 ### JIRA Tracking (Technical)
+
 - "Research X technology"
 - "Create Y documentation" (KATA only unless user requests AVP mirror)
 - "Implement Z feature"
@@ -115,9 +182,10 @@ description: [Clean description]
 - Development work
 - Technical analysis
 
-**Documentation Detection**: A ticket is a documentation ticket if:
+**Documentation detection**: A ticket is a documentation ticket if:
+
 - The title or description contains any of: `document`, `documentation`, `write`, `tutorial`, `guide`, `runbook`, `README`, `SDK setup`, `API doc`
-- OR the parent_id is set to `KATA-2226`
+- Or the parent_id is set to `KATA-2226`
 
 **Documentation and AVP**: KATA documentation tickets do **not** get AVP mirrors by default. Set `avp_mirror: true` in the YAML for an item, or ask the agent to mirror, if you want an AVP task. Slack summaries list KATA keys only.
 
@@ -125,17 +193,26 @@ description: [Clean description]
 
 - **Display**: Shows "TBD" for parent_id and release in tickets.md
 - **Processing**: If user approves with TBD values, system applies defaults:
-  - `parent_id: TBD` -> `KATA-127`
-  - `release: TBD` -> `Release 2026.1`
+  - `parent_id: TBD` becomes `KATA-127`
+  - `release: TBD` becomes `Release 2026.1`
 - **Flexibility**: User can specify custom values or leave as TBD
 
 ## Usage
 
-This skill focuses purely on ticket file creation and does not create JIRA tickets or workspaces. It produces an editable tickets.md file that can be reviewed and modified before ticket creation.
+This command focuses on ticket file creation only. It does not create JIRA tickets or full workspace bundles. It produces an editable tickets.md file that can be reviewed and modified before ticket creation.
+
+## Contract with downstream commands
+
+The `tracking` field is the authoritative gate for what happens after user approval:
+
+- `tracking: jira` or `tracking: both`: `.claude/commands/kata-jira-task-creation.md` creates a JIRA ticket when applicable
+- `tracking: slack`: Slack summary and TickTick sync only, **no JIRA ticket**
+
+The user may change any field (including `tracking`) between generation and approval. Downstream commands **must re-read tickets.md immediately before processing** and respect the final `tracking` value. See `.claude/commands/kata-jira-task-creation.md` for re-read and tracking filter rules.
 
 ## Integration
 
 - **Input**: Action items from meeting analysis
 - **Output**: Editable tickets.md file with smart defaults
-- **Reusable**: Can be called from meeting-plan, standalone ticket creation, or other workflows
+- **Reusable**: Can be called from `meeting_plan`, standalone ticket creation, or other workflows
 - **User-friendly**: Clean YAML format with clear field guide and TBD system

@@ -15,10 +15,12 @@ The script automatically scans transcripts from all three workspaces:
 - `core-stack` (`~/applied/core-stack`)
 - `vehicle-os-katana` (`~/applied/vehicle-os-katana`)
 
+Run from the repository root (`adr_llm_sandbox`).
+
 ```bash
-python3 /home/alexanderdelre/adr_llm_sandbox/.cursor/skills/chat-keyword-insights/scripts/extract_keywords.py \
+python3 .claude/skills/chat-keyword-insights/scripts/extract_keywords.py \
     --date "$(date +%Y-%m-%d)" \
-    --insights-dir /home/alexanderdelre/adr_llm_sandbox/insights
+    --insights-dir ./insights
 ```
 
 ### Step 2: Fetch Slack #ext-program-katana-sdv messages
@@ -38,10 +40,10 @@ The channel is a Slack Connect channel and does not appear in channel search. Us
 3. Re-run extraction with Slack data:
 
 ```bash
-python3 /home/alexanderdelre/adr_llm_sandbox/.cursor/skills/chat-keyword-insights/scripts/extract_keywords.py \
+python3 .claude/skills/chat-keyword-insights/scripts/extract_keywords.py \
     --date "$(date +%Y-%m-%d)" \
     --slack-file "/tmp/slack-chat-insights-$(date +%Y-%m-%d).json" \
-    --insights-dir /home/alexanderdelre/adr_llm_sandbox/insights
+    --insights-dir ./insights
 ```
 
 ### Step 3: Include Claude chat (optional)
@@ -66,7 +68,7 @@ Read the generated report from `insights/YYYY-MM-DD.md` and present a summary hi
 Also runs automatically via cron at 6:00 PM PT weekdays (transcripts only, no Slack):
 
 ```bash
-/home/alexanderdelre/adr_llm_sandbox/.cursor/skills/chat-keyword-insights/scripts/run_daily.sh
+bash .claude/skills/chat-keyword-insights/scripts/run_daily.sh
 ```
 
 ### Output
@@ -90,7 +92,7 @@ Reports in `insights/YYYY-MM-DD.md` contain:
 
 ### Domain Keywords
 
-Curated dictionary at `.cursor/skills/chat-keyword-insights/data/domain-keywords.json`. Add new domain terms by editing that file.
+Curated dictionary at `.claude/skills/chat-keyword-insights/data/domain-keywords.json`. Add new domain terms by editing that file.
 
 ## Usage Examples
 

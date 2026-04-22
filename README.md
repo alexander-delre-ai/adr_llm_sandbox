@@ -15,13 +15,13 @@ The `.cursor/rules/` directory contains workspace-level rules that are always ap
 - **Purpose**: Enforces consistent response formatting
 - **Rule**: Never use em-dashes (—) in responses
 
-## 🎯 Skills
+## Claude commands and skills assets
 
-The `.cursor/skills/` directory contains modular capabilities that can be invoked by AI agents:
+Slash commands live in `.claude/commands/`. Scripts, JSON, and data files live in `.claude/skills/`.
 
 ### Meeting Analysis Pipeline
 
-#### `meeting-analysis`
+#### `/meeting-analysis` (`.claude/commands/meeting-analysis.md`)
 - **Purpose**: Analyzes meeting content (transcripts or summaries) to extract structured insights
 - **Input**: Full transcripts or AI-generated summaries
 - **Output**: Structured `analysis.md` with 6 sections:
@@ -33,7 +33,7 @@ The `.cursor/skills/` directory contains modular capabilities that can be invoke
   6. Prioritized Action Plan
 - **Features**: Handles both full transcripts and Gemini summaries, filters meeting rooms from participants
 
-#### `meeting-workspace`
+#### `/meeting-workspace`
 - **Purpose**: Creates persistent directory structure for meeting artifacts
 - **Directory Pattern**: `workspaces/<YYYY-MM-DD>-<slugified-title>/`
 - **Artifacts Saved**:
@@ -45,9 +45,9 @@ The `.cursor/skills/` directory contains modular capabilities that can be invoke
   - Slack message content (`slack-message.md`)
   - Session history (`chat-history.md`)
 
-#### `meeting-summary` (and sub-skill `meeting-slack-summary`)
-- **`meeting-summary`**: Transcript, file, or Google Doc to `workspaces/.../transcript.md` and `analysis.md` (see `.cursor/skills/meeting-summary/SKILL.md`)
-- **Sub-skill `meeting-slack-summary`**: On-disk path `.cursor/skills/meeting-summary/meeting-slack-summary/`. Formats a single office-hours style Slack message and sends to AlexD
+#### `meeting-summary` (and `meeting-slack-summary`)
+- **`/meeting_summary`**: Transcript, file, or Google Doc to `workspaces/.../transcript.md` and `analysis.md` (see `.claude/commands/meeting_summary.md`)
+- **`/meeting-slack-summary`**: Slack office-hours message; assets under `.claude/skills/meeting-summary/meeting-slack-summary/` (for example `user-mapping.md`). See `.claude/commands/meeting-slack-summary.md`
 - **Slack sub-skill features**:
   - Separates Komatsu vs Applied attendees
   - Uses Slack mentions for Applied team members
@@ -56,7 +56,7 @@ The `.cursor/skills/` directory contains modular capabilities that can be invoke
 
 ### JIRA Integration
 
-#### `kata-jira-task-creation`
+#### `/kata-jira-task-creation`
 - **Project**: KATA (prefix: `KATA-`)
 - **Mandatory Fields**: `epic_id`, `release`, `name`
 - **Priority System**: P0 (critical), P1 (high), P2 (medium), P3 (low)
@@ -66,7 +66,7 @@ The `.cursor/skills/` directory contains modular capabilities that can be invoke
   - KATA-2226: Documentation tickets
   - KATA-2561: General meeting follow-up
 
-#### `avp-jira-task-creation`
+#### `/avp-jira-task-creation`
 - **Project**: AVP (prefix: `AVP-`)
 - **Mandatory Fields**: `epic_id`, `release`, `name`
 - **Priority System**: Highest, High, Medium, Low, Lowest
@@ -75,45 +75,27 @@ The `.cursor/skills/` directory contains modular capabilities that can be invoke
 
 ### Legacy Skills
 
-#### `meeting-analysis-and-planning`
-- **Status**: DEPRECATED
-- **Replacement**: Use modular `meeting-analysis` + ticket creation skills
-- **Note**: Maintained for backward compatibility
+#### Deprecated monolith
 
-## 📋 Commands
+- **`meeting-analysis-and-planning`**: Deprecated. Use `/meeting-analysis` and `/meeting-tickets` (see `.claude/skills/meeting-analysis-and-planning/README.md`).
 
-The `.cursor/commands/` directory contains high-level workflow orchestrators:
+## Orchestrator
 
-### `meeting_plan.md`
-- **Mode**: Plan Mode
-- **Purpose**: Complete meeting analysis workflow from transcript to JIRA tickets
-- **Two-Phase Workflow**:
-  1. **Analysis & Planning**: Creates workspace, analyzes content, stages editable tickets
-  2. **Execution**: Creates actual JIRA tickets, generates Slack summary
-- **Input Types**: Full transcripts, Gemini summaries, file paths, URLs
-- **Features**:
-  - Collaborative review before ticket creation
-  - Auto-categorizes tracking (JIRA vs Slack-only)
-  - Single assignee per action item
-  - Temp file handling for efficiency
-  - MCP integration for real ticket creation
+### `/meeting_plan` (`.claude/commands/meeting_plan.md`)
+
+- **Purpose**: Full pipeline from content to staged `tickets.md`, then optional JIRA, Slack, TickTick, Google Doc share, workspace bundle
+- **Phases**: Phase 1 stages `analysis.md`, `research.md`, `tickets.md`; Phase 2 runs after `continue` or `confirm`
+- **Input types**: Google Docs URLs, `temp/` files, inline transcript, combinations
 
 ## 🗂️ Directory Structure
 
 ```
+.claude/
+├── commands/           # Slash command definitions (workflow text)
+└── skills/             # Scripts, JSON, env.example, user-mapping, etc.
+
 .cursor/
-├── rules/
-│   └── response_formatting.mdc
-├── skills/
-│   ├── meeting-analysis/
-│   ├── meeting-workspace/
-│   ├── meeting-summary/
-│   │   └── meeting-slack-summary/   # sub-skill
-│   ├── kata-jira-task-creation/
-│   ├── avp-jira-task-creation/
-│   └── meeting-analysis-and-planning/ (deprecated)
-└── commands/
-    └── meeting_plan.md
+└── rules/              # Workspace rules (always applied)
 
 workspaces/
 └── <YYYY-MM-DD>-<meeting-slug>/
@@ -157,9 +139,10 @@ temp/
 4. Confirm to create actual JIRA tickets
 5. Receive Slack summary for team notification
 
-### Direct Skill Usage
+### Direct command usage
+
 ```
-Read and follow .cursor/skills/meeting-analysis/SKILL.md
+Read and follow .claude/commands/meeting-analysis.md
 ```
 
 ## 📝 File Conventions

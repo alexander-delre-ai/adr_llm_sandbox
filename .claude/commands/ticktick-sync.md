@@ -15,7 +15,7 @@ This skill integrates with TickTick's API to create tasks from your daily todos.
 1. **TickTick Developer Account**: Register at the TickTick developer portal
 2. **OAuth Application**: Create an application to get client credentials
 3. **Access Token**: Obtain an access token through OAuth flow
-4. **Environment Setup**: Configure token in `.cursor/skills/ticktick-sync/.env` file
+4. **Environment Setup**: Configure token in `.claude/skills/ticktick-sync/.env` file
 
 ### Workflow
 
@@ -50,21 +50,21 @@ Meeting: [meeting-slug or meeting source]
 
 1. **Setup Authentication**:
    ```bash
-   python3 .cursor/skills/ticktick-sync/scripts/auth_setup.py
+   python3 .claude/skills/ticktick-sync/scripts/auth_setup.py
    ```
 
 2. **Configure Environment**:
-   - Copy `.cursor/skills/ticktick-sync/env.example` to `.cursor/skills/ticktick-sync/.env`
+   - Copy `.claude/skills/ticktick-sync/env.example` to `.claude/skills/ticktick-sync/.env`
    - Add your TickTick access token
    - Configure sync preferences
 
 3. **Sync Daily Todos**:
    ```bash
    # Generate and sync in one command
-   bash .cursor/skills/daily-todos/scripts/generate_todos.sh --sync-ticktick
+   bash .claude/skills/daily-todos/scripts/generate_todos.sh --sync-ticktick
 
    # Or sync existing todos
-   python3 .cursor/skills/ticktick-sync/scripts/sync_todos.py
+   python3 .claude/skills/ticktick-sync/scripts/sync_todos.py
    ```
 
 ### Error Handling
@@ -77,7 +77,7 @@ Meeting: [meeting-slug or meeting source]
 
 ### Configuration Options
 
-Environment variables in `.cursor/skills/ticktick-sync/.env`:
+Environment variables in `.claude/skills/ticktick-sync/.env`:
 ```bash
 TICKTICK_ACCESS_TOKEN=your_token_here
 TICKTICK_PROJECT_NAME=Daily Todos
@@ -97,7 +97,7 @@ Syncs Slack-tracked action items from a meeting's `tickets.md` file to TickTick.
 
 **Running the sync**:
 ```bash
-python3 .cursor/skills/ticktick-sync/scripts/sync_meeting_items.py \
+python3 .claude/skills/ticktick-sync/scripts/sync_meeting_items.py \
   --tickets workspaces/<YYYY-MM-DD>/<meeting-slug>/tickets.md \
   --meeting "<Meeting Title>"
 ```
@@ -113,14 +113,14 @@ Sync my daily todos to TickTick
 
 **Sync meeting action items**:
 ```bash
-python3 .cursor/skills/ticktick-sync/scripts/sync_meeting_items.py \
+python3 .claude/skills/ticktick-sync/scripts/sync_meeting_items.py \
   --tickets workspaces/2026-03-12/sdv-office-hours/tickets.md \
   --meeting "sdv-office-hours"
 ```
 
 **Dry run** (preview without creating):
 ```bash
-python3 .cursor/skills/ticktick-sync/scripts/sync_meeting_items.py \
+python3 .claude/skills/ticktick-sync/scripts/sync_meeting_items.py \
   --tickets workspaces/<YYYY-MM-DD>/<meeting-slug>/tickets.md \
   --meeting "<Meeting Title>" --dry-run
 ```

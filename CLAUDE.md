@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Repo Is
 
-An AI workflow automation system for meeting analysis, JIRA ticket creation, and team collaboration. It processes meeting transcripts into structured analysis, staged JIRA ticket proposals, and Slack summaries using Cursor skills and MCP server integrations.
+An AI workflow automation system for meeting analysis, JIRA ticket creation, and team collaboration. It processes meeting transcripts into structured analysis, staged JIRA ticket proposals, and Slack summaries using Claude Code commands, assets under `.claude/skills/`, and MCP server integrations.
 
 ## Global Rules (Always Apply)
 
@@ -13,24 +13,24 @@ An AI workflow automation system for meeting analysis, JIRA ticket creation, and
 
 ## Python Scripts
 
-The only runnable code lives in `.cursor/skills/`:
+The only runnable code lives in `.claude/skills/`:
 
 ```bash
 # TickTick auth setup
-python3 .cursor/skills/ticktick-sync/scripts/auth_setup.py
+python3 .claude/skills/ticktick-sync/scripts/auth_setup.py
 
 # TickTick todo sync
-python3 .cursor/skills/ticktick-sync/scripts/sync_todos.py
+python3 .claude/skills/ticktick-sync/scripts/sync_todos.py
 
 # Daily todo generation (parses workspaces, generates markdown)
-bash .cursor/skills/daily-todos/scripts/generate_todos.sh
+bash .claude/skills/daily-todos/scripts/generate_todos.sh
 ```
 
 No build system, linter, or test framework is configured.
 
 ## Auto-Commit Rule
 
-When any file under `.claude/commands/`, `.cursor/skills/`, `.cursor/commands/`, or `.cursor/rules/` is created or modified, commit the change immediately after the edit is complete. Use a concise commit message describing what was updated (e.g., "update ticktick-sync skill to remove assignee from task content"). Do not batch skill/command/rule changes with unrelated file changes.
+When any file under `.claude/commands/`, `.claude/skills/`, or `.cursor/rules/` is created or modified, commit the change immediately after the edit is complete. Use a concise commit message describing what was updated (e.g., "update ticktick-sync scripts to remove assignee from task content"). Do not batch skill or command or rule changes with unrelated file changes.
 
 ## Architecture
 
@@ -43,6 +43,7 @@ Claude Code slash commands - invoke with `/command-name`. These are the primary 
 | `/meeting_plan` | Full meeting workflow orchestrator (analysis, tickets, JIRA, Slack) |
 | `/meeting_summary` | Transcript, file, or Google Doc to `analysis.md` (no tickets, JIRA, or Slack) |
 | `/meeting-analysis` | Extract decisions, action items, themes from transcripts |
+| `/meeting-research` | Slack, Confluence, JIRA, optional codebase research for meeting questions |
 | `/meeting-workspace` | Create persistent `workspaces/YYYY-MM-DD/{slug}/` directories |
 | `/meeting-tickets` | Stage editable JIRA ticket proposals in workspace |
 | `/meeting-slack-summary` | Slack office hours DMs; sub-skill of `meeting-summary` (path: `meeting-summary/meeting-slack-summary/`) |
@@ -52,13 +53,9 @@ Claude Code slash commands - invoke with `/command-name`. These are the primary 
 | `/daily-todos` | Generate daily task lists from workspaces |
 | `/ticktick-sync` | Sync todos to TickTick API |
 
-### Cursor Skills (`/.cursor/skills/`)
+### Claude skills assets (`/.claude/skills/`)
 
-Original Cursor skill definitions and supporting files (scripts, data files, mappings). The `.claude/commands/` files are Claude-compatible versions of these skills.
-
-### Commands (`/.cursor/commands/`)
-
-Original Cursor command definitions (kept for reference).
+Scripts, JSON mappings, env templates, and small reference files used by slash commands. Workflow instructions live in `.claude/commands/` only (no duplicate `SKILL.md` per feature), except `batch-meeting-plan/SKILL.md`, which `/batch_meeting_plan` loads directly.
 
 ### Workspaces (`/workspaces/`)
 
@@ -84,7 +81,7 @@ Persistent meeting artifacts organized by date. Structure is `YYYY-MM-DD/{meetin
 
 ## Release Mapping (KATA)
 
-Defined in `.cursor/skills/kata-jira-task-creation/release-mapping.json`:
+Defined in `.claude/skills/kata-jira-task-creation/release-mapping.json`:
 
 | Release | Fix Version ID | Date |
 |---|---|---|

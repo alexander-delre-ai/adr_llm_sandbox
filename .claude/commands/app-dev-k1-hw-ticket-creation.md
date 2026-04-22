@@ -254,7 +254,7 @@ Parameters:
 ## Smart Validation System
 
 ### Validation History Tracking
-- Maintains `.cursor/skills/app-dev-k1-hw-ticket-creation/validation-history.json` with past successes/failures
+- Maintains `.claude/skills/app-dev-k1-hw-ticket-creation/validation-history.json` with past successes/failures
 - Learns from common failure patterns
 - Provides proactive warnings based on historical data
 

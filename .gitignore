@@ -5,8 +5,8 @@ todos/
 docs-questions/
 insights/
 
-.cursor/skills/meeting-summary/meeting-slack-summary/user-mapping.md
+.claude/skills/meeting-summary/meeting-slack-summary/user-mapping.md
 
-.cursor/skills/ticktick-sync/.env
+.claude/skills/ticktick-sync/.env
 *.pyc
-.cursor/skills/ticktick-sync/.task_duplicates.json
+.claude/skills/ticktick-sync/.task_duplicates.json

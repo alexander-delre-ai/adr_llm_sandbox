@@ -19,4 +19,4 @@ https://docs.google.com/document/d/...
 
 ## Instructions
 
-Read and follow the skill at `~/.cursor/skills/batch-meeting-plan/SKILL.md`.
+Read and follow `.claude/skills/batch-meeting-plan/SKILL.md` in this repository (subagent prompts reference `.claude/commands/meeting_plan.md`).

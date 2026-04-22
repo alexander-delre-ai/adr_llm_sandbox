@@ -160,9 +160,9 @@ Create todo list for March 15, 2026
 
 To sync daily todos to TickTick:
 
-1. **Sync today's todos**: `bash .cursor/skills/daily-todos/scripts/generate_todos.sh`
-2. **Sync specific date**: `bash .cursor/skills/daily-todos/scripts/generate_todos.sh 2026-03-15`
-3. **Generate markdown only**: `bash .cursor/skills/daily-todos/scripts/generate_todos.sh --markdown-only`
+1. **Sync today's todos**: `bash .claude/skills/daily-todos/scripts/generate_todos.sh`
+2. **Sync specific date**: `bash .claude/skills/daily-todos/scripts/generate_todos.sh 2026-03-15`
+3. **Generate markdown only**: `bash .claude/skills/daily-todos/scripts/generate_todos.sh --markdown-only`
 
 The script automatically:
 - Scans all workspace directories for Slack action items
