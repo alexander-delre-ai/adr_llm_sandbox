@@ -62,10 +62,10 @@ Include when available:
 
 ## Implementation
 
-Use the `mcp__claude_ai_Atlassian` MCP tools (cloud ID: `6461690f-d275-4167-8055-cc3dc06e03f2`, site: `appliedintuition.atlassian.net`):
+Use the `mcp__avp-atlassian` MCP tools (cloud ID: `6461690f-d275-4167-8055-cc3dc06e03f2`, site: `appliedintuition.atlassian.net`):
 
-1. **Get Cloud ID**: Call `mcp__claude_ai_Atlassian__getAccessibleAtlassianResources` (or use known cloud ID above)
-2. **Create Ticket**: Call `mcp__claude_ai_Atlassian__createJiraIssue` with these parameters:
+1. **Get Cloud ID**: Call `mcp__avp-atlassian__getAccessibleAtlassianResources` (or use known cloud ID above)
+2. **Create Ticket**: Call `mcp__avp-atlassian__createJiraIssue` with these parameters:
    - `cloudId`: `6461690f-d275-4167-8055-cc3dc06e03f2`
    - `projectKey`: "AVP"
    - `issueTypeName`: "Task" (or "Story" if specified)

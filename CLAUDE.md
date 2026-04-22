@@ -28,10 +28,6 @@ bash .claude/skills/daily-todos/scripts/generate_todos.sh
 
 No build system, linter, or test framework is configured.
 
-## Auto-Commit Rule
-
-When any file under `.claude/skills/` or `.cursor/rules/` is created or modified, commit the change immediately after the edit is complete. Use a concise commit message describing what was updated (e.g., "update ticktick-sync scripts to remove assignee from task content"). Do not batch skill or rule changes with unrelated file changes.
-
 ## Architecture
 
 ### Agent skills (`/.claude/skills/`)
@@ -74,10 +70,12 @@ Defined in `~/.claude/settings.json`:
 | `github` | Docker (github-mcp-server) | GitHub issues, PRs, context | `mcp__github__*` |
 | `buildkite` | Docker (buildkite-mcp-server) | CI/CD pipelines | `mcp__buildkite__*` |
 | `atlassian-mcp-jira-api-token` | SSE (mcp.atlassian.com) | KATA JIRA + Confluence | `mcp__kata-atlassian__*` |
+| `avp-atlassian` | HTTP (mcp.atlassian.com) | AVP JIRA + Confluence | `mcp__avp-atlassian__*` |
 | `Slack` | SSE (mcp.slack.com) | Slack messaging | `mcp__Slack__*` |
 | `google-drive` | npx (@piotr-agier/google-drive-mcp) | Google Drive file access | `mcp__google-drive__*` |
 
 **KATA Cloud ID**: `eadd00c6-0d3f-4c89-99e3-ad95a0daaa51`
+**AVP Cloud ID**: `6461690f-d275-4167-8055-cc3dc06e03f2` (site: `appliedintuition.atlassian.net`)
 
 ## Key Conventions
 
