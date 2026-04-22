@@ -128,5 +128,5 @@ This skill focuses purely on analysis and does not create tickets or workspaces.
 
 - **Input**: Meeting content (transcript or summary)
 - **Output**: Structured analysis.md file (updatable after ticket review)
-- **Reusable**: Can be called from meeting-plan, standalone analysis, or other workflows
+- **Reusable**: Can be called from `meeting-plan`, standalone analysis, or other workflows
 - **Consistent**: Always produces the same 6-section format

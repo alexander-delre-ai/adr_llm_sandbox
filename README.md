@@ -46,7 +46,7 @@ Slash commands live in `.claude/commands/`. Scripts, JSON, and data files live i
   - Session history (`chat-history.md`)
 
 #### `meeting-summary` (and `meeting-slack-summary`)
-- **`/meeting_summary`**: Transcript, file, or Google Doc to `workspaces/.../transcript.md` and `analysis.md` (see `.claude/commands/meeting_summary.md`)
+- **`/meeting-summary`**: Transcript, file, or Google Doc to `workspaces/.../transcript.md` and `analysis.md` (see `.claude/commands/meeting-summary.md`)
 - **`/meeting-slack-summary`**: Slack office-hours message; assets under `.claude/skills/meeting-summary/meeting-slack-summary/` (for example `user-mapping.md`). See `.claude/commands/meeting-slack-summary.md`
 - **Slack sub-skill features**:
   - Separates Komatsu vs Applied attendees
@@ -81,7 +81,7 @@ Slash commands live in `.claude/commands/`. Scripts, JSON, and data files live i
 
 ## Orchestrator
 
-### `/meeting_plan` (`.claude/commands/meeting_plan.md`)
+### `/meeting-plan` (`.claude/commands/meeting-plan.md`)
 
 - **Purpose**: Full pipeline from content to staged `tickets.md`, then optional JIRA, Slack, TickTick, Google Doc share, workspace bundle
 - **Phases**: Phase 1 stages `analysis.md`, `research.md`, `tickets.md`; Phase 2 runs after `continue` or `confirm`
@@ -131,7 +131,7 @@ temp/
 
 ### Meeting Analysis Workflow
 ```
-/meeting_plan
+/meeting-plan
 ```
 1. Provide meeting transcript or summary
 2. System creates workspace and analysis
@@ -167,7 +167,7 @@ Read and follow .claude/commands/meeting-analysis.md
 
 - **Active Rules**: 1 (response formatting)
 - **Active Skills**: 6 (meeting pipeline + JIRA integration)
-- **Active Commands**: 1 (meeting_plan)
+- **Active Commands**: multiple (see `.claude/commands/`, for example `meeting-plan`, `meeting-summary`)
 - **Supported Projects**: KATA, AVP
 - **MCP Servers**: 6 configured and functional
 - **Workspace Pattern**: Established and tested

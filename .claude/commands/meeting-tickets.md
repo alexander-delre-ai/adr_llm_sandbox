@@ -214,5 +214,5 @@ The user may change any field (including `tracking`) between generation and appr
 
 - **Input**: Action items from meeting analysis
 - **Output**: Editable tickets.md file with smart defaults
-- **Reusable**: Can be called from `meeting_plan`, standalone ticket creation, or other workflows
+- **Reusable**: Can be called from `meeting-plan`, standalone ticket creation, or other workflows
 - **User-friendly**: Clean YAML format with clear field guide and TBD system

@@ -33,4 +33,4 @@ Use this command to verify that workflow instructions and on-disk assets stay al
 
 - **Secrets**: `.claude/skills/ticktick-sync/.env` is gitignored; `env.example` should exist.
 - **User-maintained data**: `user-mapping.md` may be gitignored; still confirm the directory exists.
-- **Batch workflow**: `.claude/skills/batch-meeting-plan/SKILL.md` is intentionally kept as the long-form batch spec; `/batch_meeting_plan` points here.
+- **Batch workflow**: `.claude/skills/batch-meeting-plan/SKILL.md` is intentionally kept as the long-form batch spec; `/batch-meeting-plan` points here.

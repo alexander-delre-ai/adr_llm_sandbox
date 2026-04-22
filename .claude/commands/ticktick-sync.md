@@ -134,4 +134,4 @@ Setup TickTick integration
 
 This skill integrates with:
 - **daily-todos skill**: Syncs generated daily Slack todos to TickTick
-- **meeting_plan command**: After Slack summary is sent, syncs eligible meeting action items to TickTick as follow-up tasks
+- **meeting-plan command**: After Slack summary is sent, syncs eligible meeting action items to TickTick as follow-up tasks

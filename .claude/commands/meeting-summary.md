@@ -2,9 +2,9 @@
 description: Meeting text from transcript, file, or Google Docs (Drive MCP fetch), writes workspace transcript.md and analysis.md via meeting-analysis. No research, tickets, JIRA, Slack, or TickTick.
 ---
 
-# /meeting_summary
+# /meeting-summary
 
-Slim alternative to `/meeting_plan` when you only want **structured analysis** on disk. Reuses the same `analysis.md` format as `/meeting-analysis`.
+Slim alternative to `/meeting-plan` when you only want **structured analysis** on disk. Reuses the same `analysis.md` format as `/meeting-analysis`.
 
 ## What this command does **not** do
 
@@ -36,7 +36,7 @@ When you find a Google Docs URL in the user message or inside loaded file text:
 ## Steps
 
 1. **Resolve source text**: Scan the message for Docs URLs and file paths. Read files with the Read tool. Extract embedded links from file text, fetch those docs, strip link lines from the primary file body as needed. Fetch any standalone URLs from the message. Build the final `transcript.md` body (see Input for ordering: `Source:` URL line plus blank line when a fetch occurred, primary body, optional `## Fetched Google Doc` appendix).
-2. **Rename chat** once a meeting title is known: `YYYY-MM-DD <meeting-title>` (same convention as `/meeting_plan`).
+2. **Rename chat** once a meeting title is known: `YYYY-MM-DD <meeting-title>` (same convention as `/meeting-plan`).
 3. **Workspace directory** `workspaces/YYYY-MM-DD/<meeting-slug>/`. If it already exists, ask overwrite vs versioned slug (for example `<slug>-v2`).
 4. **Write `transcript.md`** with the resolved content.
 5. **Temp cleanup**: If the input was a file under `temp/`, delete that original file after its contents are represented in `transcript.md`. Do not delete other files in `temp/`.

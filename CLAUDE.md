@@ -40,9 +40,9 @@ Claude Code slash commands - invoke with `/command-name`. These are the primary 
 
 | Command | Purpose |
 |---|---|
-| `/meeting_plan` | Full meeting workflow orchestrator (analysis, research, tickets, JIRA, Slack, TickTick, doc share) |
-| `/batch_meeting_plan` | Parallel Phase 1 `meeting_plan` runs for multiple Google Docs links |
-| `/meeting_summary` | Transcript, file, or Google Doc to `analysis.md` (no tickets, JIRA, or Slack) |
+| `/meeting-plan` | Full meeting workflow orchestrator (analysis, research, tickets, JIRA, Slack, TickTick, doc share) |
+| `/batch-meeting-plan` | Parallel Phase 1 `meeting-plan` runs for multiple Google Docs links |
+| `/meeting-summary` | Transcript, file, or Google Doc to `analysis.md` (no tickets, JIRA, or Slack) |
 | `/meeting-analysis` | Extract decisions, action items, themes from transcripts |
 | `/meeting-research` | Slack, Confluence, JIRA, optional codebase research for meeting questions |
 | `/meeting-workspace` | Create persistent `workspaces/YYYY-MM-DD/{slug}/` directories |
@@ -56,7 +56,7 @@ Claude Code slash commands - invoke with `/command-name`. These are the primary 
 
 ### Claude skills assets (`/.claude/skills/`)
 
-Scripts, JSON mappings, env templates, and small reference files used by slash commands. Workflow instructions live in `.claude/commands/` only (no duplicate `SKILL.md` per feature), except `batch-meeting-plan/SKILL.md`, which `/batch_meeting_plan` loads directly.
+Scripts, JSON mappings, env templates, and small reference files used by slash commands. Workflow instructions live in `.claude/commands/` only (no duplicate `SKILL.md` per feature), except `batch-meeting-plan/SKILL.md`, which `/batch-meeting-plan` loads directly.
 
 ### Workspaces (`/workspaces/`)
 

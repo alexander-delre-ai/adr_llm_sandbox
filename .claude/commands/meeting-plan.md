@@ -2,7 +2,7 @@
 description: Full meeting workflow. Accepts Google Docs link, temp transcript, inline text, or combinations. Produces analysis, optional research.md, tickets, then on user approval creates JIRA tickets, Slack summary, TickTick sync, Google Doc sharing, and workspace bundle.
 ---
 
-# /meeting_plan
+# /meeting-plan
 
 **Mode: Agent**
 
@@ -46,7 +46,7 @@ If no content is provided, ask: "Please paste the meeting transcript, provide a 
 5. **Write `transcript.md`**:
    - **Google Docs link only** (no full transcript body): write a **single line** containing only the Google Docs URL. This is the contract for Slack summary and Google Doc sharing steps.
    - **Temp file or inline transcript**: write the full transcript text. If a Docs URL was also used, you may append `## Fetched Google Doc` with fetched markdown (optional) or rely on the URL in `gemini-link.txt` only; do not drop the URL needed for sharing.
-   - **Mixed file plus standalone URL**: follow `meeting_summary` style if helpful: `Source: <url>` plus body, or single-line URL file when the workflow is Doc-first (batch mode).
+   - **Mixed file plus standalone URL**: follow `meeting-summary` style if helpful: `Source: <url>` plus body, or single-line URL file when the workflow is Doc-first (batch mode).
 6. **Write `gemini-link.txt`** whenever you have a Google Docs URL for this meeting: one line, the full URL. Slack command checks this file first.
 7. **Create meeting analysis**: Read and follow `.claude/commands/meeting-analysis.md` to create `analysis.md`.
 8. **Research unresolved questions**: Read and follow `.claude/commands/meeting-research.md`, but first classify each question from **Section 4** of `analysis.md`:

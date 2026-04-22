@@ -122,9 +122,9 @@ Only triggered if the question involves implementation, architecture, API design
 - <unresolved aspects or suggested next steps>
 ```
 
-### Batch usage (meeting_plan integration)
+### Batch usage (meeting-plan integration)
 
-When called from `meeting_plan` against multiple unresolved questions, compile results into a single `research.md`:
+When called from `meeting-plan` against multiple unresolved questions, compile results into a single `research.md`:
 
 ```markdown
 # Research: <Meeting Title> (<Date>)

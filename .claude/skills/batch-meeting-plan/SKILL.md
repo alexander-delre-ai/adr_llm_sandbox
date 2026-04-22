@@ -1,11 +1,11 @@
 ---
 name: batch-meeting-plan
-description: Runs meeting_plan in parallel across multiple Google Docs links. Each link launches a separate subagent that independently fetches, analyzes, creates a workspace, and stages tickets. All meetings pause at Phase 1 for user review. Use when processing multiple meeting notes at once, batch meeting analysis, or running meeting_plan on a list of links.
+description: Runs meeting-plan in parallel across multiple Google Docs links. Each link launches a separate subagent that independently fetches, analyzes, creates a workspace, and stages tickets. All meetings pause at Phase 1 for user review. Use when processing multiple meeting notes at once, batch meeting analysis, or running meeting-plan on a list of links.
 ---
 
 # Batch Meeting Plan
 
-Accepts a list of Google Docs/Gemini links and launches a parallel `meeting_plan` subagent for each one. Each subagent runs Phase 1 (fetch, analyze, stage workspace and tickets) independently. All meetings pause at Phase 1 for user review before any JIRA tickets are created.
+Accepts a list of Google Docs/Gemini links and launches a parallel `meeting-plan` subagent for each one. Each subagent runs Phase 1 (fetch, analyze, stage workspace and tickets) independently. All meetings pause at Phase 1 for user review before any JIRA tickets are created.
 
 ## Input
 
@@ -34,7 +34,7 @@ Report the count: "Found N meeting links. Launching N parallel agents."
 
 For each link, launch a `Task` subagent with `subagent_type="generalPurpose"` and `run_in_background=true`. Each subagent receives a self-contained prompt that includes:
 
-1. The full text of the `meeting_plan` command (from `.claude/commands/meeting_plan.md`)
+1. The full text of the `meeting-plan` command (from `.claude/commands/meeting-plan.md`)
 2. The specific Google Docs URL to process
 3. Instruction to execute **Phase 1 only** (analysis, research, workspace creation, ticket staging)
 4. Instruction to **stop after staging files** and report back the workspace path and a summary of action items found
@@ -42,12 +42,12 @@ For each link, launch a `Task` subagent with `subagent_type="generalPurpose"` an
 **Subagent prompt template:**
 
 ```
-You are running a meeting_plan workflow for a single meeting. Follow these instructions exactly.
+You are running a meeting-plan workflow for a single meeting. Follow these instructions exactly.
 
 INPUT: Google Docs link: <URL>
 
 INSTRUCTIONS:
-1. Read and follow the meeting_plan command at .claude/commands/meeting_plan.md
+1. Read and follow the meeting-plan command at .claude/commands/meeting-plan.md
 2. Use the Google Docs link as your input (fetch via FetchMcpResource with server "user-google-drive" and URI "gdrive:///<document-id>")
 3. Execute Phase 1 ONLY:
    - Fetch the document content
@@ -97,7 +97,7 @@ Phase 2 does NOT run automatically. After the user reviews all workspaces, they 
 - **Individual**: "confirm <workspace-path>" or "create tickets for <meeting-name>"
 - **All at once**: "confirm all" or "create all tickets"
 
-For each confirmed meeting, follow the Phase 2 steps from `meeting_plan`:
+For each confirmed meeting, follow the Phase 2 steps from `meeting-plan`:
 - Re-read the final `tickets.md`
 - Create JIRA tickets via appropriate skill
 - Update `analysis.md`
@@ -116,4 +116,4 @@ For each confirmed meeting, follow the Phase 2 steps from `meeting_plan`:
 - Each subagent runs independently with no shared state between meetings
 - Workspace directories follow the standard `workspaces/YYYY-MM-DD/meeting-slug/` convention
 - If two meetings share the same date and slug, the standard `-2`, `-3` suffix applies
-- All standard `meeting_plan` features apply per-meeting (epic inference, assignee normalization, story point estimation, research filtering)
+- All standard `meeting-plan` features apply per-meeting (epic inference, assignee normalization, story point estimation, research filtering)
