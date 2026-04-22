@@ -40,7 +40,8 @@ Claude Code slash commands - invoke with `/command-name`. These are the primary 
 
 | Command | Purpose |
 |---|---|
-| `/meeting_plan` | Full meeting workflow orchestrator (analysis, tickets, JIRA, Slack) |
+| `/meeting_plan` | Full meeting workflow orchestrator (analysis, research, tickets, JIRA, Slack, TickTick, doc share) |
+| `/batch_meeting_plan` | Parallel Phase 1 `meeting_plan` runs for multiple Google Docs links |
 | `/meeting_summary` | Transcript, file, or Google Doc to `analysis.md` (no tickets, JIRA, or Slack) |
 | `/meeting-analysis` | Extract decisions, action items, themes from transcripts |
 | `/meeting-research` | Slack, Confluence, JIRA, optional codebase research for meeting questions |
