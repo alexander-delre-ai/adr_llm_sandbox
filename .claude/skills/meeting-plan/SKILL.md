@@ -16,6 +16,7 @@ The meeting content may be provided as any combination of:
 - **Google Docs or Gemini link**: AI-generated meeting notes or manual doc (fetched via Google Drive MCP)
 - **Full transcript**: Inline paste, file path (Read tool), or file under `temp/`
 - **Transcript file that embeds** a line like `gemini summary: https://docs.google.com/...` (extract URL, fetch doc, use file body minus that line as primary source where applicable)
+- **Resume existing workspace**: `resume workspaces/YYYY-MM-DD/slug/` — skip Phase 1 entirely and go straight to Phase 2 review (see below)
 
 **Input format examples:**
 
@@ -24,8 +25,20 @@ The meeting content may be provided as any combination of:
 - `@temp/meeting-transcript.md`
 - `@temp/meeting-transcript.md` plus a Gemini link in the same message
 - Inline transcript text in the message
+- `resume workspaces/2026-04-22/middleware-knowledge-sharing-session/`
 
 If no content is provided, ask: "Please paste the meeting transcript, provide a file path, or share a Google Docs link."
+
+### Resume mode
+
+When the input is `resume workspaces/YYYY-MM-DD/<slug>/` (or the message contains that phrasing):
+
+1. **Skip Phase 1 entirely.** Do not re-analyze, re-research, or re-generate any files.
+2. Read the existing workspace artifacts: `analysis.md`, `research.md`, `tickets.md`, `transcript.md`, `gemini-link.txt` (whichever exist).
+3. Present the Phase 1 review table (same as normal Phase 1 step 13): ticket summary table from `tickets.md`, inferred epic, and proposed Google Doc sharing recipients.
+4. Wait for `continue` / `confirm` / `create tickets` or `stop` — then run Phase 2 as normal.
+
+This mode is used by the `gemini-notes-processor` skill and by users continuing from a `status.md` resumption prompt in a fresh session.
 
 **Google Docs link handling**
 
