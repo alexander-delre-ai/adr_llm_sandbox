@@ -48,6 +48,8 @@ Load the `SKILL.md` for the workflow you need. Paths are relative to the reposit
 | avp-jira-task-creation | [`.claude/skills/avp-jira-task-creation/SKILL.md`](.claude/skills/avp-jira-task-creation/SKILL.md) | Create JIRA tickets in AVP project |
 | app-dev-k1-hw-ticket-creation | [`.claude/skills/app-dev-k1-hw-ticket-creation/SKILL.md`](.claude/skills/app-dev-k1-hw-ticket-creation/SKILL.md) | K1 hardware batch manager ticket processing |
 | daily-todos | [`.claude/skills/daily-todos/SKILL.md`](.claude/skills/daily-todos/SKILL.md) | Generate daily task lists from workspaces |
+| daily-meeting-digest | [`.claude/skills/daily-meeting-digest/SKILL.md`](.claude/skills/daily-meeting-digest/SKILL.md) | End-of-day Slack DM summarizing all meetings auto-processed today |
+| gemini-notes-processor | [`.claude/skills/gemini-notes-processor/SKILL.md`](.claude/skills/gemini-notes-processor/SKILL.md) | Automated Gmail scan: Gemini notes to meeting-plan Phase 1 + status.md |
 | ticktick-sync | [`.claude/skills/ticktick-sync/SKILL.md`](.claude/skills/ticktick-sync/SKILL.md) | Sync todos to TickTick API |
 | chat-keyword-insights | [`.claude/skills/chat-keyword-insights/SKILL.md`](.claude/skills/chat-keyword-insights/SKILL.md) | Transcript keyword insights to `insights/` |
 | create-pr-with-jira | [`.claude/skills/create-pr-with-jira/SKILL.md`](.claude/skills/create-pr-with-jira/SKILL.md) | KATA ticket + GitHub PR link workflow |

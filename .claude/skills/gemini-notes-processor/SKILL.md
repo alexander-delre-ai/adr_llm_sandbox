@@ -61,22 +61,27 @@ For each thread, check if the subject contains any keyword from the filter (case
 
 ### Step 5: For each qualifying thread
 
-#### 5a: Extract the Google Docs transcript URL
+#### 5a: Check for existing workspace
+
+Derive the workspace slug from the meeting name (extracted from the email subject: strip `"Notes: "` prefix and date suffix, lowercase, replace spaces with hyphens, max 60 chars). Check if `workspaces/YYYY-MM-DD/<slug>/` already exists.
+
+If the workspace directory exists: apply the `gemini-auto-processed` label to the thread (step 5d) and skip to the next thread. Do not run Phase 1 again.
+
+#### 5b: Extract the Google Docs transcript URL
 
 **Critical**: Gemini notes emails embed the "Open meeting notes" link as an HTML hyperlink. The `plaintextBody` from `mcp__claude_ai_Gmail__get_thread` does NOT contain the URL. Do not try to parse it.
 
-Instead, use Google Drive:
+Use the email subject as the source of truth for the meeting name, then find the file in Google Drive:
 
-1. Strip the `"Notes: "` prefix and date suffix from the subject to get the meeting name.
-   - e.g. `Notes: "Toolchain Weekly Sync" Apr 22, 2026` → `Toolchain Weekly Sync`
-2. Call `mcp__claude_ai_Google_Drive__list_recent_files`.
-3. Find the file titled `"<Meeting Name> - YYYY/MM/DD HH:MM PDT - Notes by Gemini"`.
-4. From the `contentSnippet`, find the Transcript tab URL: a link matching `edit?usp=drive_web&tab=t.<id>` under the "Meeting records / Transcript" section.
+1. Extract the meeting name from the email subject: strip the `"Notes: "` prefix and the trailing date (e.g. `Notes: "Toolchain Weekly Sync" Apr 22, 2026` → `Toolchain Weekly Sync`).
+2. Call `mcp__claude_ai_Google_Drive__list_recent_files`. Look for a file whose title contains both the meeting name and `"Notes by Gemini"`.
+3. If not found in recent files, call `mcp__claude_ai_Google_Drive__search_files` with the meeting name as the query and filter results for files whose title contains `"Notes by Gemini"`.
+4. From the matched file's `contentSnippet`, find the Transcript tab URL: a link matching `edit?usp=drive_web&tab=t.<id>` under the "Meeting records / Transcript" section.
 5. Use the Transcript tab URL if found. Fall back to the file's `viewUrl` (Notes tab) if not.
 
-If no matching file is found in Drive, send a Slack DM warning (see Step 4e) and apply the processed label anyway to avoid infinite retries.
+If no matching file is found after both lookups, send a Slack DM warning (see step 5f) and apply the processed label anyway to avoid infinite retries.
 
-#### 5b: Run meeting-plan Phase 1
+#### 5c: Run meeting-plan Phase 1
 
 Read and follow `.claude/skills/meeting-plan/SKILL.md`.
 
@@ -87,7 +92,7 @@ Pass the Google Docs URL as the sole input. Run Phase 1 fully:
 
 **Stop before Phase 2.** Do not create JIRA tickets, post Slack summaries, or sync TickTick.
 
-#### 5c: Write status.md
+#### 5d: Write status.md
 
 After Phase 1 completes, write `workspaces/YYYY-MM-DD/<slug>/status.md` using this template:
 
@@ -123,13 +128,13 @@ Continue meeting-plan Phase 2 for the workspace at workspaces/<YYYY-MM-DD>/<slug
 ```
 ```
 
-#### 5d: Apply processed label
+#### 5e: Apply processed label
 
 Call `mcp__claude_ai_Gmail__list_labels` to find the ID of `gemini-auto-processed`. If the label does not exist, create it with `mcp__claude_ai_Gmail__create_label`.
 
 Call `mcp__claude_ai_Gmail__label_thread` with the thread ID and label ID.
 
-#### 5e: Send Slack DM
+#### 5f: Send Slack DM
 
 Look up the Slack user ID for `alexanderdelre` via `mcp__claude_ai_Slack__slack_search_users` (query: `alexanderdelre`). Send a DM:
 
@@ -146,6 +151,17 @@ Look up the Slack user ID for `alexanderdelre` via `mcp__claude_ai_Slack__slack_
 
 To continue Phase 2: open Claude Code and run `/meeting-plan resume workspaces/<date>/<slug>/`
 ```
+
+After sending, capture the response `channel` and `ts` fields and write them to `workspaces/YYYY-MM-DD/<slug>/slack-dm.json`:
+
+```json
+{
+  "channel": "<channel_id>",
+  "ts": "<message_timestamp>"
+}
+```
+
+This file is read by the daily digest routine to link back to this message.
 
 ### Step 6: Write last-run.json and commit
 
