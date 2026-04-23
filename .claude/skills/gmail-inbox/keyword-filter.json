@@ -1,0 +1,12 @@
+{
+  "description": "Subjects containing any of these keywords (case-insensitive) trigger meeting-plan. Edit this file and commit to add or remove keywords.",
+  "keywords": [
+    "Office Hours",
+    "Weekly",
+    "Toolchain",
+    "Middleware",
+    "VehicleOS",
+    "HW <> SW",
+    "Q2 Sync"
+  ]
+}
