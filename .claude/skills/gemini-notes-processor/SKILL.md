@@ -20,27 +20,48 @@ Edit `.claude/skills/gmail-inbox/keyword-filter.json` to control which meetings 
 
 The processor checks this file on every run. Adding a keyword takes effect immediately on the next run.
 
+## State file
+
+`.claude/skills/gemini-notes-processor/last-run.json` tracks when the skill last ran:
+
+```json
+{
+  "last_run_iso": "2026-04-23T16:40:00Z",
+  "last_run_gmail_date": "2026/04/23"
+}
+```
+
+On first run (file absent or malformed), fall back to `newer_than:7d`. After all threads are processed, overwrite this file with the current UTC timestamp and commit + push it so future runs (local or remote) inherit the correct window.
+
 ## Workflow
 
-### Step 1: Load keyword filter
+### Step 1: Load last-run timestamp
+
+Read `.claude/skills/gemini-notes-processor/last-run.json`.
+
+- If the file exists and is valid, extract `last_run_gmail_date` (format `YYYY/MM/DD`). Use `after:<last_run_gmail_date>` as the date filter in Step 3.
+- If the file is missing or malformed, use `newer_than:7d` as the fallback date filter.
+
+### Step 2: Load keyword filter
 
 Read `.claude/skills/gmail-inbox/keyword-filter.json`. Extract the `keywords` array.
 
-### Step 2: Search Gmail for unprocessed threads
+### Step 3: Search Gmail for unprocessed threads
 
 Call `mcp__claude_ai_Gmail__search_threads` with:
-- `query`: `from:gemini-notes@google.com newer_than:2d -label:gemini-auto-processed`
+- `query`: `from:gemini-notes@google.com <date_filter> -label:gemini-auto-processed`
+  where `<date_filter>` is `after:YYYY/MM/DD` from Step 1 (or `newer_than:7d` on first run)
 - `pageSize`: 20
 
-The `-label:gemini-auto-processed` filter ensures each thread is processed at most once across all runs.
+The `-label:gemini-auto-processed` filter ensures each thread is processed at most once even if the date window overlaps.
 
-### Step 3: Filter by keywords
+### Step 4: Filter by keywords
 
-For each thread, check if the subject contains any keyword from the filter (case-insensitive substring). Skip non-matching threads. If none pass, stop silently.
+For each thread, check if the subject contains any keyword from the filter (case-insensitive substring). Skip non-matching threads. If none pass, skip to Step 6 (still write last-run.json).
 
-### Step 4: For each qualifying thread
+### Step 5: For each qualifying thread
 
-#### 4a: Extract the Google Docs transcript URL
+#### 5a: Extract the Google Docs transcript URL
 
 **Critical**: Gemini notes emails embed the "Open meeting notes" link as an HTML hyperlink. The `plaintextBody` from `mcp__claude_ai_Gmail__get_thread` does NOT contain the URL. Do not try to parse it.
 
@@ -55,7 +76,7 @@ Instead, use Google Drive:
 
 If no matching file is found in Drive, send a Slack DM warning (see Step 4e) and apply the processed label anyway to avoid infinite retries.
 
-#### 4b: Run meeting-plan Phase 1
+#### 5b: Run meeting-plan Phase 1
 
 Read and follow `.claude/skills/meeting-plan/SKILL.md`.
 
@@ -66,7 +87,7 @@ Pass the Google Docs URL as the sole input. Run Phase 1 fully:
 
 **Stop before Phase 2.** Do not create JIRA tickets, post Slack summaries, or sync TickTick.
 
-#### 4c: Write status.md
+#### 5c: Write status.md
 
 After Phase 1 completes, write `workspaces/YYYY-MM-DD/<slug>/status.md` using this template:
 
@@ -102,13 +123,13 @@ Continue meeting-plan Phase 2 for the workspace at workspaces/<YYYY-MM-DD>/<slug
 ```
 ```
 
-#### 4d: Apply processed label
+#### 5d: Apply processed label
 
 Call `mcp__claude_ai_Gmail__list_labels` to find the ID of `gemini-auto-processed`. If the label does not exist, create it with `mcp__claude_ai_Gmail__create_label`.
 
 Call `mcp__claude_ai_Gmail__label_thread` with the thread ID and label ID.
 
-#### 4e: Send Slack DM
+#### 5e: Send Slack DM
 
 Look up the Slack user ID for `alexanderdelre` via `mcp__claude_ai_Slack__slack_search_users` (query: `alexanderdelre`). Send a DM:
 
@@ -126,13 +147,34 @@ Look up the Slack user ID for `alexanderdelre` via `mcp__claude_ai_Slack__slack_
 To continue Phase 2: open Claude Code and run `/meeting-plan resume workspaces/<date>/<slug>/`
 ```
 
+### Step 6: Write last-run.json and commit
+
+After all threads are processed (whether or not any matched), write the current UTC time to `.claude/skills/gemini-notes-processor/last-run.json`:
+
+```json
+{
+  "last_run_iso": "<current UTC ISO 8601 timestamp>",
+  "last_run_gmail_date": "<current date as YYYY/MM/DD>"
+}
+```
+
+Then commit and push:
+
+```bash
+git add .claude/skills/gemini-notes-processor/last-run.json
+git commit -m "chore: update gemini-notes-processor last-run timestamp"
+git push
+```
+
+If the commit or push fails (e.g. no GitHub App access), write the file to disk only. The `gemini-auto-processed` label still prevents reprocessing even without the timestamp update.
+
 ### Error handling
 
 - **Drive lookup fails**: DM the user with `"Could not find Google Doc for: <subject>"`, apply the processed label, continue.
 - **meeting-plan Phase 1 fails**: DM the user with `"meeting-plan failed for: <subject> — <error>"`. Do NOT apply the processed label (retry next run).
 - **Slack DM fails**: Log and continue. Still apply the processed label.
 - **One thread fails**: Continue processing remaining threads independently.
-- **keyword-filter.json missing or malformed**: DM the user with a warning and stop.
+- **keyword-filter.json missing or malformed**: DM the user with a warning and stop (still write last-run.json).
 
 ## Ad-hoc usage
 
@@ -148,7 +190,7 @@ To run against a specific meeting URL directly (skipping Gmail scan):
 /gemini-notes-processor https://docs.google.com/document/d/.../edit?tab=t....
 ```
 
-When a URL is provided directly, skip Steps 1-3 and go straight to Step 4b with that URL.
+When a URL is provided directly, skip Steps 1-5 and go straight to Step 5b with that URL. Still write `last-run.json` at the end (Step 6).
 
 ## Sharing with other users
 
