@@ -12,17 +12,17 @@ Creates a persistent directory under `workspaces/` in the current repo for a com
 Workspaces are organized by date, with meeting names as subdirectories:
 
 ```
-workspaces/<YYYY-MM-DD>/<slugified-title>/
+workspaces/2026.WW/<YYYY-MM-DD>/<slugified-title>/
 ```
 
 Slugify rules: lowercase, spaces and special characters replaced with hyphens, max 60 chars.
 
-Example: `workspaces/2026-03-11/q1-planning-kickoff/`
+Example: `workspaces/2026.11/2026-03-11/q1-planning-kickoff/`
 
 ## Directory structure
 
 ```
-workspaces/<YYYY-MM-DD>/<meeting-slug>/
+workspaces/2026.WW/<YYYY-MM-DD>/<meeting-slug>/
   transcript.md OR summary.md    <- original content (transcript if full transcript, summary.md if meeting summary)
   analysis.md            <- full 6-section meeting analysis (updated after ticket review)
   tickets.md             <- original editable tickets file
@@ -37,7 +37,7 @@ workspaces/<YYYY-MM-DD>/<meeting-slug>/
 ## Workflow
 
 1. Derive the date and meeting slug from meeting title and date (see naming rules above)
-2. Create the directory: `mkdir -p workspaces/<YYYY-MM-DD>/<meeting-slug>`
+2. Create the directory: `mkdir -p workspaces/2026.WW/<YYYY-MM-DD>/<meeting-slug>`
 3. Handle original content file:
    - **If from temp/ directory**: Move the original file to workspace as `transcript.md` or `summary.md` (based on content type)
    - **If inline content**: Write `transcript.md` (full transcript) or `summary.md` (meeting summary) with provided content
@@ -77,7 +77,7 @@ workspaces/<YYYY-MM-DD>/<meeting-slug>/
 10. Confirm to the user:
 
 ```
-Workspace created at workspaces/<YYYY-MM-DD>/<meeting-slug>/
+Workspace created at workspaces/2026.WW/<YYYY-MM-DD>/<meeting-slug>/
   transcript.md OR summary.md
   analysis.md
   tickets.md

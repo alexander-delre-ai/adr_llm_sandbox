@@ -9,7 +9,7 @@ Scans Gmail for Gemini auto-generated meeting notes, extracts the transcript lin
 
 ## Configuration
 
-Edit `.claude/skills/gmail-inbox/keyword-filter.json` to control which meetings are processed:
+Edit `.claude/skills/gemini-notes-processor/keyword-filter.json` to control which meetings are processed:
 
 ```json
 {
@@ -20,9 +20,9 @@ Edit `.claude/skills/gmail-inbox/keyword-filter.json` to control which meetings 
 
 The processor checks this file on every run. Adding a keyword takes effect immediately on the next run.
 
-## State file
+## State files
 
-`.claude/skills/gemini-notes-processor/last-run.json` tracks when the skill last ran:
+**`last-run.json`** — tracks when the skill last ran, used to scope the Gmail date filter:
 
 ```json
 {
@@ -33,18 +33,37 @@ The processor checks this file on every run. Adding a keyword takes effect immed
 
 On first run (file absent or malformed), fall back to `newer_than:7d`. After all threads are processed, overwrite this file with the current UTC timestamp and commit + push it so future runs (local or remote) inherit the correct window.
 
+**`processed-meetings.json`** — append-only log of every meeting processed (or skipped as duplicate). Used for deduplication when Gmail label creation is unavailable:
+
+```json
+[
+  {
+    "email_subject": "Notes: \"Toolchain Weekly Sync\" Apr 22, 2026",
+    "workspace": "workspaces/2026.17/2026-04-22/toolchain-weekly-sync",
+    "processed_at": "2026-04-23T17:35:00Z"
+  }
+]
+```
+
+On first run (file absent), treat as empty array. Read the file at startup and use it as a secondary deduplication check alongside the workspace existence check.
+
 ## Workflow
 
-### Step 1: Load last-run timestamp
+### Step 1: Load state files
 
 Read `.claude/skills/gemini-notes-processor/last-run.json`.
 
 - If the file exists and is valid, extract `last_run_gmail_date` (format `YYYY/MM/DD`). Use `after:<last_run_gmail_date>` as the date filter in Step 3.
 - If the file is missing or malformed, use `newer_than:7d` as the fallback date filter.
 
+Read `.claude/skills/gemini-notes-processor/processed-meetings.json`.
+
+- If the file exists and is valid, load the array. Extract all `email_subject` values into a set for O(1) lookup in Step 5a.
+- If the file is missing or malformed, treat as an empty array.
+
 ### Step 2: Load keyword filter
 
-Read `.claude/skills/gmail-inbox/keyword-filter.json`. Extract the `keywords` array.
+Read `.claude/skills/gemini-notes-processor/keyword-filter.json`. Extract the `keywords` array.
 
 ### Step 3: Search Gmail for unprocessed threads
 
@@ -61,11 +80,15 @@ For each thread, check if the subject contains any keyword from the filter (case
 
 ### Step 5: For each qualifying thread
 
-#### 5a: Check for existing workspace
+#### 5a: Check for existing workspace or prior processing
 
-Derive the workspace slug from the meeting name (extracted from the email subject: strip `"Notes: "` prefix and date suffix, lowercase, replace spaces with hyphens, max 60 chars). Check if `workspaces/YYYY-MM-DD/<slug>/` already exists.
+Derive the workspace slug from the meeting name (extracted from the email subject: strip `"Notes: "` prefix and date suffix, lowercase, replace spaces with hyphens, max 60 chars).
 
-If the workspace directory exists: apply the `gemini-auto-processed` label to the thread (step 5d) and skip to the next thread. Do not run Phase 1 again.
+Skip this thread (go to the next) if either condition is true:
+1. The thread's email subject is already present in the `processed-meetings.json` array loaded in Step 1.
+2. `workspaces/2026.WW/<meeting-date-YYYY-MM-DD>/<slug>/` already exists on disk.
+
+If skipping, still attempt to apply the `gemini-auto-processed` Gmail label (step 5e) — if that fails due to scope, continue silently.
 
 #### 5b: Extract the Google Docs transcript URL
 
@@ -86,7 +109,7 @@ If no matching file is found after both lookups, send a Slack DM warning (see st
 Read and follow `.claude/skills/meeting-plan/SKILL.md`.
 
 Pass the Google Docs URL as the sole input. Run Phase 1 fully:
-- Create workspace under `workspaces/YYYY-MM-DD/<slug>/`
+- Create workspace under `workspaces/2026.WW/YYYY-MM-DD/<slug>/`
 - Write `transcript.md` (single-line URL with transcript tab), `gemini-link.txt`
 - Generate `analysis.md`, `research.md`, `tickets.md`
 
@@ -94,14 +117,14 @@ Pass the Google Docs URL as the sole input. Run Phase 1 fully:
 
 #### 5d: Write status.md
 
-After Phase 1 completes, write `workspaces/YYYY-MM-DD/<slug>/status.md` using this template:
+After Phase 1 completes, write `workspaces/2026.WW/YYYY-MM-DD/<slug>/status.md` using this template:
 
 ```markdown
 # Phase 2 Continuation: <Meeting Title>
 
 **Created**: <ISO date> by gemini-notes-processor (automated)
 **Status**: Phase 1 complete — ready for Phase 2
-**Workspace**: `workspaces/<YYYY-MM-DD>/<slug>/`
+**Workspace**: `workspaces/2026.WW/<YYYY-MM-DD>/<slug>/`
 
 ## Phase 1 artifacts
 - [x] transcript.md
@@ -118,54 +141,93 @@ After Phase 1 completes, write `workspaces/YYYY-MM-DD/<slug>/status.md` using th
 Open Claude Code in this project and send:
 
 ```
-/meeting-plan resume workspaces/<YYYY-MM-DD>/<slug>/
+/meeting-plan resume workspaces/2026.WW/<YYYY-MM-DD>/<slug>/
 ```
 
 Or paste directly:
 
 ```
-Continue meeting-plan Phase 2 for the workspace at workspaces/<YYYY-MM-DD>/<slug>/. Phase 1 is complete — analysis.md, research.md, and tickets.md are staged. Review tickets.md if needed, then proceed with JIRA ticket creation, Slack summary, Google Doc sharing, and TickTick sync.
+Continue meeting-plan Phase 2 for the workspace at workspaces/2026.WW/<YYYY-MM-DD>/<slug>/. Phase 1 is complete — analysis.md, research.md, and tickets.md are staged. Review tickets.md if needed, then proceed with JIRA ticket creation, Slack summary, Google Doc sharing, and TickTick sync.
 ```
 ```
 
 #### 5e: Apply processed label
 
-Call `mcp__claude_ai_Gmail__list_labels` to find the ID of `gemini-auto-processed`. If the label does not exist, create it with `mcp__claude_ai_Gmail__create_label`.
+Call `mcp__claude_ai_Gmail__list_labels` to find the ID of `gemini-auto-processed`.
 
-Call `mcp__claude_ai_Gmail__label_thread` with the thread ID and label ID.
+**Scope limitation**: The Gmail MCP token is read-only. Both `create_label` and `label_thread` require `gmail.modify` scope and will fail with "insufficient authentication scopes". If either call fails, continue silently. The `gemini-auto-processed` label must be created manually in Gmail. Deduplication is handled by `processed-meetings.json` and workspace existence checks instead.
+
+If the label ID is found in the list, call `mcp__claude_ai_Gmail__label_thread` with the thread ID and label ID (it may still fail - that is expected and non-blocking).
 
 #### 5f: Send Slack DM
 
-Look up the Slack user ID for `alexanderdelre` via `mcp__claude_ai_Slack__slack_search_users` (query: `alexanderdelre`). Send a DM:
+Look up the Slack user ID for `alexanderdelre` via `mcp__claude_ai_Slack__slack_search_users` (query: `alexanderdelre`). Send each meeting as a reply in a **daily thread** in that DM channel.
+
+**Thread management:**
+
+Each run creates its own new parent thread. Do not reuse threads from previous runs (even from the same day).
+
+Before sending the first meeting of a run, post a new parent message to the DM channel:
 
 ```
-:robot_face: *New meeting notes processed:* <meeting title>
-
-:memo: *Notes link:* <Google Docs URL>
-
-:white_check_mark: *Proposed action items:*
-• [PRIORITY] Title — Assignee
-(one line per item from tickets.md)
-
-:file_folder: Workspace: workspaces/<date>/<slug>/
-
-To continue Phase 2: open Claude Code and run `/meeting-plan resume workspaces/<date>/<slug>/`
+:thread: Meeting Threads - DD/MM/YYYY
 ```
 
-After sending, capture the response `channel` and `ts` fields and write them to `workspaces/YYYY-MM-DD/<slug>/slack-dm.json`:
+Capture the response `ts` and use it as `thread_ts` for all meeting replies in this run.
+
+**Building each reply:**
+
+1. **Attendee split**: From `analysis.md` Section 1, separate participants into Applied employees (anyone with an `@applied.co` email or listed under "Participants (Applied)") and external/Komatsu attendees (everyone else). Resolve Applied attendees to Slack user IDs via `.claude/skills/meeting-summary/meeting-slack-summary/user-mapping.md`; fall back to plain name if not found.
+
+2. **Action items**: For each item in `tickets.md`, format as `• <@user_id|name>: description` where the assignee is an Applied employee with a known Slack ID, or `• Name: description` for Komatsu/unknown assignees. If a JIRA ticket key was already created (Phase 2 complete), include `<https://appliedint-katana.atlassian.net/browse/KATA-XXXX|KATA-XXXX>:` between the assignee and description. In Phase 1 (pre-JIRA), omit the JIRA link.
+
+**Reply format:**
+
+```
+:thread:DD/MM/YYYY: <Meeting Title>
+_Komatsu Attendees:_ <comma-separated plain names>
+_Applied Attendees:_ <@user_id|name>, <@user_id|name>, ...
+<<Google Docs URL>|Gemini notes>
+_Action items:_
+• <@user_id|name>: <description>
+• Name: <description>
+```
+
+Notes:
+- Date format is DD/MM/YYYY (e.g. `21/04/2026`)
+- If there are no Komatsu attendees, omit that line
+- If there are no Applied attendees beyond AlexD, omit the Applied Attendees line
+- Keep action items in priority order (P0 first, P3 last)
+- Section headers use `_italic_` (underscores), not `*bold*`
+
+After sending each reply, capture the response `channel` and `ts` and write to `workspaces/2026.WW/YYYY-MM-DD/<slug>/slack-dm.json`:
 
 ```json
 {
   "channel": "<channel_id>",
-  "ts": "<message_timestamp>"
+  "ts": "<reply_message_timestamp>"
 }
 ```
 
 This file is read by the daily digest routine to link back to this message.
 
-### Step 6: Write last-run.json and commit
+### Step 6: Write state files and commit
 
-After all threads are processed (whether or not any matched), write the current UTC time to `.claude/skills/gemini-notes-processor/last-run.json`:
+After all threads are processed (whether or not any matched):
+
+**Append to `processed-meetings.json`**: For every thread that was fully processed in Step 5 (Phase 1 completed), append an entry to `.claude/skills/gemini-notes-processor/processed-meetings.json`:
+
+```json
+{
+  "email_subject": "<full email subject>",
+  "workspace": "workspaces/2026.WW/<YYYY-MM-DD>/<slug>",
+  "processed_at": "<current UTC ISO 8601 timestamp>"
+}
+```
+
+Read the existing file, append the new entries, and write the full updated array back.
+
+**Overwrite `last-run.json`** with the current UTC time:
 
 ```json
 {
@@ -213,5 +275,5 @@ When a URL is provided directly, skip Steps 1-5 and go straight to Step 5b with 
 To adapt this skill for a different user:
 
 1. Update the Slack DM recipient in Step 4e (replace `alexanderdelre` with the target user's Slack handle).
-2. Update `.claude/skills/gmail-inbox/keyword-filter.json` with the meetings they care about.
+2. Update `.claude/skills/gemini-notes-processor/keyword-filter.json` with the meetings they care about.
 3. The `workspaces/` output path and meeting-plan skill references are relative to the repo root and need no changes.

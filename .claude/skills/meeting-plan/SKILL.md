@@ -16,7 +16,7 @@ The meeting content may be provided as any combination of:
 - **Google Docs or Gemini link**: AI-generated meeting notes or manual doc (fetched via Google Drive MCP)
 - **Full transcript**: Inline paste, file path (Read tool), or file under `temp/`
 - **Transcript file that embeds** a line like `gemini summary: https://docs.google.com/...` (extract URL, fetch doc, use file body minus that line as primary source where applicable)
-- **Resume existing workspace**: `resume workspaces/YYYY-MM-DD/slug/` — skip Phase 1 entirely and go straight to Phase 2 review (see below)
+- **Resume existing workspace**: `resume workspaces/2026.WW/YYYY-MM-DD/slug/` — skip Phase 1 entirely and go straight to Phase 2 review (see below)
 
 **Input format examples:**
 
@@ -25,13 +25,13 @@ The meeting content may be provided as any combination of:
 - `@temp/meeting-transcript.md`
 - `@temp/meeting-transcript.md` plus a Gemini link in the same message
 - Inline transcript text in the message
-- `resume workspaces/2026-04-22/middleware-knowledge-sharing-session/`
+- `resume workspaces/2026.17/2026-04-22/middleware-knowledge-sharing-session/`
 
 If no content is provided, ask: "Please paste the meeting transcript, provide a file path, or share a Google Docs link."
 
 ### Resume mode
 
-When the input is `resume workspaces/YYYY-MM-DD/<slug>/` (or the message contains that phrasing):
+When the input is `resume workspaces/2026.WW/YYYY-MM-DD/<slug>/` (or the message contains that phrasing):
 
 1. **Skip Phase 1 entirely.** Do not re-analyze, re-research, or re-generate any files.
 2. Read the existing workspace artifacts: `analysis.md`, `research.md`, `tickets.md`, `transcript.md`, `gemini-link.txt` (whichever exist).
@@ -56,7 +56,7 @@ This mode is used by the `gemini-notes-processor` skill and by users continuing 
 1. Accept and normalize input from the user message (and from any file read via the Read tool).
 2. **Extract and fetch** all Google Docs URLs found in the message or in loaded file text. Store each original URL string for `gemini-link.txt` and for `transcript.md` when using the URL-only pattern below.
 3. **Rename chat** once the meeting title is known: `YYYY-MM-DD <meeting-title>` (same string you will use for the workspace slug). Derive title from transcript metadata, doc title or first heading, or temp filename stem.
-4. **Create workspace directory** `workspaces/YYYY-MM-DD/<meeting-slug>/`. If it exists, ask: overwrite, or versioned slug (e.g. `<slug>-v2`).
+4. **Create workspace directory** `workspaces/2026.WW/YYYY-MM-DD/<meeting-slug>/`. If it exists, ask: overwrite, or versioned slug (e.g. `<slug>-v2`).
 5. **Write `transcript.md`**:
    - **Google Docs link only** (no full transcript body): write a **single line** containing only the Google Docs URL. This is the contract for Slack summary and Google Doc sharing steps.
    - **Temp file or inline transcript**: write the full transcript text. If a Docs URL was also used, you may append `## Fetched Google Doc` with fetched markdown (optional) or rely on the URL in `gemini-link.txt` only; do not drop the URL needed for sharing.
@@ -82,6 +82,7 @@ This mode is used by the `gemini-notes-processor` skill and by users continuing 
     - **Show inferred epic** from `.claude/skills/meeting-tickets/meeting-epic-mapping.json` default for this meeting title.
     - **Markdown table**: Render a read-only summary table in chat parsed from `tickets.md` (title, assignee, priority, tracking, parent_id, release, story_points). Tell the user to edit `tickets.md` directly for changes (the table is for review only).
     - **Google Doc sharing recipients**: If `transcript.md` is a single-line Google Docs URL (or `gemini-link.txt` exists), build the proposed recipient list from analysis Section 1 attendees plus assignees from `tickets.md`, resolve emails via `.claude/skills/meeting-summary/meeting-slack-summary/user-mapping.md` (and Slack profile lookup if allowed). Present the list so the user can note adds or removals before Phase 2.
+    - **appliedsync component**: Ask the user: "Add the `appliedsync` component to all tickets? (default: No)". Only set the component on tickets if the user confirms yes. Pass this decision through to the JIRA creation steps in Phase 2.
 
 **Gate**: Do **not** run Phase 2 until the user replies with **`continue`** or **`confirm`** or **`create tickets`** (all mean proceed), or **`stop`** (end with no JIRA, no Slack, no sharing). Treat other messages as still in review unless the user clearly cancels.
 
@@ -92,15 +93,15 @@ Run only after **`continue`**, **`confirm`**, or **`create tickets`**. On **`sto
 1. **Re-read `tickets.md`** (skip JIRA steps if there were zero JIRA-tracked items).
 2. **Duplicate detection** (per proposed KATA ticket before create): use `searchJiraIssuesUsingJql` such as `project = KATA AND parent = <epic> AND status != Done AND status != Closed AND summary ~ "key terms"`. If a strong duplicate match exists, skip creating that row and append to `tickets.md` under `## Skipped Duplicates` with JIRA key and link. No extra user prompt for each skip.
 3. **Create JIRA tickets**: Read and follow:
-   - `.claude/skills/kata-jira-task-creation/SKILL.md` for KATA- parent_ids
-   - `.claude/skills/avp-jira-task-creation/SKILL.md` for AVP- parent_ids  
+   - `.claude/skills/jira-task-creation-KATA/SKILL.md` for KATA- parent_ids
+   - `.claude/skills/jira-task-creation-AVP/SKILL.md` for AVP- parent_ids  
    Only for `tracking: jira` or `tracking: both`. Respect defaults, assignee lookup, documentation routing, AVP mirror rules in those JIRA skills. On per-ticket failure, log and continue; report failures at the end.
 4. **Update `analysis.md`**: Re-read final `tickets.md` and align Sections 5 and 6 with final titles and keys.
 5. **Slack summary**: Read and follow `.claude/skills/meeting-summary/meeting-slack-summary/SKILL.md`. Pass Google Doc URL from `gemini-link.txt` or from single-line `transcript.md` if needed. KATA keys only in summary per that skill's rules.
 6. **Share Google Doc** (when `transcript.md` is a one-line Google Docs URL or URL is in `gemini-link.txt`): extract file ID, build recipient list (with Phase 1 adjustments), resolve emails from `user-mapping.md` and Slack if needed, then call Google Drive MCP `shareFile` with `role: writer`, `sendNotificationEmail: true` where supported. Log who was granted access and who was skipped.
 7. **TickTick sync**: Read `.claude/skills/ticktick-sync/SKILL.md` and run:
 
-   `python3 .claude/skills/ticktick-sync/scripts/sync_meeting_items.py --tickets workspaces/<YYYY-MM-DD>/<meeting-slug>/tickets.md --meeting "<Meeting Title>"`
+   `python3 .claude/skills/ticktick-sync/scripts/sync_meeting_items.py --tickets workspaces/2026.WW/<YYYY-MM-DD>/<meeting-slug>/tickets.md --meeting "<Meeting Title>"`
 
 8. **Workspace bundle**: Read and follow `.claude/skills/meeting-workspace/SKILL.md` to persist artifacts, metadata, and sync results.
 9. **User mapping**: If new Applied attendees were discovered, update `.claude/skills/meeting-summary/meeting-slack-summary/user-mapping.md` and commit with message: `update user-mapping with attendees from <meeting-slug>`.

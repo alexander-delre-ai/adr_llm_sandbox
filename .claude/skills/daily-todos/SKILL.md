@@ -11,7 +11,7 @@ This skill scans all workspace directories and generates daily to-do lists for A
 
 ### Workflow
 
-1. **Scan workspaces**: Read all workspace directories under `/workspaces/` (organized as `/workspaces/<YYYY-MM-DD>/<meeting-slug>/`)
+1. **Scan workspaces**: Read all workspace directories under `/workspaces/` (organized as `/workspaces/2026.WW/<YYYY-MM-DD>/<meeting-slug>/`)
 2. **Extract Slack items**: Parse `action-items.md` and `tickets.md` files for Slack action items
 3. **Sync to TickTick**: Add tasks directly to TickTick "Cursor Sync" project with proper priorities
 4. **Optional markdown**: Generate `todos/YYYY-MM-DD.md` file if requested
@@ -70,7 +70,7 @@ This skill scans all workspace directories and generates daily to-do lists for A
 
 1. **Create todos directory** if it doesn't exist
 2. **Scan workspace directories**:
-   - List all date directories in `/workspaces/` (format: `YYYY-MM-DD`)
+   - List all week directories in `/workspaces/` (format: `2026.WW`), then date subdirectories within each (format: `YYYY-MM-DD`)
    - For each date directory, list meeting subdirectories
    - For each meeting workspace, check for:
      - `action-items.md` (contains action items table)

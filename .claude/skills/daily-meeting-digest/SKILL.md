@@ -5,7 +5,7 @@ description: Sends a daily Slack DM to AlexD summarizing all meetings processed 
 
 # Daily Meeting Digest
 
-Scans today's `workspaces/YYYY-MM-DD/` directory for meetings auto-processed by `gemini-notes-processor`, then sends a single consolidated Slack DM to `alexanderdelre` with a summary and a link back to each per-meeting message.
+Scans today's `workspaces/2026.WW/YYYY-MM-DD/` directory for meetings auto-processed by `gemini-notes-processor`, then sends a single consolidated Slack DM to `alexanderdelre` with a summary and a link back to each per-meeting message.
 
 ## Workflow
 
@@ -15,9 +15,9 @@ Use today's date in `YYYY-MM-DD` format (e.g. `2026-04-23`).
 
 ### Step 2: Find today's processed workspaces
 
-Check if `workspaces/<today>/` exists. If not, stop silently — nothing was processed today.
+Compute the year.week number (YYYY.WW) for today (zero-padded, e.g. W17). Check if `workspaces/2026.WW/<today>/` exists. If not, stop silently — nothing was processed today.
 
-List all subdirectories under `workspaces/<today>/`. For each, check if `slack-dm.json` exists. Only include workspaces that have a `slack-dm.json` (written by `gemini-notes-processor` after the per-meeting DM was sent).
+List all subdirectories under `workspaces/2026.WW/<today>/`. For each, check if `slack-dm.json` exists. Only include workspaces that have a `slack-dm.json` (written by `gemini-notes-processor` after the per-meeting DM was sent).
 
 If no subdirectories have `slack-dm.json`, stop silently.
 
@@ -47,7 +47,7 @@ Send a DM:
 • *<Meeting Title 1>* — <X> JIRA tickets, <Y> Slack-only items — <Slack DM link>
 • *<Meeting Title 2>* — <X> JIRA tickets, <Y> Slack-only items — <Slack DM link>
 
-To continue Phase 2 for any meeting, open Claude Code and run `/meeting-plan resume workspaces/<date>/<slug>/`
+To continue Phase 2 for any meeting, open Claude Code and run `/meeting-plan resume workspaces/2026.WW/<date>/<slug>/`
 ```
 
 If only one meeting was processed, use singular "meeting" in the header.

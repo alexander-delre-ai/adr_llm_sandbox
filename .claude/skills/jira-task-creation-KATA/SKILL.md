@@ -1,5 +1,5 @@
 ---
-name: kata-jira-task-creation
+name: jira-task-creation-KATA
 description: Creates a new JIRA ticket in the KATA project space. Use when converting a meeting action item or planned task into a KATA JIRA issue. Epic IDs must use the KATA- prefix. Requires epic ID, release, and ticket name as mandatory fields.
 ---
 
@@ -22,6 +22,7 @@ Include when available:
 - `assignee` - team member handle or name
 - `labels` - comma-separated list
 - `story_points` - numeric estimate (always defaults to 0, field is required)
+- `component` - add `appliedsync` component only when explicitly requested in the prompt
 
 ## Validation rules
 
@@ -96,6 +97,7 @@ Use the `mcp__kata-atlassian` MCP tools to create tickets:
      - `parent`: {"key": "KATA-XXXX"} (epic ID)
      - `customfield_10104`: {"id": "10002"} (release ID from mapping above)
      - `customfield_10137`: 0 (story points, required field)
+     - `components`: [{"name": "appliedsync"}] (only include when explicitly requested)
 4. **AVP mirrors**: Skip by default. Only create AVP issues when explicitly requested (see section above).
 
 ### Fallback: JSON Output

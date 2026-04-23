@@ -5,7 +5,7 @@ description: Creates multiple KATA JIRA tickets for an upcoming sprint. Mandator
 
 # KATA Sprint Ticket Factory
 
-Creates a batch of KATA JIRA tasks for an upcoming sprint. Built on top of `kata-jira-task-creation`.
+Creates a batch of KATA JIRA tasks for an upcoming sprint. Built on top of `jira-task-creation-KATA`.
 
 ## Mandatory fields (apply to all tickets in the batch)
 

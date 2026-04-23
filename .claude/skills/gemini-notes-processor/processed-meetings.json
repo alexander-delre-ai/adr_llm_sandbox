@@ -1,80 +1,80 @@
 [
   {
     "email_subject": "Notes: \"Middleware Knowledge Sharing Session\" Apr 22, 2026",
-    "workspace": "workspaces/2026-04-22/middleware-knowledge-sharing-session",
+    "workspace": "workspaces/2026.17/2026-04-22/middleware-knowledge-sharing-session",
     "processed_at": "2026-04-23T17:35:00Z"
   },
   {
     "email_subject": "Notes: \"Toolchain Weekly Sync\" Apr 22, 2026",
-    "workspace": "workspaces/2026-04-22/toolchain-weekly-sync",
+    "workspace": "workspaces/2026.17/2026-04-22/toolchain-weekly-sync",
     "processed_at": "2026-04-23T17:35:00Z",
     "skipped": true,
     "reason": "workspace already exists"
   },
   {
     "email_subject": "Notes: \"Project Katana Brakes & Steering Dev Weekly\" Apr 21, 2026",
-    "workspace": "workspaces/2026-04-21/project-katana-brakes-steering-dev-weekly",
+    "workspace": "workspaces/2026.17/2026-04-21/project-katana-brakes-steering-dev-weekly",
     "processed_at": "2026-04-23T17:35:00Z",
     "skipped": true,
     "reason": "workspace already exists"
   },
   {
     "email_subject": "Notes: \"Katana Virtual Toolchain Standup\" Apr 20, 2026",
-    "workspace": "workspaces/2026-04-20/katana-virtual-toolchain-standup",
+    "workspace": "workspaces/2026.17/2026-04-20/katana-virtual-toolchain-standup",
     "processed_at": "2026-04-23T17:35:00Z",
     "skipped": true,
     "reason": "workspace already exists"
   },
   {
     "email_subject": "Notes: \"Katana SDV Middleware Requirements\" Apr 20, 2026",
-    "workspace": "workspaces/2026-04-20/katana-sdv-middleware-requirements",
+    "workspace": "workspaces/2026.17/2026-04-20/katana-sdv-middleware-requirements",
     "processed_at": "2026-04-23T17:35:00Z",
     "skipped": true,
     "reason": "workspace already exists"
   },
   {
     "email_subject": "Notes: \"[Shadow] [Katana <> Applied] SDV SW Office Hours\" Apr 22, 2026",
-    "workspace": "workspaces/2026-04-22/shadow-katana-applied-sdv-sw-office-hours",
+    "workspace": "workspaces/2026.17/2026-04-22/shadow-katana-applied-sdv-sw-office-hours",
     "processed_at": "2026-04-23T17:35:00Z"
   },
   {
     "email_subject": "Notes: \"[Shadow] [Katana <> Applied] SDV SW Office Hours\" Apr 21, 2026",
-    "workspace": "workspaces/2026-04-21/shadow-katana-applied-sdv-sw-office-hours",
+    "workspace": "workspaces/2026.17/2026-04-21/shadow-katana-applied-sdv-sw-office-hours",
     "processed_at": "2026-04-23T17:35:00Z"
   },
   {
     "email_subject": "Notes: \"[Shadow] [Katana <> Applied] SDV SW Office Hours\" Apr 20, 2026",
-    "workspace": "workspaces/2026-04-20/shadow-katana-applied-sdv-sw-office-hours",
+    "workspace": "workspaces/2026.17/2026-04-20/shadow-katana-applied-sdv-sw-office-hours",
     "processed_at": "2026-04-23T17:35:00Z"
   },
   {
     "email_subject": "Notes: \"Katana HW SW Sync\" Apr 21, 2026",
-    "workspace": "workspaces/2026-04-21/katana-hw-sw-sync",
+    "workspace": "workspaces/2026.17/2026-04-21/katana-hw-sw-sync",
     "processed_at": "2026-04-23T17:35:00Z"
   },
   {
     "email_subject": "Notes: \"[Katana <> Applied] Virtual Toolchain Office Hours\" Apr 20, 2026",
-    "workspace": "workspaces/2026-04-20/katana-applied-virtual-toolchain-office-hours",
+    "workspace": "workspaces/2026.17/2026-04-20/katana-applied-virtual-toolchain-office-hours",
     "processed_at": "2026-04-23T17:35:00Z"
   },
   {
     "email_subject": "Notes: \"[Vehicle / SW] Komatsu/Applied - SDV Daily Standup\" Apr 23, 2026",
-    "workspace": "workspaces/2026-04-23/vehicle-sw-komatsu-applied-sdv-daily-standup",
+    "workspace": "workspaces/2026.17/2026-04-23/vehicle-sw-komatsu-applied-sdv-daily-standup",
     "processed_at": "2026-04-23T19:00:00Z"
   },
   {
     "email_subject": "Notes: \"[HW / Core] Komatsu/Applied - SDV Daily Standup\" Apr 23, 2026",
-    "workspace": "workspaces/2026-04-23/hw-core-komatsu-applied-sdv-daily-standup",
+    "workspace": "workspaces/2026.17/2026-04-23/hw-core-komatsu-applied-sdv-daily-standup",
     "processed_at": "2026-04-23T19:00:00Z"
   },
   {
     "email_subject": "Notes: \"Katana HW <> SW sync\" Apr 23, 2026",
-    "workspace": "workspaces/2026-04-23/katana-hw-sw-sync",
+    "workspace": "workspaces/2026.17/2026-04-23/katana-hw-sw-sync",
     "processed_at": "2026-04-23T21:30:00Z"
   },
   {
     "email_subject": "Notes: \"[shadow] Katana <> Applied: SDV SW Office Hours\" Apr 23, 2026",
-    "workspace": "workspaces/2026-04-23/shadow-katana-applied-sdv-sw-office-hours",
+    "workspace": "workspaces/2026.17/2026-04-23/shadow-katana-applied-sdv-sw-office-hours",
     "processed_at": "2026-04-23T21:30:00Z"
   }
 ]

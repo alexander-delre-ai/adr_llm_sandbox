@@ -1,5 +1,5 @@
 ---
-name: avp-jira-task-creation
+name: jira-task-creation-AVP
 description: Creates a new JIRA ticket in the AVP project space. Use when converting a meeting action item or planned task into an AVP JIRA issue. Epic IDs must use the AVP- prefix. Documentation tickets default to epic AVP-5477. Requires epic ID (or documentation default), engagement, and ticket name as mandatory fields where applicable.
 ---
 
@@ -38,12 +38,14 @@ Include when available:
 - `labels` - comma-separated list
 - `story_points` - numeric estimate
 - `mirror_ticket` - key of an existing ticket to link (e.g. `KATA-2422`); appends a hyperlink to the source ticket URL in the description, e.g. `Mirrored from [KATA-2422](https://appliedint-katana.atlassian.net/browse/KATA-2422)`
+- `component` - add `appliedsync` component only when explicitly requested in the prompt
 
 ## Validation rules
 
 - `summary` must be 10-255 characters
 - `epic_id` must match pattern `AVP-[0-9]+` when provided
 - `engagement` defaults to `Komatsu` if not specified
+- For tickets related to Komatsu or Katana (keywords: komatsu, katana, KATA tickets being mirrored), set `engagement` to `Komatsu`
 - For documentation tickets, default `epic_id` to **AVP-5477**
 - If any mandatory field is missing (except documentation epic default and engagement default), stop and ask the user before generating the payload
 
@@ -77,6 +79,7 @@ Use the `mcp__avp-atlassian` MCP tools (cloud ID: `6461690f-d275-4167-8055-cc3dc
      - `customfield_11608`: engagement as array of option objects, e.g. `[{"id": "16667"}]` for Komatsu
      - Labels array (include engagement as a label, e.g. `komatsu`)
      - Story points
+     - `components`: [{"name": "appliedsync"}] (only include when explicitly requested)
 
 ### Engagement option IDs (`customfield_11608`)
 

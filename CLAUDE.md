@@ -37,16 +37,14 @@ Load the `SKILL.md` for the workflow you need. Paths are relative to the reposit
 | Skill | Primary `SKILL.md` | Purpose |
 |-------|--------------------|--------|
 | meeting-plan | [`.claude/skills/meeting-plan/SKILL.md`](.claude/skills/meeting-plan/SKILL.md) | Full meeting workflow: analysis, research, tickets, JIRA, Slack, TickTick, doc share |
-| batch-meeting-plan | [`.claude/skills/batch-meeting-plan/SKILL.md`](.claude/skills/batch-meeting-plan/SKILL.md) | Parallel Phase 1 `meeting-plan` runs for multiple Google Docs links |
 | meeting-summary | [`.claude/skills/meeting-summary/SKILL.md`](.claude/skills/meeting-summary/SKILL.md) | Transcript, file, or Google Doc to `analysis.md` only (no JIRA) |
 | meeting-analysis | [`.claude/skills/meeting-analysis/SKILL.md`](.claude/skills/meeting-analysis/SKILL.md) | Extract decisions, action items, themes from transcripts |
 | meeting-research | [`.claude/skills/meeting-research/SKILL.md`](.claude/skills/meeting-research/SKILL.md) | Slack, Confluence, JIRA, optional codebase research for meeting questions |
-| meeting-workspace | [`.claude/skills/meeting-workspace/SKILL.md`](.claude/skills/meeting-workspace/SKILL.md) | Create persistent `workspaces/YYYY-MM-DD/{slug}/` |
+| meeting-workspace | [`.claude/skills/meeting-workspace/SKILL.md`](.claude/skills/meeting-workspace/SKILL.md) | Create persistent `workspaces/2026.WW/YYYY-MM-DD/{slug}/` |
 | meeting-tickets | [`.claude/skills/meeting-tickets/SKILL.md`](.claude/skills/meeting-tickets/SKILL.md) | Stage editable JIRA ticket proposals in workspace |
 | meeting-slack-summary | [`.claude/skills/meeting-summary/meeting-slack-summary/SKILL.md`](.claude/skills/meeting-summary/meeting-slack-summary/SKILL.md) | Slack office hours DMs to AlexD |
-| kata-jira-task-creation | [`.claude/skills/kata-jira-task-creation/SKILL.md`](.claude/skills/kata-jira-task-creation/SKILL.md) | Create JIRA tickets in KATA project |
-| avp-jira-task-creation | [`.claude/skills/avp-jira-task-creation/SKILL.md`](.claude/skills/avp-jira-task-creation/SKILL.md) | Create JIRA tickets in AVP project |
-| app-dev-k1-hw-ticket-creation | [`.claude/skills/app-dev-k1-hw-ticket-creation/SKILL.md`](.claude/skills/app-dev-k1-hw-ticket-creation/SKILL.md) | K1 hardware batch manager ticket processing |
+| jira-task-creation-KATA | [`.claude/skills/jira-task-creation-KATA/SKILL.md`](.claude/skills/jira-task-creation-KATA/SKILL.md) | Create JIRA tickets in KATA project |
+| jira-task-creation-AVP | [`.claude/skills/jira-task-creation-AVP/SKILL.md`](.claude/skills/jira-task-creation-AVP/SKILL.md) | Create JIRA tickets in AVP project |
 | daily-todos | [`.claude/skills/daily-todos/SKILL.md`](.claude/skills/daily-todos/SKILL.md) | Generate daily task lists from workspaces |
 | daily-meeting-digest | [`.claude/skills/daily-meeting-digest/SKILL.md`](.claude/skills/daily-meeting-digest/SKILL.md) | End-of-day Slack DM summarizing all meetings auto-processed today |
 | gemini-notes-processor | [`.claude/skills/gemini-notes-processor/SKILL.md`](.claude/skills/gemini-notes-processor/SKILL.md) | Automated Gmail scan: Gemini notes to meeting-plan Phase 1 + status.md |
@@ -54,14 +52,12 @@ Load the `SKILL.md` for the workflow you need. Paths are relative to the reposit
 | chat-keyword-insights | [`.claude/skills/chat-keyword-insights/SKILL.md`](.claude/skills/chat-keyword-insights/SKILL.md) | Transcript keyword insights to `insights/` |
 | create-pr-with-jira | [`.claude/skills/create-pr-with-jira/SKILL.md`](.claude/skills/create-pr-with-jira/SKILL.md) | KATA ticket + GitHub PR link workflow |
 | kata-sprint-ticket-factory | [`.claude/skills/kata-sprint-ticket-factory/SKILL.md`](.claude/skills/kata-sprint-ticket-factory/SKILL.md) | Sprint batch ticket creation |
-| remarkable-feature-request | [`.claude/skills/remarkable-feature-request/SKILL.md`](.claude/skills/remarkable-feature-request/SKILL.md) | Remarkable device feature requests |
-| sync-check | [`.claude/skills/sync-check/SKILL.md`](.claude/skills/sync-check/SKILL.md) | Validate `SKILL.md` references point at existing paths |
 
 **Note**: The `.claude/commands/` directory is not used. All workflow text lives in `SKILL.md` files under `.claude/skills/`.
 
 ### Workspaces (`/workspaces/`)
 
-Persistent meeting artifacts organized by date. Structure is `YYYY-MM-DD/{meeting-slug}/` where each meeting directory contains: `transcript.md`, `analysis.md`, `tickets.md`, JIRA metadata JSON files, and chat history.
+Persistent meeting artifacts organized by ISO week and date. Structure is `2026.WW/YYYY-MM-DD/{meeting-slug}/` where each meeting directory contains: `transcript.md`, `analysis.md`, `tickets.md`, JIRA metadata JSON files, and chat history.
 
 ### MCP Integrations
 
@@ -81,7 +77,7 @@ Defined in `~/.claude/settings.json`:
 
 ## Key Conventions
 
-- **Workspace naming**: `YYYY-MM-DD/{slug}` (date directory with meeting slug subdirectory, lowercase, hyphens, max 60 chars for slug)
+- **Workspace naming**: `2026.WW/YYYY-MM-DD/{slug}` (year.week prefix, then date directory with meeting slug subdirectory, lowercase, hyphens, max 60 chars for slug)
 - **Ticket titles**: Imperative voice, 10-255 characters
 - **KATA priorities**: P0-P3; **AVP priorities**: Highest/High/Medium/Low/Lowest
 - **Story points**: Default to 0 (always requires explicit estimation)
@@ -90,7 +86,7 @@ Defined in `~/.claude/settings.json`:
 
 ## Release Mapping (KATA)
 
-Defined in `.claude/skills/kata-jira-task-creation/release-mapping.json`:
+Defined in `.claude/skills/jira-task-creation-KATA/release-mapping.json`:
 
 | Release | Fix Version ID | Date |
 |---------|----------------|------|

@@ -11,7 +11,7 @@ Converts meeting action items into editable tickets.md file with proper tracking
 
 - **Action items list**: From meeting analysis (Step 5 output)
 - **Meeting metadata**: Title, date for file headers
-- **Output location**: Directory path where tickets.md should be created (format: workspaces/YYYY-MM-DD/meeting-name/)
+- **Output location**: Directory path where tickets.md should be created (format: workspaces/2026.WW/YYYY-MM-DD/meeting-name/)
 
 ## Workflow
 
@@ -60,7 +60,7 @@ For each action item, set these defaults:
 - Never estimate above 2 without explicit scope signals in the transcript
 - User can always override in tickets.md
 
-**Release inference from timeline mentions**: Read `.claude/skills/kata-jira-task-creation/release-mapping.json` and map timeline mentions from the action item description or transcript context to release versions:
+**Release inference from timeline mentions**: Read `.claude/skills/jira-task-creation-KATA/release-mapping.json` and map timeline mentions from the action item description or transcript context to release versions:
 
 | Timeline mention | Mapped release | Reasoning |
 |------------------|----------------|-----------|
@@ -206,10 +206,10 @@ This skill focuses on ticket file creation only. It does not create JIRA tickets
 
 The `tracking` field is the authoritative gate for what happens after user approval:
 
-- `tracking: jira` or `tracking: both`: `.claude/skills/kata-jira-task-creation/SKILL.md` creates a JIRA ticket when applicable
+- `tracking: jira` or `tracking: both`: `.claude/skills/jira-task-creation-KATA/SKILL.md` creates a JIRA ticket when applicable
 - `tracking: slack`: Slack summary and TickTick sync only, **no JIRA ticket**
 
-The user may change any field (including `tracking`) between generation and approval. Downstream skills **must re-read tickets.md immediately before processing** and respect the final `tracking` value. See `.claude/skills/kata-jira-task-creation/SKILL.md` for re-read and tracking filter rules.
+The user may change any field (including `tracking`) between generation and approval. Downstream skills **must re-read tickets.md immediately before processing** and respect the final `tracking` value. See `.claude/skills/jira-task-creation-KATA/SKILL.md` for re-read and tracking filter rules.
 
 ## Integration
 
