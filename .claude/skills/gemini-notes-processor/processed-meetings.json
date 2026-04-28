@@ -76,5 +76,25 @@
     "email_subject": "Notes: \"[shadow] Katana <> Applied: SDV SW Office Hours\" Apr 23, 2026",
     "workspace": "workspaces/2026.17/2026-04-23/shadow-katana-applied-sdv-sw-office-hours",
     "processed_at": "2026-04-23T21:30:00Z"
+  },
+  {
+    "email_subject": "Notes: \"Project Katana: Brakes & Steering Dev Weekly\" Apr 28, 2026",
+    "workspace": "workspaces/2026.18/2026-04-28/project-katana-brakes-steering-dev-weekly",
+    "processed_at": "2026-04-28T22:30:00Z"
+  },
+  {
+    "email_subject": "Notes: \"[shadow] Katana <> Applied: SDV SW Office Hours\" Apr 28, 2026",
+    "workspace": "workspaces/2026.18/2026-04-28/shadow-katana-applied-sdv-sw-office-hours",
+    "processed_at": "2026-04-28T22:30:00Z"
+  },
+  {
+    "email_subject": "Notes: \"[HW / Core] Komatsu/Applied - SDV Daily Standup\" Apr 28, 2026",
+    "workspace": "workspaces/2026.18/2026-04-28/hw-core-komatsu-applied-sdv-daily-standup",
+    "processed_at": "2026-04-28T22:30:00Z"
+  },
+  {
+    "email_subject": "Notes: \"[Vehicle / SW] Komatsu/Applied - SDV Daily Standup\" Apr 28, 2026",
+    "workspace": "workspaces/2026.18/2026-04-28/vehicle-sw-komatsu-applied-sdv-daily-standup",
+    "processed_at": "2026-04-28T22:30:00Z"
   }
 ]
