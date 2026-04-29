@@ -96,5 +96,10 @@
     "email_subject": "Notes: \"[Vehicle / SW] Komatsu/Applied - SDV Daily Standup\" Apr 28, 2026",
     "workspace": "workspaces/2026.18/2026-04-28/vehicle-sw-komatsu-applied-sdv-daily-standup",
     "processed_at": "2026-04-28T22:30:00Z"
+  },
+  {
+    "email_subject": "Notes: \"[Vehicle / SW] Komatsu/Applied - SDV Daily Standup\" Apr 29, 2026",
+    "workspace": "workspaces/2026.18/2026-04-29/vehicle-sw-komatsu-applied-sdv-daily-standup",
+    "processed_at": "2026-04-29T18:30:00Z"
   }
 ]
