@@ -113,5 +113,62 @@
     "processed_at": "2026-04-29T23:01:06Z",
     "skipped": true,
     "reason": "workspace already exists"
+  },
+  {
+    "email_subject": "Notes: \"[shadow] Katana <> Applied: SDV SW Office Hours\" Apr 30, 2026",
+    "workspace": "workspaces/2026.18/2026-04-30/shadow-katana-applied-sdv-sw-office-hours",
+    "processed_at": "2026-04-30T19:30:00Z"
+  },
+  {
+    "email_subject": "Notes: \"[HW / Core] Komatsu/Applied - SDV Daily Standup\" Apr 30, 2026",
+    "workspace": "workspaces/2026.18/2026-04-30/hw-core-komatsu-applied-sdv-daily-standup",
+    "processed_at": "2026-04-30T19:30:00Z",
+    "skipped": true,
+    "reason": "workspace already exists"
+  },
+  {
+    "email_subject": "Notes: \"[Vehicle / SW] Komatsu/Applied - SDV Daily Standup\" Apr 30, 2026",
+    "workspace": "workspaces/2026.18/2026-04-30/vehicle-sw-komatsu-applied-sdv-daily-standup",
+    "processed_at": "2026-04-30T19:30:00Z",
+    "skipped": true,
+    "reason": "workspace already exists"
+  },
+  {
+    "email_subject": "Notes: \"[Katana] Discussion of 12V outputs of the zonal controllers\" Apr 30, 2026",
+    "workspace": "workspaces/2026.18/2026-04-30/katana-discussion-of-12v-outputs-of-the-zonal-controllers",
+    "processed_at": "2026-04-30T19:30:00Z",
+    "skipped": true,
+    "reason": "workspace already exists"
+  },
+  {
+    "email_subject": "Notes: \"Katana: Virtual Toolchain Standup\" Apr 30, 2026",
+    "workspace": "workspaces/2026.18/2026-04-30/katana-virtual-toolchain-standup",
+    "processed_at": "2026-04-30T19:30:00Z",
+    "skipped": true,
+    "reason": "workspace already exists"
+  },
+  {
+    "email_subject": "Notes: \u201cToolchain Weekly Sync\u201d Apr 30, 2026",
+    "workspace": "workspaces/2026.18/2026-04-30/toolchain-weekly-sync",
+    "processed_at": "2026-04-30T22:09:14Z"
+  },
+  {
+    "email_subject": "Notes: \u201cToolchain Weekly Sync\u201d May 7, 2026",
+    "workspace": "workspaces/2026.19/2026-05-07/toolchain-weekly-sync",
+    "processed_at": "2026-05-07T22:07:11Z"
+  },
+  {
+    "email_subject": "Notes: \u201c[shadow] Katana <> Applied: SDV SW Office Hours\u201d May 7, 2026",
+    "workspace": "workspaces/2026.19/2026-05-07/shadow-katana-applied-sdv-sw-office-hours",
+    "processed_at": "2026-05-07T22:07:11Z",
+    "skipped": true,
+    "reason": "workspace already exists"
+  },
+  {
+    "email_subject": "Notes: \u201cKatana: Virtual Toolchain Standup\u201d May 7, 2026",
+    "workspace": "workspaces/2026.19/2026-05-07/katana-virtual-toolchain-standup",
+    "processed_at": "2026-05-07T22:07:11Z",
+    "skipped": true,
+    "reason": "workspace already exists"
   }
 ]
