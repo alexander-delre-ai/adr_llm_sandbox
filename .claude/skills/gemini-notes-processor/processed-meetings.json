@@ -204,5 +204,15 @@
     "email_subject": "Notes: \u201cKatana repo changes for Data Engine\u201d May 8, 2026",
     "workspace": "workspaces/2026.19/2026-05-08/katana-repo-changes-for-data-engine",
     "processed_at": "2026-05-08T22:12:06Z"
+  },
+  {
+    "email_subject": "Notes: \u201cKomatsu sync\u201d May 8, 2026",
+    "workspace": "workspaces/2026.19/2026-05-08/komatsu-sync",
+    "processed_at": "2026-05-08T23:11:31Z"
+  },
+  {
+    "email_subject": "Notes: \"[Katana <> Applied] Virtual Toolchain Office Hours\" May 11, 2026",
+    "workspace": "workspaces/2026.20/2026-05-11/katana-applied-virtual-toolchain-office-hours",
+    "processed_at": "2026-05-11T17:07:26Z"
   }
 ]
