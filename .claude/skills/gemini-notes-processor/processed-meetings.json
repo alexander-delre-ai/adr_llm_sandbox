@@ -148,65 +148,65 @@
     "reason": "workspace already exists"
   },
   {
-    "email_subject": "Notes: “Toolchain Weekly Sync” Apr 30, 2026",
+    "email_subject": "Notes: \u201cToolchain Weekly Sync\u201d Apr 30, 2026",
     "workspace": "workspaces/2026.18/2026-04-30/toolchain-weekly-sync",
     "processed_at": "2026-04-30T22:09:14Z"
   },
   {
-    "email_subject": "Notes: “Toolchain Weekly Sync” May 7, 2026",
+    "email_subject": "Notes: \u201cToolchain Weekly Sync\u201d May 7, 2026",
     "workspace": "workspaces/2026.19/2026-05-07/toolchain-weekly-sync",
     "processed_at": "2026-05-07T22:07:11Z"
   },
   {
-    "email_subject": "Notes: “[shadow] Katana <> Applied: SDV SW Office Hours” May 7, 2026",
+    "email_subject": "Notes: \u201c[shadow] Katana <> Applied: SDV SW Office Hours\u201d May 7, 2026",
     "workspace": "workspaces/2026.19/2026-05-07/shadow-katana-applied-sdv-sw-office-hours",
     "processed_at": "2026-05-07T22:07:11Z",
     "skipped": true,
     "reason": "workspace already exists"
   },
   {
-    "email_subject": "Notes: “Katana: Virtual Toolchain Standup” May 7, 2026",
+    "email_subject": "Notes: \u201cKatana: Virtual Toolchain Standup\u201d May 7, 2026",
     "workspace": "workspaces/2026.19/2026-05-07/katana-virtual-toolchain-standup",
     "processed_at": "2026-05-07T22:07:11Z",
     "skipped": true,
     "reason": "workspace already exists"
   },
   {
-    "email_subject": "Notes: “Katana Middleware Requirements Review” May 7, 2026",
+    "email_subject": "Notes: \u201cKatana Middleware Requirements Review\u201d May 7, 2026",
     "workspace": "workspaces/2026.19/2026-05-07/katana-middleware-requirements-review",
     "processed_at": "2026-05-07T23:09:32Z"
   },
   {
-    "email_subject": "Notes: “Customer deep dive: Komatsu NA” May 7, 2026",
+    "email_subject": "Notes: \u201cCustomer deep dive: Komatsu NA\u201d May 7, 2026",
     "workspace": "workspaces/2026.19/2026-05-07/customer-deep-dive-komatsu-na",
     "processed_at": "2026-05-08T16:07:26Z"
   },
   {
-    "email_subject": "Notes: “[shadow] Katana <> Applied: SDV SW Office Hours” May 8, 2026",
+    "email_subject": "Notes: \u201c[shadow] Katana <> Applied: SDV SW Office Hours\u201d May 8, 2026",
     "workspace": "workspaces/2026.19/2026-05-08/shadow-katana-applied-sdv-sw-office-hours",
     "processed_at": "2026-05-08T20:10:59Z"
   },
   {
-    "email_subject": "Notes: “Katana: Simulation Tools Sync” May 8, 2026",
+    "email_subject": "Notes: \u201cKatana: Simulation Tools Sync\u201d May 8, 2026",
     "workspace": "workspaces/2026.19/2026-05-08/katana-simulation-tools-sync",
     "processed_at": "2026-05-08T20:10:59Z",
     "skipped": true,
     "reason": "workspace already exists"
   },
   {
-    "email_subject": "Notes: “Customer deep dive: Komatsu NA” May 7, 2026",
+    "email_subject": "Notes: \u201cCustomer deep dive: Komatsu NA\u201d May 7, 2026",
     "workspace": "workspaces/2026.19/2026-05-07/customer-deep-dive-komatsu-na",
     "processed_at": "2026-05-08T20:10:59Z",
     "skipped": true,
     "reason": "workspace already exists"
   },
   {
-    "email_subject": "Notes: “Katana repo changes for Data Engine” May 8, 2026",
+    "email_subject": "Notes: \u201cKatana repo changes for Data Engine\u201d May 8, 2026",
     "workspace": "workspaces/2026.19/2026-05-08/katana-repo-changes-for-data-engine",
     "processed_at": "2026-05-08T22:12:06Z"
   },
   {
-    "email_subject": "Notes: “Komatsu sync” May 8, 2026",
+    "email_subject": "Notes: \u201cKomatsu sync\u201d May 8, 2026",
     "workspace": "workspaces/2026.19/2026-05-08/komatsu-sync",
     "processed_at": "2026-05-08T23:11:31Z"
   },
@@ -216,23 +216,28 @@
     "processed_at": "2026-05-11T17:07:26Z"
   },
   {
-    "email_subject": "Notes: “Katana: Virtual Toolchain Standup” May 11, 2026",
+    "email_subject": "Notes: \u201cKatana: Virtual Toolchain Standup\u201d May 11, 2026",
     "workspace": "workspaces/2026.20/2026-05-11/katana-virtual-toolchain-standup",
     "processed_at": "2026-05-11T23:14:28Z"
   },
   {
-    "email_subject": "Notes: “Katana HW <> SW sync” May 11, 2026",
+    "email_subject": "Notes: \u201cKatana HW <> SW sync\u201d May 11, 2026",
     "workspace": "workspaces/2026.20/2026-05-11/katana-hw-sw-sync",
     "processed_at": "2026-05-11T23:14:28Z"
   },
   {
-    "email_subject": "Notes: “[shadow] Katana <> Applied: SDV SW Office Hours” May 11, 2026",
+    "email_subject": "Notes: \u201c[shadow] Katana <> Applied: SDV SW Office Hours\u201d May 11, 2026",
     "workspace": "workspaces/2026.20/2026-05-11/shadow-katana-applied-sdv-sw-office-hours",
     "processed_at": "2026-05-11T23:14:28Z"
   },
   {
-    "email_subject": "Notes: “[shadow] Katana <> Applied: SDV SW Office Hours” May 12, 2026",
+    "email_subject": "Notes: \u201c[shadow] Katana <> Applied: SDV SW Office Hours\u201d May 12, 2026",
     "workspace": "workspaces/2026.20/2026-05-12/shadow-katana-applied-sdv-sw-office-hours",
     "processed_at": "2026-05-12T19:35:00Z"
+  },
+  {
+    "email_subject": "Notes: \"Komatsu Peoria I/O Feedback on K1 HW Design\" May 12, 2026",
+    "workspace": "workspaces/2026.20/2026-05-12/komatsu-peoria-i-o-feedback-on-k1-hw-design",
+    "processed_at": "2026-05-12T21:08:03Z"
   }
 ]
