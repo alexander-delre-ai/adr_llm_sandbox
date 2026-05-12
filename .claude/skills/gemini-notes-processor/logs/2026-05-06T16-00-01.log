@@ -1,0 +1,17 @@
+[16:00:01] gemini-notes-processor: starting
+[16:00:01] repo: /home/alexanderdelre/adr_llm_sandbox
+[16:00:01] log:  /home/alexanderdelre/adr_llm_sandbox/.claude/skills/gemini-notes-processor/logs/2026-05-06T16-00-01.log
+[16:00:01] invoking claude (timeout 15 minutes)...
+Workflow blocked. Same condition as the prior cron runs today.
+
+The gemini-notes-processor cannot proceed in this session:
+
+- **Gmail MCP not authenticated**: `mcp__claude_ai_Gmail__authenticate` returns "Ask the user to run /mcp and select 'claude.ai Gmail' to authenticate." Step 3 (Gmail thread search) is unrunnable without it. The actual `mcp__claude_ai_Gmail__search_threads` tool is not exposed at all in this session, only the auth bootstrap.
+
+No state was changed:
+- `last-run.json` left at `2026/05/01` so the next run picks up the same window and processes anything new since then.
+- `processed-meetings.json` untouched.
+
+To recover: run `/mcp` in Claude Code, authenticate the `claude.ai Gmail` connector (and re-check Google Drive + Slack), then re-invoke `/gemini-notes-processor`.
+[16:01:18] gemini-notes-processor: done (exit 0)
+[16:01:18] log: /home/alexanderdelre/adr_llm_sandbox/.claude/skills/gemini-notes-processor/logs/2026-05-06T16-00-01.log

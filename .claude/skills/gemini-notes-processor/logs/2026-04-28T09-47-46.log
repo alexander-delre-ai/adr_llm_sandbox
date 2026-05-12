@@ -1,0 +1,25 @@
+The write permissions need your approval for the state files in `.claude/skills/gemini-notes-processor/`. Once you approve the prompts, I'll update both `processed-meetings.json` and `last-run.json`.
+
+Everything else is complete:
+
+**Phase 1 artifacts written for all 8 meetings:**
+- `analysis.md`, `research.md`, `tickets.md`, `status.md`, `slack-dm.json` in each workspace
+
+**Slack DM sent:** 8 meeting replies in a new thread `:thread: Meeting Threads - 28/04/2026` in your DM
+
+**Meetings processed:**
+| Date | Meeting | Workspace |
+|------|---------|-----------|
+| Apr 27 | [Vehicle / SW] SDV Daily Standup | `2026.18/2026-04-27/vehicle-sw-komatsu-applied-sdv-daily-standup` |
+| Apr 27 | Katana Developer Tools Sync | `2026.18/2026-04-27/katana-developer-tools-sync` |
+| Apr 27 | [Katana] UI/UX Product Requirements for HW | `2026.18/2026-04-27/katana-ui-ux-product-requirements-for-hw` |
+| Apr 27 | Q2 Autolube Feature Integration on Labtruck | `2026.18/2026-04-27/q2-2026-1-komatsu-autolube-feature-integration-on-labtruck` |
+| Apr 27 | [shadow] SDV SW Office Hours | `2026.18/2026-04-27/shadow-katana-applied-sdv-sw-office-hours` |
+| Apr 27 | [HW / Core] SDV Daily Standup | `2026.18/2026-04-27/hw-core-komatsu-applied-sdv-daily-standup` |
+| Apr 27 | [Katana] Virtual Toolchain Office Hours | `2026.18/2026-04-27/katana-applied-virtual-toolchain-office-hours` |
+| Apr 24 | [Vehicle / SW] SDV Daily Standup | `2026.17/2026-04-24/vehicle-sw-komatsu-applied-sdv-daily-standup` |
+
+**Notable research findings:**
+- KATA-3565 was already created to assess PyArch flashability (due Apr 28 daily sync)
+- Interzonal fault reading across zones is an open undocumented gap per Application Development FAQ
+- SOME/IP is the chosen network service discovery framework; PDU/SOME/IP logging decision pending Polarian review

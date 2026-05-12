@@ -33,6 +33,14 @@ The processor checks this file on every run. Adding a keyword takes effect immed
 
 On first run (file absent or malformed), fall back to `newer_than:7d`. After all threads are processed, overwrite this file with the current UTC timestamp and commit + push it so future runs (local or remote) inherit the correct window.
 
+**`daily-thread.json`** — tracks the Slack DM parent thread for the current calendar day so multiple runs on the same day reuse the same thread rather than creating a new one:
+
+```json
+{ "date": "2026-05-11", "channel": "D01234ABCDE", "ts": "1746950400.123456" }
+```
+
+Overwritten each time a new parent thread is created (i.e. on the first run of a new day). Only one entry; no history needed.
+
 **`processed-meetings.json`** — append-only log of every meeting processed (or skipped as duplicate). Used for deduplication when Gmail label creation is unavailable:
 
 ```json
@@ -113,7 +121,7 @@ Pass the Google Docs URL as the sole input. Run Phase 1 fully:
 - Write `transcript.md` (single-line URL with transcript tab), `gemini-link.txt`
 - Generate `analysis.md`, `research.md`, `tickets.md`
 
-**Stop before Phase 2.** Do not create JIRA tickets, post Slack summaries, or sync TickTick.
+**Stop before Phase 2.** Do not create JIRA tickets, post Slack channel summaries, or sync TickTick. The only outbound action in this skill is the Slack DM to AlexD in Step 5f.
 
 #### 5d: Write status.md
 
@@ -165,15 +173,22 @@ Look up the Slack user ID for `alexanderdelre` via `mcp__claude_ai_Slack__slack_
 
 **Thread management:**
 
-Each run creates its own new parent thread. Do not reuse threads from previous runs (even from the same day).
+One parent thread per calendar day. Before sending the first meeting of a run:
 
-Before sending the first meeting of a run, post a new parent message to the DM channel:
-
-```
-:thread: Meeting Threads - DD/MM/YYYY
-```
-
-Capture the response `ts` and use it as `thread_ts` for all meeting replies in this run.
+1. Read `.claude/skills/gemini-notes-processor/daily-thread.json`. It has the shape:
+   ```json
+   { "date": "YYYY-MM-DD", "channel": "<channel_id>", "ts": "<parent_ts>" }
+   ```
+2. If the file exists, is valid, and `date` matches today's date (UTC), reuse the stored `channel` and `ts` as `thread_ts` for all replies. Do NOT post a new parent message.
+3. If the file is missing, malformed, or the date does not match today, post a new parent message to the DM channel:
+   ```
+   :thread: Meeting Threads - MM/DD/YYYY
+   ```
+   Capture the response `channel` and `ts`, then overwrite `daily-thread.json` with:
+   ```json
+   { "date": "YYYY-MM-DD", "channel": "<channel_id>", "ts": "<parent_ts>" }
+   ```
+   Use this `ts` as `thread_ts` for all meeting replies in this run.
 
 **Building each reply:**
 
@@ -184,7 +199,7 @@ Capture the response `ts` and use it as `thread_ts` for all meeting replies in t
 **Reply format:**
 
 ```
-:thread:DD/MM/YYYY: <Meeting Title>
+:thread:MM/DD/YYYY: <Meeting Title>
 _Komatsu Attendees:_ <comma-separated plain names>
 _Applied Attendees:_ <@user_id|name>, <@user_id|name>, ...
 <<Google Docs URL>|Gemini notes>
@@ -194,7 +209,7 @@ _Action items:_
 ```
 
 Notes:
-- Date format is DD/MM/YYYY (e.g. `21/04/2026`)
+- Date format is MM/DD/YYYY (e.g. `04/21/2026`)
 - If there are no Komatsu attendees, omit that line
 - If there are no Applied attendees beyond AlexD, omit the Applied Attendees line
 - Keep action items in priority order (P0 first, P3 last)
@@ -239,7 +254,7 @@ Read the existing file, append the new entries, and write the full updated array
 Then commit and push:
 
 ```bash
-git add .claude/skills/gemini-notes-processor/last-run.json
+git add .claude/skills/gemini-notes-processor/last-run.json .claude/skills/gemini-notes-processor/daily-thread.json
 git commit -m "chore: update gemini-notes-processor last-run timestamp"
 git push
 ```

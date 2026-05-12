@@ -1,0 +1,27 @@
+[17:00:01] gemini-notes-processor: starting
+[17:00:01] repo: /home/alexanderdelre/adr_llm_sandbox
+[17:00:01] log:  /home/alexanderdelre/adr_llm_sandbox/.claude/skills/gemini-notes-processor/logs/2026-04-28T17-00-01.log
+[17:00:01] invoking claude (timeout 15 minutes)...
+The file write is being blocked by permissions. I'll report the run result regardless.
+
+---
+
+**gemini-notes-processor run complete (2026-04-28)**
+
+**Gmail search**: `after:2026/04/28` returned 5 threads.
+
+**Filtering results:**
+
+| Subject | Keyword match | Status |
+|---------|--------------|--------|
+| Notes: "Project Katana: Brakes & Steering Dev Weekly" Apr 28, 2026 | Yes (Katana, Weekly) | Workspace already exists - skipped |
+| Notes: "Design Review: Juniper 1.0 Schematics - Part 2" Apr 28, 2026 | No | Skipped |
+| Notes: "[shadow] Katana <> Applied: SDV SW Office Hours" Apr 28, 2026 | Yes (Katana, SDV, Office Hours) | Workspace already exists - skipped |
+| Notes: "[HW / Core] Komatsu/Applied - SDV Daily Standup" Apr 28, 2026 | Yes (HW / Core, Komatsu, SDV, Standup) | Workspace already exists - skipped |
+| Notes: "[Vehicle / SW] Komatsu/Applied - SDV Daily Standup" Apr 28, 2026 | Yes (Komatsu, SDV, Standup) | Workspace already exists - skipped |
+
+**No new meetings to process.** All Apr 28 qualifying threads were already processed in the previous run (workspaces exist under `workspaces/2026.18/2026-04-28/`).
+
+**last-run.json**: Could not update (file write permission denied). The date field would remain `2026/04/28`, which is still correct for the next run's date filter.
+[17:01:23] gemini-notes-processor: done (exit 0)
+[17:01:23] log: /home/alexanderdelre/adr_llm_sandbox/.claude/skills/gemini-notes-processor/logs/2026-04-28T17-00-01.log

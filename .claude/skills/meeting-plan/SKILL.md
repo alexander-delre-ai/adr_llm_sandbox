@@ -96,16 +96,21 @@ Run only after **`continue`**, **`confirm`**, or **`create tickets`**. On **`sto
    - `.claude/skills/jira-task-creation-KATA/SKILL.md` for KATA- parent_ids
    - `.claude/skills/jira-task-creation-AVP/SKILL.md` for AVP- parent_ids  
    Only for `tracking: jira` or `tracking: both`. Respect defaults, assignee lookup, documentation routing, AVP mirror rules in those JIRA skills. On per-ticket failure, log and continue; report failures at the end.
-4. **Update `analysis.md`**: Re-read final `tickets.md` and align Sections 5 and 6 with final titles and keys.
-5. **Slack summary**: Read and follow `.claude/skills/meeting-summary/meeting-slack-summary/SKILL.md`. Pass Google Doc URL from `gemini-link.txt` or from single-line `transcript.md` if needed. KATA keys only in summary per that skill's rules.
-6. **Share Google Doc** (when `transcript.md` is a one-line Google Docs URL or URL is in `gemini-link.txt`): extract file ID, build recipient list (with Phase 1 adjustments), resolve emails from `user-mapping.md` and Slack if needed, then call Google Drive MCP `shareFile` with `role: writer`, `sendNotificationEmail: true` where supported. Log who was granted access and who was skipped.
-7. **TickTick sync**: Read `.claude/skills/ticktick-sync/SKILL.md` and run:
+4. **Update initiative JSON files**: After all tickets are created, for each newly created ticket whose `issueType` is `Epic`:
+   - Fetch the ticket from JIRA to confirm its `parent` field (the top-level initiative key).
+   - **KATA epics**: load `.claude/skills/meeting-plan/kata-initiatives.json`, find the initiative entry whose `key` matches the parent, and append to its `epics` array: `{ "key": "<key>", "summary": "<summary>", "status": "<status>" }`. Write the file back.
+   - **AVP epics**: same flow with `.claude/skills/meeting-plan/avp-initiatives.json`.
+   - Skip if the epic key is already present in the array (idempotent). Skip silently if the parent initiative is not in the JSON (the JSON may be intentionally partial). This step is a no-op when no epics were created.
+5. **Update `analysis.md`**: Re-read final `tickets.md` and align Sections 5 and 6 with final titles and keys.
+6. **Slack summary**: Read and follow `.claude/skills/meeting-summary/meeting-slack-summary/SKILL.md`. Pass Google Doc URL from `gemini-link.txt` or from single-line `transcript.md` if needed. KATA keys only in summary per that skill's rules.
+7. **Share Google Doc** (when `transcript.md` is a one-line Google Docs URL or URL is in `gemini-link.txt`): extract file ID, build recipient list (with Phase 1 adjustments), resolve emails from `user-mapping.md` and Slack if needed, then call Google Drive MCP `shareFile` with `role: writer`, `sendNotificationEmail: true` where supported. Log who was granted access and who was skipped.
+8. **TickTick sync**: Read `.claude/skills/ticktick-sync/SKILL.md` and run:
 
    `python3 .claude/skills/ticktick-sync/scripts/sync_meeting_items.py --tickets workspaces/2026.WW/<YYYY-MM-DD>/<meeting-slug>/tickets.md --meeting "<Meeting Title>"`
 
-8. **Workspace bundle**: Read and follow `.claude/skills/meeting-workspace/SKILL.md` to persist artifacts, metadata, and sync results.
-9. **User mapping**: If new Applied attendees were discovered, update `.claude/skills/meeting-summary/meeting-slack-summary/user-mapping.md` and commit with message: `update user-mapping with attendees from <meeting-slug>`.
-10. **Final `analysis.md` pass**: Re-read `tickets.md` and rewrite Sections 5 and 6 with real KATA keys and final wording. Return workspace path and ticket URLs.
+9. **Workspace bundle**: Read and follow `.claude/skills/meeting-workspace/SKILL.md` to persist artifacts, metadata, and sync results.
+10. **User mapping**: If new Applied attendees were discovered, update `.claude/skills/meeting-summary/meeting-slack-summary/user-mapping.md` and commit with message: `update user-mapping with attendees from <meeting-slug>`.
+11. **Final `analysis.md` pass**: Re-read `tickets.md` and rewrite Sections 5 and 6 with real KATA keys and final wording. Return workspace path and ticket URLs.
 
 ## Two-phase summary
 

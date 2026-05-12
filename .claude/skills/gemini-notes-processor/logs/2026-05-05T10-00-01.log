@@ -1,0 +1,7 @@
+[10:00:01] gemini-notes-processor: starting
+[10:00:01] repo: /home/alexanderdelre/adr_llm_sandbox
+[10:00:01] log:  /home/alexanderdelre/adr_llm_sandbox/.claude/skills/gemini-notes-processor/logs/2026-05-05T10-00-01.log
+[10:00:01] invoking claude (timeout 15 minutes)...
+The Gmail MCP server needs authentication before the search tools become available. Please run `/mcp` in Claude Code and select **"claude.ai Gmail"** to authenticate, then let me know when done and I'll continue from Step 3.
+[10:00:42] gemini-notes-processor: done (exit 0)
+[10:00:42] log: /home/alexanderdelre/adr_llm_sandbox/.claude/skills/gemini-notes-processor/logs/2026-05-05T10-00-01.log

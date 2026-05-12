@@ -1,0 +1,27 @@
+[16:00:01] gemini-notes-processor: starting
+[16:00:01] repo: /home/alexanderdelre/adr_llm_sandbox
+[16:00:01] log:  /home/alexanderdelre/adr_llm_sandbox/.claude/skills/gemini-notes-processor/logs/2026-05-08T16-00-01.log
+[16:00:01] invoking claude (timeout 15 minutes)...
+Workflow complete. Here's a summary of this run:
+
+**Threads scanned**: 6 (since `after:2026/05/08`)
+**Keyword-matched and new**: 1 - `Notes: "Komatsu sync" May 8, 2026`
+**Already processed (skipped)**: 5
+
+**Processing: Komatsu sync (May 8, 2026)**
+- Google Doc: [Notes by Gemini](https://docs.google.com/document/d/1xQQfWpv6cwj-3MipWIWASV9WIGSia0yam3QcsxFyusc/edit) (no transcript - recording unavailable, used Notes tab)
+- Meeting: Internal Applied sync on Komatsu account management, governance, staffing model, Peoria relationship
+- Attendees: Sandeep Menon, Alex Del Re, Timothy Kyung, Alexander Prosser
+- Workspace: `workspaces/2026.19/2026-05-08/komatsu-sync/`
+- Phase 1 artifacts: `transcript.md`, `gemini-link.txt`, `analysis.md`, `research.md`, `tickets.md`, `status.md`
+- Gmail label: failed (read-only token, expected)
+- Slack DM sent to Alex
+
+**Tickets staged (11 items):**
+- P1 (jira): Build support dashboard, Define P1 SLA process
+- P2 (jira): Establish governance structure, Create responsibilities chart
+- P2/P3 (slack): 7 coordination items (Peoria visit, Tim's scope, staffing model, etc.)
+
+**Step 6**: `processed-meetings.json` updated (37 entries), `last-run.json` updated to `2026-05-08T23:11:31Z`, committed and pushed.
+[16:11:52] gemini-notes-processor: done (exit 0)
+[16:11:52] log: /home/alexanderdelre/adr_llm_sandbox/.claude/skills/gemini-notes-processor/logs/2026-05-08T16-00-01.log
