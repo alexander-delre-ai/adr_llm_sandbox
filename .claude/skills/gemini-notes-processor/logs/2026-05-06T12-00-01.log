@@ -1,0 +1,15 @@
+[12:00:01] gemini-notes-processor: starting
+[12:00:01] repo: /home/alexanderdelre/adr_llm_sandbox
+[12:00:01] log:  /home/alexanderdelre/adr_llm_sandbox/.claude/skills/gemini-notes-processor/logs/2026-05-06T12-00-01.log
+[12:00:01] invoking claude (timeout 15 minutes)...
+The Gmail MCP server is not authenticated in this session. `mcp__claude_ai_Gmail__authenticate` reports the connector requires user-side OAuth via `/mcp`, and the search/label/get_thread tools needed by Step 3-5 are not available.
+
+Without Gmail access I can't enumerate new threads since the last run window (`2026/05/01`). I'm leaving `last-run.json` and `processed-meetings.json` untouched so the next run resumes with the same date window once Gmail is reauthenticated, matching the behavior of the prior automated runs at 10:00, 11:00, and 12:00 today.
+
+To unblock:
+1. Run `/mcp` in Claude Code and select "claude.ai Gmail" to complete OAuth
+2. Re-trigger the gemini-notes-processor workflow
+
+No workspaces created, no Slack DMs sent, no state files modified.
+[12:00:59] gemini-notes-processor: done (exit 0)
+[12:00:59] log: /home/alexanderdelre/adr_llm_sandbox/.claude/skills/gemini-notes-processor/logs/2026-05-06T12-00-01.log

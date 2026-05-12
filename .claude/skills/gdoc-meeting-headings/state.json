@@ -1,0 +1,66 @@
+{
+  "documents": {
+    "17Vs-0BGX0A1dMXTJYzEQrcBmtUicWjPY_FcznkiHSio": {
+      "title": "Notes - Katana <> Applied: SDV SW Office Hours",
+      "tabs": {
+        "t.0": {
+          "title": "default",
+          "lastScanned": "2026-05-11T00:00:00Z",
+          "meetings": {
+            "Apr 30, 2026": {
+              "status": "new",
+              "processedAt": null,
+              "notes": "Gemini notes: https://docs.google.com/document/d/1AQUh0VlId7qgn9xgxNHFH0AAFIFgrvgjtIQ5FF6ZiYQ/edit"
+            },
+            "May 7, 2026": {
+              "status": "new",
+              "processedAt": null,
+              "notes": "Gemini notes: https://docs.google.com/document/d/1Zk4RMeKlUxYM1dO2YfqMObj6mwTv2s6M8zxCRkYCDrA/edit"
+            },
+            "May 8, 2026": {
+              "status": "new",
+              "processedAt": null,
+              "notes": "Gemini notes: https://docs.google.com/document/d/1PeOgB1M2phxDc_Y_g__-AOXLXItzekfsTkEBPUvuJcg/edit"
+            },
+            "May 11, 2026": {
+              "status": "new",
+              "processedAt": null,
+              "notes": "Gemini notes: https://docs.google.com/document/d/15CM41icC6pcgArP7JjLinWRKCJQQ17vWdYnEO5Je9Lg/edit"
+            }
+          }
+        }
+      }
+    },
+    "1Akz3sRL8dzgwh1MWbcEGlNVeSYirTAkypQ5Q-tgkskg": {
+      "title": "[Internal] Project Katana Activity",
+      "tabs": {
+        "t.ty5fqvxffq36": {
+          "title": "SDV SW",
+          "lastScanned": "2026-04-29T00:00:00Z",
+          "meetings": {
+            "Brakes and Steering Weekly": {
+              "status": "new",
+              "processedAt": null,
+              "notes": null
+            },
+            "SDV OH": {
+              "status": "new",
+              "processedAt": null,
+              "notes": null
+            },
+            "SDV Braking quick sync": {
+              "status": "new",
+              "processedAt": null,
+              "notes": null
+            },
+            "SDV Standup": {
+              "status": "new",
+              "processedAt": null,
+              "notes": null
+            }
+          }
+        }
+      }
+    }
+  }
+}

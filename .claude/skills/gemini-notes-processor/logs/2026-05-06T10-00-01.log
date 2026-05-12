@@ -1,0 +1,17 @@
+[10:00:01] gemini-notes-processor: starting
+[10:00:01] repo: /home/alexanderdelre/adr_llm_sandbox
+[10:00:01] log:  /home/alexanderdelre/adr_llm_sandbox/.claude/skills/gemini-notes-processor/logs/2026-05-06T10-00-01.log
+[10:00:01] invoking claude (timeout 15 minutes)...
+Slack tool is also gated behind a permission prompt. I'll stop here and report the blocker rather than spamming permission requests.
+
+**Run blocked: Gmail MCP server not authenticated**
+
+- Step 1: Loaded `last-run.json` (last run 2026-05-01) and `processed-meetings.json` (27 entries).
+- Step 2: Loaded `keyword-filter.json` (15 keywords).
+- Step 3: Cannot proceed. `mcp__claude_ai_Gmail__search_threads` is unavailable. The Gmail MCP returned: *"Ask the user to run /mcp and select 'claude.ai Gmail' to authenticate."*
+
+**Action required from AlexD:** run `/mcp` and re-authenticate the `claude.ai Gmail` connector, then re-trigger this routine.
+
+**State preserved:** `last-run.json` was intentionally NOT updated, so the next run will retry the same window (`after:2026/05/01`) and pick up any emails from this period once Gmail auth is restored. No Slack DM was sent (Slack MCP also gated behind permission prompt in this session).
+[10:01:22] gemini-notes-processor: done (exit 0)
+[10:01:22] log: /home/alexanderdelre/adr_llm_sandbox/.claude/skills/gemini-notes-processor/logs/2026-05-06T10-00-01.log

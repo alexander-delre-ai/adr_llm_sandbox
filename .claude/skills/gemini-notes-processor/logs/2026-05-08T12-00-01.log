@@ -1,0 +1,15 @@
+[12:00:01] gemini-notes-processor: starting
+[12:00:01] repo: /home/alexanderdelre/adr_llm_sandbox
+[12:00:01] log:  /home/alexanderdelre/adr_llm_sandbox/.claude/skills/gemini-notes-processor/logs/2026-05-08T12-00-01.log
+[12:00:01] invoking claude (timeout 15 minutes)...
+Run complete. Summary:
+
+- **2 threads found** in Gmail since last run (`2026/05/08`):
+  - `Notes: "Katana: Simulation Tools Sync" May 8, 2026` - matched keyword "Katana", but workspace `workspaces/2026.19/2026-05-08/katana-simulation-tools-sync/` already exists on disk with all Phase 1 artifacts. Skipped.
+  - `Notes: "Customer deep dive: Komatsu NA" May 7, 2026` - matched keyword "Komatsu", but already in `processed-meetings.json`. Skipped.
+- **Gmail label**: Attempted `gemini-auto-processed` on both threads; failed due to read-only scope (expected, non-blocking).
+- **`last-run.json`** updated to `2026-05-08T19:01:31Z` and pushed.
+
+No new meetings to process today.
+[12:02:04] gemini-notes-processor: done (exit 0)
+[12:02:04] log: /home/alexanderdelre/adr_llm_sandbox/.claude/skills/gemini-notes-processor/logs/2026-05-08T12-00-01.log

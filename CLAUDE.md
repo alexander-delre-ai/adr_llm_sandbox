@@ -43,15 +43,15 @@ Load the `SKILL.md` for the workflow you need. Paths are relative to the reposit
 | meeting-workspace | [`.claude/skills/meeting-workspace/SKILL.md`](.claude/skills/meeting-workspace/SKILL.md) | Create persistent `workspaces/2026.WW/YYYY-MM-DD/{slug}/` |
 | meeting-tickets | [`.claude/skills/meeting-tickets/SKILL.md`](.claude/skills/meeting-tickets/SKILL.md) | Stage editable JIRA ticket proposals in workspace |
 | meeting-slack-summary | [`.claude/skills/meeting-summary/meeting-slack-summary/SKILL.md`](.claude/skills/meeting-summary/meeting-slack-summary/SKILL.md) | Slack office hours DMs to AlexD |
-| jira-task-creation-KATA | [`.claude/skills/jira-task-creation-KATA/SKILL.md`](.claude/skills/jira-task-creation-KATA/SKILL.md) | Create JIRA tickets in KATA project |
-| jira-task-creation-AVP | [`.claude/skills/jira-task-creation-AVP/SKILL.md`](.claude/skills/jira-task-creation-AVP/SKILL.md) | Create JIRA tickets in AVP project |
+| kata-jira-task-creation | [`.claude/skills/kata-jira-task-creation/SKILL.md`](.claude/skills/kata-jira-task-creation/SKILL.md) | Create JIRA tickets in KATA project |
+| avp-jira-task-creation | [`.claude/skills/avp-jira-task-creation/SKILL.md`](.claude/skills/avp-jira-task-creation/SKILL.md) | Create JIRA tickets in AVP project |
 | daily-todos | [`.claude/skills/daily-todos/SKILL.md`](.claude/skills/daily-todos/SKILL.md) | Generate daily task lists from workspaces |
 | daily-meeting-digest | [`.claude/skills/daily-meeting-digest/SKILL.md`](.claude/skills/daily-meeting-digest/SKILL.md) | End-of-day Slack DM summarizing all meetings auto-processed today |
 | gemini-notes-processor | [`.claude/skills/gemini-notes-processor/SKILL.md`](.claude/skills/gemini-notes-processor/SKILL.md) | Automated Gmail scan: Gemini notes to meeting-plan Phase 1 + status.md |
 | ticktick-sync | [`.claude/skills/ticktick-sync/SKILL.md`](.claude/skills/ticktick-sync/SKILL.md) | Sync todos to TickTick API |
 | chat-keyword-insights | [`.claude/skills/chat-keyword-insights/SKILL.md`](.claude/skills/chat-keyword-insights/SKILL.md) | Transcript keyword insights to `insights/` |
-| create-pr-with-jira | [`.claude/skills/create-pr-with-jira/SKILL.md`](.claude/skills/create-pr-with-jira/SKILL.md) | KATA ticket + GitHub PR link workflow |
-| kata-sprint-ticket-factory | [`.claude/skills/kata-sprint-ticket-factory/SKILL.md`](.claude/skills/kata-sprint-ticket-factory/SKILL.md) | Sprint batch ticket creation |
+| kata-jira-pr-task | [`.claude/skills/kata-jira-pr-task/SKILL.md`](.claude/skills/kata-jira-pr-task/SKILL.md) | KATA ticket + GitHub PR link workflow |
+| gdoc-meeting-headings | [`.claude/skills/gdoc-meeting-headings/SKILL.md`](.claude/skills/gdoc-meeting-headings/SKILL.md) | Read meeting headings from a Google Doc tab; tracks processed/new status in `state.json` |
 
 **Note**: The `.claude/commands/` directory is not used. All workflow text lives in `SKILL.md` files under `.claude/skills/`.
 
