@@ -244,5 +244,29 @@
     "email_subject": "Notes: “Project Katana: Brakes & Steering Dev Weekly” May 12, 2026",
     "workspace": "workspaces/2026.20/2026-05-12/project-katana-brakes-steering-dev-weekly",
     "processed_at": "2026-05-12T23:09:36Z"
+  },
+  {
+    "email_subject": "Notes: \"[shadow] Katana <> Applied: SDV SW Office Hours\" May 13, 2026",
+    "workspace": "workspaces/2026.20/2026-05-13/shadow-katana-applied-sdv-sw-office-hours",
+    "processed_at": "2026-05-13T18:07:00Z"
+  },
+  {
+    "email_subject": "Notes: \"[shadow] Katana <> Applied: SDV SW Office Hours\" May 14, 2026",
+    "workspace": "workspaces/2026.20/2026-05-14/shadow-katana-applied-sdv-sw-office-hours",
+    "processed_at": "2026-05-14T20:08:01Z"
+  },
+  {
+    "email_subject": "Notes: \"sync on OTA SDV SW work\" May 14, 2026",
+    "workspace": "workspaces/2026.20/2026-05-14/sync-on-ota-sdv-sw-work",
+    "processed_at": "2026-05-14T20:08:01Z",
+    "skipped": true,
+    "reason": "workspace already exists"
+  },
+  {
+    "email_subject": "Notes: \"Katana: Virtual Toolchain Standup\" May 14, 2026",
+    "workspace": "workspaces/2026.20/2026-05-14/katana-virtual-toolchain-standup",
+    "processed_at": "2026-05-14T20:08:01Z",
+    "skipped": true,
+    "reason": "workspace already exists"
   }
 ]
