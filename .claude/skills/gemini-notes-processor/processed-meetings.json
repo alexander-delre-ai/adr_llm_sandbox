@@ -337,5 +337,17 @@
     "email_subject": "Notes: \"Komatsu JP lisence and FADC\" May 20, 2026",
     "workspace": "workspaces/2026.21/2026-05-20/komatsu-jp-lisence-and-fadc",
     "processed_at": "2026-05-21T17:14:38Z"
+  },
+  {
+    "email_subject": "Notes: \"[shadow] Katana <> Applied: SDV SW Office Hours\" May 21, 2026",
+    "workspace": "workspaces/2026.21/2026-05-21/shadow-katana-applied-sdv-sw-office-hours",
+    "processed_at": "2026-05-21T21:13:58Z",
+    "skipped": true,
+    "reason": "workspace already exists"
+  },
+  {
+    "email_subject": "Notes: \"Toolchain Weekly Sync\" May 21, 2026",
+    "workspace": "workspaces/2026.21/2026-05-21/toolchain-weekly-sync",
+    "processed_at": "2026-05-21T21:13:58Z"
   }
 ]
