@@ -322,5 +322,20 @@
     "email_subject": "Notes: \u201cVOS to Katana mapping\u201d May 19, 2026",
     "workspace": "workspaces/2026.21/2026-05-19/vos-to-katana-mapping",
     "processed_at": "2026-05-19T23:11:05Z"
+  },
+  {
+    "email_subject": "Notes: \"[shadow] Katana <> Applied: SDV SW Office Hours\" May 20, 2026",
+    "workspace": "workspaces/2026.21/2026-05-20/shadow-katana-applied-sdv-sw-office-hours",
+    "processed_at": "2026-05-20T20:09:58Z"
+  },
+  {
+    "email_subject": "Notes: \u201cAI Internal: Komatsu Middleware Req Alignment\u201d May 20, 2026",
+    "workspace": "workspaces/2026.21/2026-05-20/ai-internal-komatsu-middleware-req-alignment",
+    "processed_at": "2026-05-21T00:06:25Z"
+  },
+  {
+    "email_subject": "Notes: \"Komatsu JP lisence and FADC\" May 20, 2026",
+    "workspace": "workspaces/2026.21/2026-05-20/komatsu-jp-lisence-and-fadc",
+    "processed_at": "2026-05-21T17:14:38Z"
   }
 ]
