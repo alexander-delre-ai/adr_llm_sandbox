@@ -359,5 +359,17 @@
     "email_subject": "Notes: \"[shadow] Katana <> Applied: SDV SW Office Hours\" May 22, 2026",
     "workspace": "workspaces/2026.21/2026-05-22/shadow-katana-applied-sdv-sw-office-hours",
     "processed_at": "2026-05-22T19:10:00Z"
+  },
+  {
+    "email_subject": "Notes: \"[shadow] Katana <> Applied: SDV SW Office Hours\" May 26, 2026",
+    "workspace": "workspaces/2026.22/2026-05-26/shadow-katana-applied-sdv-sw-office-hours",
+    "processed_at": "2026-05-26T19:10:00Z"
+  },
+  {
+    "email_subject": "Notes: \"[Katana] Final K1 HW Design Review: Juniper Schematics\" May 26, 2026",
+    "workspace": "workspaces/2026.22/2026-05-26/katana-final-k1-hw-design-review-juniper-schematics",
+    "processed_at": "2026-05-27T01:01:04Z",
+    "skipped": true,
+    "reason": "workspace already exists"
   }
 ]
