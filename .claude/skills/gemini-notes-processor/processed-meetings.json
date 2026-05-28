@@ -371,5 +371,20 @@
     "processed_at": "2026-05-27T01:01:04Z",
     "skipped": true,
     "reason": "workspace already exists"
+  },
+  {
+    "email_subject": "Notes: \"[shadow] Katana <> Applied: SDV SW Office Hours\" May 27, 2026",
+    "workspace": "workspaces/2026.22/2026-05-27/shadow-katana-applied-sdv-sw-office-hours",
+    "processed_at": "2026-05-27T19:15:00Z"
+  },
+  {
+    "email_subject": "Notes: \u201cKatana synthetic scenario & ML workflow\u201d May 27, 2026",
+    "workspace": "workspaces/2026.22/2026-05-27/katana-synthetic-scenario-ml-workflow",
+    "processed_at": "2026-05-27T23:08:31Z"
+  },
+  {
+    "email_subject": "Notes: \u201cKatana: Virtual Toolchain Standup\u201d May 28, 2026",
+    "workspace": "workspaces/2026.22/2026-05-28/katana-virtual-toolchain-standup",
+    "processed_at": "2026-05-28T18:10:54Z"
   }
 ]
