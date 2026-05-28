@@ -391,5 +391,12 @@
     "email_subject": "Notes: “Toolchain Weekly Sync” May 28, 2026",
     "workspace": "workspaces/2026.22/2026-05-28/toolchain-weekly-sync",
     "processed_at": "2026-05-28T21:08:40Z"
+  },
+  {
+    "email_subject": "Notes: \"[shadow] Katana <> Applied: SDV SW Office Hours\" May 28, 2026",
+    "workspace": "workspaces/2026.22/2026-05-28/shadow-katana-applied-sdv-sw-office-hours",
+    "processed_at": "2026-05-28T22:01:02Z",
+    "skipped": true,
+    "reason": "workspace already exists"
   }
 ]
