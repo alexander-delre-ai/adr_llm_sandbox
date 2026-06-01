@@ -408,5 +408,24 @@
     "email_subject": "Notes: \"[Katana <> Applied] Virtual Toolchain Office Hours\" Jun 1, 2026",
     "workspace": "workspaces/2026.23/2026-06-01/katana-applied-virtual-toolchain-office-hours",
     "processed_at": "2026-06-01T18:00:01Z"
+  },
+  {
+    "email_subject": "Notes: \"Project Katanat: K1/K2 HW Dev Schedule Review\" Jun 1, 2026",
+    "workspace": "workspaces/2026.23/2026-06-01/project-katanat-k1-k2-hw-dev-schedule-review",
+    "processed_at": "2026-06-01T22:12:46Z"
+  },
+  {
+    "email_subject": "Notes: \"[shadow] Katana <> Applied: SDV SW Office Hours\" Jun 1, 2026",
+    "workspace": "workspaces/2026.23/2026-06-01/shadow-katana-applied-sdv-sw-office-hours",
+    "processed_at": "2026-06-01T22:12:46Z",
+    "skipped": true,
+    "reason": "workspace already exists"
+  },
+  {
+    "email_subject": "Notes: \"Katana Logging requirements review\" Jun 1, 2026",
+    "workspace": "workspaces/2026.23/2026-06-01/katana-logging-requirements-review",
+    "processed_at": "2026-06-01T22:12:46Z",
+    "skipped": true,
+    "reason": "workspace already exists"
   }
 ]
