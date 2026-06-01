@@ -140,6 +140,7 @@ After Phase 1 completes, write `workspaces/2026.WW/YYYY-MM-DD/<slug>/status.md` 
 - [x] analysis.md
 - [x] research.md
 - [x] tickets.md
+- [x] FAQ.md (omitted if no open questions)
 
 ## Google Docs transcript
 <Google Docs URL>
@@ -194,15 +195,23 @@ One parent thread per calendar day. Before sending the first meeting of a run:
 
 1. **Attendee split**: From `analysis.md` Section 1, separate participants into Applied employees (anyone with an `@applied.co` email or listed under "Participants (Applied)") and external/Komatsu attendees (everyone else). Resolve Applied attendees to Slack user IDs via `.claude/skills/meeting-summary/meeting-slack-summary/user-mapping.md`; fall back to plain name if not found.
 
-2. **Action items**: For each item in `tickets.md`, format as `• <@user_id|name>: description` where the assignee is an Applied employee with a known Slack ID, or `• Name: description` for Komatsu/unknown assignees. If a JIRA ticket key was already created (Phase 2 complete), include `<https://appliedint-katana.atlassian.net/browse/KATA-XXXX|KATA-XXXX>:` between the assignee and description. In Phase 1 (pre-JIRA), omit the JIRA link.
+2. **Slack ID enrichment**: For every attendee in the meeting who has no Slack ID in `user-mapping.md`, call `mcp__claude_ai_Slack__slack_search_users` with their full name (and email if available). This applies regardless of organization. If a match is found, write the Slack ID into `user-mapping.md` (adding the person if they are not yet listed) and use the mention `<@user_id|name>` immediately in the reply. If no match is found, leave the entry as plain name and continue.
+
+3. **Discussion summary**: From `analysis.md`, extract 3-4 bullets capturing the key topics discussed. Each bullet should be one concise sentence. Use the decisions and themes sections of `analysis.md` as the source; do not fabricate.
+
+4. **Action items**: For each item in `tickets.md`, format as `• <@user_id|name>: description` where the assignee has a known Slack ID (Applied or Komatsu), or `• Name: description` if no Slack ID is known. If a JIRA ticket key was already created (Phase 2 complete), include `<https://appliedint-katana.atlassian.net/browse/KATA-XXXX|KATA-XXXX>:` between the assignee and description. In Phase 1 (pre-JIRA), omit the JIRA link.
 
 **Reply format:**
 
 ```
 :thread:MM/DD/YYYY: <Meeting Title>
-_Komatsu Attendees:_ <comma-separated plain names>
+_Komatsu Attendees:_ <@user_id|name>, plain name, ...
 _Applied Attendees:_ <@user_id|name>, <@user_id|name>, ...
 <<Google Docs URL>|Gemini notes>
+_Discussion:_
+• <bullet 1>
+• <bullet 2>
+• <bullet 3>
 _Action items:_
 • <@user_id|name>: <description>
 • Name: <description>
