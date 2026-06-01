@@ -44,6 +44,7 @@ Load the `SKILL.md` for the workflow you need. Paths are relative to the reposit
 | meeting-tickets | [`.claude/skills/meeting-tickets/SKILL.md`](.claude/skills/meeting-tickets/SKILL.md) | Stage editable JIRA ticket proposals in workspace |
 | meeting-slack-summary | [`.claude/skills/meeting-summary/meeting-slack-summary/SKILL.md`](.claude/skills/meeting-summary/meeting-slack-summary/SKILL.md) | Slack office hours DMs to AlexD |
 | kata-jira-task-creation | [`.claude/skills/kata-jira-task-creation/SKILL.md`](.claude/skills/kata-jira-task-creation/SKILL.md) | Create JIRA tickets in KATA project |
+| kata-sprint-planning | [`.claude/skills/kata-sprint-planning/SKILL.md`](.claude/skills/kata-sprint-planning/SKILL.md) | Plan one upcoming KATA sprint for one TLI: retro last sprint vs. TLI goals, propose Eng Sprint v2 assignments, apply after review |
 | avp-jira-task-creation | [`.claude/skills/avp-jira-task-creation/SKILL.md`](.claude/skills/avp-jira-task-creation/SKILL.md) | Create JIRA tickets in AVP project |
 | daily-todos | [`.claude/skills/daily-todos/SKILL.md`](.claude/skills/daily-todos/SKILL.md) | Generate daily task lists from workspaces |
 | daily-meeting-digest | [`.claude/skills/daily-meeting-digest/SKILL.md`](.claude/skills/daily-meeting-digest/SKILL.md) | End-of-day Slack DM summarizing all meetings auto-processed today |
@@ -52,6 +53,7 @@ Load the `SKILL.md` for the workflow you need. Paths are relative to the reposit
 | chat-keyword-insights | [`.claude/skills/chat-keyword-insights/SKILL.md`](.claude/skills/chat-keyword-insights/SKILL.md) | Transcript keyword insights to `insights/` |
 | kata-jira-pr-task | [`.claude/skills/kata-jira-pr-task/SKILL.md`](.claude/skills/kata-jira-pr-task/SKILL.md) | KATA ticket + GitHub PR link workflow |
 | gdoc-meeting-headings | [`.claude/skills/gdoc-meeting-headings/SKILL.md`](.claude/skills/gdoc-meeting-headings/SKILL.md) | Read meeting headings from a Google Doc tab; tracks processed/new status in `state.json` |
+| workspace-search | [`.claude/skills/workspace-search/SKILL.md`](.claude/skills/workspace-search/SKILL.md) | Search workspaces for context on a topic; reads analysis.md + transcript.md, cites sources, escalates to meeting-research if no match |
 
 **Note**: The `.claude/commands/` directory is not used. All workflow text lives in `SKILL.md` files under `.claude/skills/`.
 

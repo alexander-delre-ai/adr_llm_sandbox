@@ -1,9 +1,143 @@
 {
+  "_comment": "Top-level Initiatives (issue type 10040, hierarchyLevel 2) in the KATA project. Each initiative has its direct child epics. Used by sprint-planning, meeting-plan, and meeting-research skills to inform cross-TLI context.",
   "initiatives": [
+    {
+      "key": "KATA-10",
+      "summary": "Surround View System",
+      "status": "In Progress",
+      "owner": "Sohum Misra",
+      "epics": [
+        { "key": "KATA-16",   "summary": "Finalize architecture and hardware for SVS", "status": "Rejected" },
+        { "key": "KATA-17",   "summary": "Design and finalize the MVP system features and capabilities", "status": "Rejected" },
+        { "key": "KATA-19",   "summary": "Initial development and validation of the SVS system performance", "status": "Rejected" },
+        { "key": "KATA-20",   "summary": "Create a plan for meeting the Komatsu NPDI phases", "status": "Rejected" },
+        { "key": "KATA-408",  "summary": "Calibration", "status": "In Progress" },
+        { "key": "KATA-409",  "summary": "Camera Initialization and Streaming", "status": "In Progress" },
+        { "key": "KATA-410",  "summary": "Surround View Stitching", "status": "In Progress" },
+        { "key": "KATA-411",  "summary": "Fault Reporting and Notification and Logging", "status": "In Progress" },
+        { "key": "KATA-412",  "summary": "25.2 HMI Design and Implementation", "status": "Complete" },
+        { "key": "KATA-413",  "summary": "DVR Data Recording and Export", "status": "In Progress" },
+        { "key": "KATA-414",  "summary": "Hardware Integration and Mounting", "status": "In Progress" },
+        { "key": "KATA-415",  "summary": "Developer Experience", "status": "In Progress" },
+        { "key": "KATA-416",  "summary": "Deployment Update and Orchestration", "status": "In Progress" },
+        { "key": "KATA-417",  "summary": "Environmental and Regulatory", "status": "Complete" },
+        { "key": "KATA-418",  "summary": "Hardware Allocation and Procurement", "status": "Complete" },
+        { "key": "KATA-419",  "summary": "Documentation and Legal", "status": "In Progress" },
+        { "key": "KATA-420",  "summary": "Testing, Integration, and Requirements", "status": "Complete" },
+        { "key": "KATA-511",  "summary": "Self Cleaning Housing", "status": "In Progress" },
+        { "key": "KATA-2021", "summary": "SVS L8 - Perception", "status": "In Progress" },
+        { "key": "KATA-2152", "summary": "End User Manual Documentation Support", "status": "Complete" },
+        { "key": "KATA-2277", "summary": "Physical Hardware Selection and Testing", "status": "In Progress" },
+        { "key": "KATA-2912", "summary": "HMI needs for SVS Q2", "status": "In Progress" },
+        { "key": "KATA-3091", "summary": "Hardware System Reliability", "status": "Backlog" },
+        { "key": "KATA-3154", "summary": "Code Refactoring", "status": "In Progress" },
+        { "key": "KATA-3464", "summary": "Bug Tracking", "status": "Backlog" },
+        { "key": "KATA-3545", "summary": "Syslogic AGX Orin Surround View System Bring-up", "status": "In Progress" },
+        { "key": "KATA-3592", "summary": "Masking and UI Improvements SVS V1.2+", "status": "In Progress" }
+      ]
+    },
+    {
+      "key": "KATA-11",
+      "summary": "Software Defined Vehicle - Hardware",
+      "status": "In Progress",
+      "owner": "Nicholas Tokarz",
+      "epics": [
+        { "key": "KATA-5",    "summary": "Program Deep-dive: Existing Komatsu Architectures", "status": "In Progress" },
+        { "key": "KATA-6",    "summary": "SDV Network Architecture", "status": "In Progress" },
+        { "key": "KATA-7",    "summary": "Hardware Development", "status": "In Progress" },
+        { "key": "KATA-8",    "summary": "HW Integration and HILS Bench", "status": "Complete" },
+        { "key": "KATA-132",  "summary": "SDV Requirements Development", "status": "In Progress" },
+        { "key": "KATA-725",  "summary": "SDV Power Architecture", "status": "In Progress" },
+        { "key": "KATA-853",  "summary": "SDV Functional Safety", "status": "In Progress" },
+        { "key": "KATA-986",  "summary": "Labcar Development 25.3", "status": "In Progress" },
+        { "key": "KATA-1052", "summary": "SW Infrastructure Support", "status": "Complete" },
+        { "key": "KATA-2404", "summary": "SDV Cybersecurity", "status": "Complete" },
+        { "key": "KATA-2553", "summary": "Release 2026.11 Juniper 1.0 Hardware Requirement/Implementation", "status": "Complete" },
+        { "key": "KATA-2558", "summary": "Gen K1: Zonal Compute Vehicle Controller (Juniper 1.0) History", "status": "Complete" },
+        { "key": "KATA-2890", "summary": "Hardware test coverage - Juniper 1.0 and Walnut 1.0", "status": "Complete" },
+        { "key": "KATA-2981", "summary": "Labtruck Development 26.1", "status": "In Progress" },
+        { "key": "KATA-3033", "summary": "Release 2026.19 Walnut 1.0 Hardware Development", "status": "In Progress" },
+        { "key": "KATA-3057", "summary": "Release 2026.19 Juniper 1.0 Hardware Development", "status": "In Progress" },
+        { "key": "KATA-3200", "summary": "Program Management", "status": "In Progress" },
+        { "key": "KATA-3502", "summary": "Juniper 1.0 Hardware Development Plan", "status": "Backlog" },
+        { "key": "KATA-3503", "summary": "Walnut 1.0 Hardware Development Plan", "status": "Backlog" },
+        { "key": "KATA-3704", "summary": "K2 Zone (VCH+SPH)", "status": "Backlog" },
+        { "key": "KATA-3707", "summary": "K2 Central Compute", "status": "Backlog" },
+        { "key": "KATA-3709", "summary": "K4 Zone (SPH + VCH)", "status": "Backlog" },
+        { "key": "KATA-3710", "summary": "K4 Central Compute", "status": "Backlog" }
+      ]
+    },
+    {
+      "key": "KATA-12",
+      "summary": "Advanced Autonomy Showcase",
+      "status": "Complete",
+      "owner": "Rohan Bajaria",
+      "epics": [
+        { "key": "KATA-42",   "summary": "Define capabilities and scope for EOY", "status": "Complete" },
+        { "key": "KATA-43",   "summary": "Showcase execution plan", "status": "Complete" },
+        { "key": "KATA-44",   "summary": "Data collection", "status": "Complete" },
+        { "key": "KATA-45",   "summary": "Autonomy Development Milestone", "status": "Complete" },
+        { "key": "KATA-1193", "summary": "830E DbW Integration", "status": "Complete" }
+      ]
+    },
+    {
+      "key": "KATA-13",
+      "summary": "Collision Avoidance Prototype",
+      "status": "Complete",
+      "owner": "Michelle Zhang",
+      "epics": [
+        { "key": "KATA-9",    "summary": "[CAS] October Demo", "status": "Complete" },
+        { "key": "KATA-66",   "summary": "[CAS] Feature Definition", "status": "Complete" },
+        { "key": "KATA-67",   "summary": "[CAS] Hardware Selection & Integration", "status": "Backlog" },
+        { "key": "KATA-68",   "summary": "[CAS] System Architecture", "status": "Backlog" },
+        { "key": "KATA-69",   "summary": "[CAS] Software Development", "status": "Complete" },
+        { "key": "KATA-70",   "summary": "[CAS] 830E Control Integration", "status": "Complete" },
+        { "key": "KATA-261",  "summary": "[CAS] HMI development", "status": "Complete" },
+        { "key": "KATA-565",  "summary": "[CAS] CAS Cloud Safety Office", "status": "Complete" },
+        { "key": "KATA-583",  "summary": "[CAS] Stack Performance Optimization", "status": "Complete" },
+        { "key": "KATA-757",  "summary": "[CAS] Developer Experience", "status": "Complete" },
+        { "key": "KATA-860",  "summary": "[CAS] January Showcase", "status": "Complete" },
+        { "key": "KATA-1387", "summary": "[CAS] Functional Safety Analysis", "status": "Backlog" },
+        { "key": "KATA-1392", "summary": "[CAS] Ouster Lidar Driver Development and Integration", "status": "Backlog" },
+        { "key": "KATA-1648", "summary": "[CAS] HMI Feature Improvement Q1-Q2", "status": "Rejected" }
+      ]
+    },
+    {
+      "key": "KATA-14",
+      "summary": "Smart Machine Cloud",
+      "status": "In Progress",
+      "owner": "Liang Kong",
+      "epics": [
+        { "key": "KATA-94",   "summary": "Deployment and operational security", "status": "Backlog" },
+        { "key": "KATA-162",  "summary": "Federated Deployment", "status": "Todo" },
+        { "key": "KATA-164",  "summary": "Telematics", "status": "Todo" },
+        { "key": "KATA-165",  "summary": "Asset/Fleet management", "status": "Complete" },
+        { "key": "KATA-166",  "summary": "OTA", "status": "In Progress" },
+        { "key": "KATA-562",  "summary": "CAS Event Review", "status": "Complete" },
+        { "key": "KATA-615",  "summary": "Mine Intelligence", "status": "Backlog" },
+        { "key": "KATA-999",  "summary": "[25.3] Goal 4: Cybersecurity for SVS + OTA", "status": "Backlog" },
+        { "key": "KATA-1009", "summary": "Smart Mine - CAS Cloud Safety Office", "status": "In Progress" },
+        { "key": "KATA-1988", "summary": "[25.3] Goal 5: Production cloud and release process", "status": "Todo" },
+        { "key": "KATA-1997", "summary": "[25.3] Goal 6: Future Smart Machine data integration", "status": "Backlog" },
+        { "key": "KATA-2073", "summary": "[25.3] Goal 2: OTA Multi HPC", "status": "Backlog" },
+        { "key": "KATA-2075", "summary": "[25.3] Goal 1: Offline OTA update (via Android tablet)", "status": "Complete" },
+        { "key": "KATA-2128", "summary": "Linux Updater for Cross-Control", "status": "In Progress" },
+        { "key": "KATA-2209", "summary": "[25.3] Goal 3: Data Logging via Tablet", "status": "Complete" },
+        { "key": "KATA-3251", "summary": "Production deployment for Komatsu, with integration with Komatsu IdP", "status": "Todo" },
+        { "key": "KATA-3257", "summary": "OTA mult-path support: wireless & tablet", "status": "Backlog" },
+        { "key": "KATA-3260", "summary": "Production Tiered OTA w/ Tablet support", "status": "In Progress" },
+        { "key": "KATA-3261", "summary": "Data Logging via Tablet for SVS & OTA", "status": "In Progress" },
+        { "key": "KATA-3327", "summary": "OTA Rollback & Failsafe Recovery (Yocto Linux)", "status": "Backlog" },
+        { "key": "KATA-3328", "summary": "Secure OTA Payload Verification", "status": "In Progress" },
+        { "key": "KATA-3451", "summary": "OTA RBAC", "status": "Backlog" },
+        { "key": "KATA-3496", "summary": "OTA Dashboard V2", "status": "In Progress" }
+      ]
+    },
     {
       "key": "KATA-15",
       "summary": "Virtual Toolchain",
       "status": "In Progress",
+      "owner": "Alex Del Re",
       "epics": [
         { "key": "KATA-18",   "summary": "[VT] Set up Surround View System joint development and testing environment", "status": "Rejected" },
         { "key": "KATA-376",  "summary": "[VT] Onboard Komatsu developers into toolchain", "status": "Complete" },
@@ -26,9 +160,51 @@
       ]
     },
     {
+      "key": "KATA-1758",
+      "summary": "Smart AHT Kit",
+      "status": "In Progress",
+      "owner": "Michelle Zhang",
+      "epics": [
+        { "key": "KATA-1764", "summary": "[Smart AHT] Document AT system 2.0 and AHT kit baseline capabilities and architecture", "status": "Complete" },
+        { "key": "KATA-1765", "summary": "[Smart AHT] Identify new additional capabilities / performance targets for next-gen ODS", "status": "Complete" },
+        { "key": "KATA-1766", "summary": "[Smart AHT] Identify new additional capabilities / performance targets for Smart AHT with Frontrunner", "status": "Complete" },
+        { "key": "KATA-1767", "summary": "[Smart AHT] Create new architecture for next-gen ODS", "status": "Complete" },
+        { "key": "KATA-1768", "summary": "[Smart AHT] Create new architecture for Smart AHT to integrate with Frontrunner", "status": "Complete" },
+        { "key": "KATA-1769", "summary": "[Smart AHT] Data collection at customer sites (if possible) in support of ODS", "status": "In Progress" },
+        { "key": "KATA-1782", "summary": "[Smart AHT] Program Management & Planning", "status": "In Progress" },
+        { "key": "KATA-2396", "summary": "[Smart AHT] Stack Software Eng Work", "status": "In Progress" },
+        { "key": "KATA-3095", "summary": "AHT HIL Bench", "status": "Todo" },
+        { "key": "KATA-3096", "summary": "830E AHT Integration", "status": "Backlog" },
+        { "key": "KATA-3097", "summary": "730E AHT Integration", "status": "In Progress" },
+        { "key": "KATA-3098", "summary": "Komatsu Raptor AHT Integration", "status": "Backlog" },
+        { "key": "KATA-3099", "summary": "Komatsu HIL Bench", "status": "Backlog" },
+        { "key": "KATA-3100", "summary": "Raptor 110 AHT Upfit", "status": "Backlog" },
+        { "key": "KATA-3135", "summary": "[Smart AHT] Golden ODS test scenarios in ADP developed", "status": "In Progress" },
+        { "key": "KATA-3136", "summary": "[Smart AHT] Drive by Wire prototype demonstrated at EDT performance limits", "status": "In Progress" },
+        { "key": "KATA-3137", "summary": "[Smart AHT] Software integration to ingest FrontRunner reference paths", "status": "In Progress" },
+        { "key": "KATA-3138", "summary": "[Smart AHT] Prototype ODS systems installed on a Komatsu truck", "status": "In Progress" }
+      ]
+    },
+    {
+      "key": "KATA-1759",
+      "summary": "Underground Exploration",
+      "status": "In Progress",
+      "owner": "Anya Vinogradsky",
+      "epics": [
+        { "key": "KATA-1809", "summary": "Vehicle Bring Up", "status": "Complete" },
+        { "key": "KATA-1870", "summary": "Software Stack Updates", "status": "Complete" },
+        { "key": "KATA-1871", "summary": "Data Collection", "status": "Complete" },
+        { "key": "KATA-1872", "summary": "Data Processing", "status": "Complete" },
+        { "key": "KATA-1873", "summary": "ADP Map Creation", "status": "Complete" },
+        { "key": "KATA-1874", "summary": "ADP Tasks", "status": "In Progress" },
+        { "key": "KATA-1875", "summary": "Planning and Analysis", "status": "Complete" }
+      ]
+    },
+    {
       "key": "KATA-1760",
       "summary": "Software Defined Vehicle - Software",
       "status": "In Progress",
+      "owner": "Nicholas Tokarz",
       "epics": [
         { "key": "KATA-127",  "summary": "[SDV][SW] Application SW Development Planning", "status": "In Progress" },
         { "key": "KATA-726",  "summary": "[SDV][SW] VehicleOS SW Development", "status": "In Progress" },
@@ -72,6 +248,44 @@
         { "key": "KATA-3366", "summary": "[SDV][SW] Publish Komatsu-signed validation plan for P1 prototype applications", "status": "In Progress" },
         { "key": "KATA-3367", "summary": "[SDV][SW] Audit P1 application managers and document Workbench capability gaps", "status": "In Progress" },
         { "key": "KATA-3567", "summary": "Auto Lube Hardware Testing", "status": "Backlog" }
+      ]
+    },
+    {
+      "key": "KATA-2879",
+      "summary": "Misc Program Level Tasks",
+      "status": "In Progress",
+      "owner": "Lauren Joyce",
+      "epics": [
+        { "key": "KATA-2542", "summary": "Merging batch ticket creation from sprint planning skill in cursor", "status": "In Progress" }
+      ]
+    },
+    {
+      "key": "KATA-3646",
+      "summary": "[TEST] SDV HW Release 26.1",
+      "status": "Backlog",
+      "owner": null,
+      "epics": [
+        { "key": "KATA-3647", "summary": "[TEST] [Goal 1] K1 VCH & CC Gerber Release", "status": "Backlog" },
+        { "key": "KATA-3648", "summary": "[TEST] [Goal 2] Labtruck Assembly & Komatsu Delivery", "status": "Backlog" },
+        { "key": "KATA-3649", "summary": "[TEST] [Goal 3] SDV Network Architecture Simulation & DBC", "status": "Backlog" },
+        { "key": "KATA-3650", "summary": "[TEST] [Goal 4] Product Requirements v3.0 in Polarion", "status": "Backlog" },
+        { "key": "KATA-3651", "summary": "[TEST] [Goal 5] K1 HW & SDV Architecture Mining Safety Analysis", "status": "Backlog" }
+      ]
+    },
+    {
+      "key": "KATA-3702",
+      "summary": "SHBU Development",
+      "status": "Backlog",
+      "owner": null,
+      "epics": [
+        { "key": "KATA-3703", "summary": "[H] Prototype drawings", "status": "Backlog" },
+        { "key": "KATA-3706", "summary": "X Prototype Truck Build", "status": "Backlog" },
+        { "key": "KATA-3708", "summary": "<b> SDV Performance Evaluation (On Truck)", "status": "Backlog" },
+        { "key": "KATA-3712", "summary": "MinExpo", "status": "Backlog" },
+        { "key": "KATA-3722", "summary": "AZPG Validation Testing", "status": "Backlog" },
+        { "key": "KATA-3723", "summary": "Field Test", "status": "Backlog" },
+        { "key": "KATA-3724", "summary": "<c> SDV Durability Evaluation (On Truck)", "status": "Backlog" },
+        { "key": "KATA-3725", "summary": "Production Release", "status": "Backlog" }
       ]
     }
   ]

@@ -1,0 +1,50 @@
+{
+  "_comment": "Per-assignee sprint capacity in Story Points v2 (1 pt = 1 week of one engineer). 1.6 = 2 weeks at 80% load. `unavailable_sprints` lists sprint codes when the engineer is OOO/PTO/holding for unplanned work; capacity for that sprint is 0. Use the Jira displayName as the key. Unknown assignees fall back to _default.",
+  "_default": {
+    "points_per_sprint": 1.6,
+    "unavailable_sprints": []
+  },
+  "engineers": {
+    "Alex Del Re": {
+      "points_per_sprint": 1.6,
+      "unavailable_sprints": []
+    },
+    "Nicholas Tokarz": {
+      "points_per_sprint": 1.6,
+      "unavailable_sprints": []
+    },
+    "Mahmoud Saadat": {
+      "points_per_sprint": 1.6,
+      "unavailable_sprints": []
+    },
+    "Sohum Misra": {
+      "points_per_sprint": 1.6,
+      "unavailable_sprints": []
+    },
+    "Liang Kong": {
+      "points_per_sprint": 1.6,
+      "unavailable_sprints": []
+    },
+    "Michelle Zhang": {
+      "points_per_sprint": 1.6,
+      "unavailable_sprints": []
+    },
+    "Rohan Bajaria": {
+      "points_per_sprint": 1.6,
+      "unavailable_sprints": []
+    },
+    "Lauren Joyce": {
+      "points_per_sprint": 1.2,
+      "_note": "Splits time across program management; lower placeable capacity.",
+      "unavailable_sprints": []
+    },
+    "Andrew McGovern": {
+      "points_per_sprint": 1.6,
+      "unavailable_sprints": []
+    },
+    "Joseph Boyer": {
+      "points_per_sprint": 1.6,
+      "unavailable_sprints": []
+    }
+  }
+}

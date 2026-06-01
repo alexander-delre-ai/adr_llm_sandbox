@@ -36,9 +36,11 @@ Links a GitHub PR to a new KATA JIRA ticket: creates the ticket, prepends the ti
 
 6. **Create KATA JIRA ticket** via MCP (see Implementation below)
 
-7. **Update PR title**: Run `gh pr edit <number> --repo <owner/repo> --title "KATA-XXXX: <original title>"`
+7. **Transition to In Progress**: Call `mcp__kata-atlassian__transitionJiraIssue` to move the ticket to In Progress (see Implementation below)
 
-8. **Post comment**: Run `gh pr comment <number> --repo <owner/repo> --body "JIRA: https://appliedint-katana.atlassian.net/browse/KATA-XXXX"`
+8. **Update PR title**: Run `gh pr edit <number> --repo <owner/repo> --title "KATA-XXXX: <original title>"`
+
+9. **Post comment**: Run `gh pr comment <number> --repo <owner/repo> --body "JIRA: https://appliedint-katana.atlassian.net/browse/KATA-XXXX"`
 
 ## Ticket Defaults
 
@@ -86,9 +88,14 @@ Use the `mcp__kata-atlassian` MCP server:
 
 2. **On success**: extract `key` (e.g. `KATA-2911`) from the response
 
-3. **Update PR title**: `gh pr edit <number> --repo <owner/repo> --title "KATA-XXXX: <original title>"`
+3. **Transition to In Progress**: Call `mcp__kata-atlassian__transitionJiraIssue` with:
+   - `cloudId`: `eadd00c6-0d3f-4c89-99e3-ad95a0daaa51`
+   - `issueIdOrKey`: the created ticket key
+   - `transitionId`: call `mcp__kata-atlassian__getTransitionsForJiraIssue` first to find the ID for "In Progress", then apply it
 
-4. **Post comment**: `gh pr comment <number> --repo <owner/repo> --body "JIRA: https://appliedint-katana.atlassian.net/browse/KATA-XXXX"`
+4. **Update PR title**: `gh pr edit <number> --repo <owner/repo> --title "KATA-XXXX: <original title>"`
+
+5. **Post comment**: `gh pr comment <number> --repo <owner/repo> --body "JIRA: https://appliedint-katana.atlassian.net/browse/KATA-XXXX"`
 
 If MCP is unavailable, output the JSON payload for manual creation and skip the PR updates.
 
@@ -96,6 +103,7 @@ If MCP is unavailable, output the JSON payload for manual creation and skip the 
 
 On completion, report:
 - JIRA ticket key and URL
+- Confirmation that ticket was transitioned to In Progress
 - Confirmation that PR title was updated
 - Confirmation that PR comment was posted
 

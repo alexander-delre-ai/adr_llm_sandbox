@@ -1,0 +1,72 @@
+{
+  "_comment": "Maps KATA releases to their 6 constituent sprints. Sprint codes use ISO-week-of-odd-week format (e.g., 2026.13 = week 13 of 2026, a 2-week sprint). Eng Sprint v2 is customfield_10103 and accepts {id: \"<option_id>\"}. Release windows from Jira Fix Versions (Release 25.1 starts 2025-07-28; each release spans ~12 weeks / 6 sprints).",
+  "field_ids": {
+    "eng_sprint_v2": "customfield_10103",
+    "story_points_v2": "customfield_10137"
+  },
+  "releases": {
+    "25.1": {
+      "fix_version_id": "10000",
+      "start_date": "2025-07-28",
+      "end_date": "2025-09-26",
+      "sprints": []
+    },
+    "25.2": {
+      "fix_version_id": "10001",
+      "start_date": "2025-09-29",
+      "end_date": "2025-12-26",
+      "sprints": []
+    },
+    "25.3": {
+      "fix_version_id": "10036",
+      "start_date": "2025-12-29",
+      "end_date": "2026-04-03",
+      "sprints": [
+        { "code": "2026.01", "option_id": "10031" },
+        { "code": "2026.03", "option_id": "10032" },
+        { "code": "2026.05", "option_id": "10033" },
+        { "code": "2026.07", "option_id": "10034" },
+        { "code": "2026.09", "option_id": "10035" },
+        { "code": "2026.11", "option_id": "10036" }
+      ]
+    },
+    "26.1": {
+      "fix_version_id": "10002",
+      "start_date": "2026-04-06",
+      "end_date": "2026-06-26",
+      "sprints": [
+        { "code": "2026.13", "option_id": "10069" },
+        { "code": "2026.15", "option_id": "10070" },
+        { "code": "2026.17", "option_id": "10071" },
+        { "code": "2026.19", "option_id": "10072" },
+        { "code": "2026.21", "option_id": "10073" },
+        { "code": "2026.23", "option_id": "10074" }
+      ]
+    },
+    "26.2": {
+      "fix_version_id": "10003",
+      "start_date": "2026-06-29",
+      "end_date": "2026-09-18",
+      "sprints": [
+        { "code": "2026.25", "option_id": "10075" },
+        { "code": "2026.27", "option_id": "10076" },
+        { "code": "2026.29", "option_id": "10109" },
+        { "code": "2026.31", "option_id": "10110" },
+        { "code": "2026.33", "option_id": "10111" },
+        { "code": "2026.35", "option_id": "10112" }
+      ]
+    },
+    "26.3": {
+      "fix_version_id": "10069",
+      "start_date": "2026-09-21",
+      "end_date": "2026-12-23",
+      "sprints": [
+        { "code": "2026.37", "option_id": "10113" },
+        { "code": "2026.39", "option_id": "10114" },
+        { "code": "2026.41", "option_id": "10115" },
+        { "code": "2026.43", "option_id": "10116" },
+        { "code": "2026.45", "option_id": "10117" }
+      ]
+    }
+  }
+}

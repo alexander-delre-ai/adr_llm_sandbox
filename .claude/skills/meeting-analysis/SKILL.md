@@ -5,7 +5,7 @@ description: Analyzes meeting content (transcripts or summaries) to extract cont
 
 # Meeting Analysis
 
-Processes meeting content (full transcripts or AI-generated summaries) to create structured analysis with context, decisions, themes, questions, and action items.
+Processes meeting content (full transcripts or AI-generated summaries) to create structured analysis with context, decisions, themes, questions, risks, follow-ups, and a prioritized action plan.
 
 ## Input Requirements
 
@@ -31,9 +31,11 @@ Pull these fields based on content type:
 | Meeting location | identify conference room names in participant list | Extract from "Invited" section or infer from context |
 | Stated objective | agenda items or opening statement | Extract from "Summary" section or main topics |
 
-**Important**:
-- Filter out meeting room names from participants list (scientist names with location codes)
-- For Gemini summaries, remove email domains from names (e.g., "nuthan.sabbani@global.komatsu" -> "Nuthan Sabbani")
+**Participant filtering rules:**
+- Remove conference room names from the participants list
+- For Gemini summaries, strip email domains (e.g., "nuthan.sabbani@global.komatsu" -> "Nuthan Sabbani")
+- For full transcripts, only include names that appear as speakers in the dialogue
+- For Gemini summaries, flag any invited names that never appear in the content body with `(invited, no participation noted)`
 
 ### Step 2 - Identify key decisions
 
@@ -48,7 +50,11 @@ Output as a numbered list: `Decision N: <one-sentence summary>`
 
 Group related content into 3-7 named themes. Each theme gets:
 - A short label (2-4 words)
-- A one-sentence description of what was discussed
+- 2-4 concise bullet points capturing the specific talking points raised
+
+Keep bullet points brief enough to include in a Slack message (one line each, no full sentences needed).
+
+Do **not** include action items, commitments, or "I'll do X" statements in themes. Those belong in the prioritized action plan (Step 6).
 
 **Full Transcript**: Group conversation segments by topic
 **Gemini Summary**: Use section headers and topic groupings from "Details" section
@@ -62,7 +68,18 @@ Capture open questions, blockers, and deferred topics.
 
 Output as a bulleted list with the responsible person (if named) in brackets.
 
-### Step 5 - Extract actionable tasks
+### Step 5 - Identify risks and blockers
+
+Capture anything raised as a risk, blocker, dependency, or concern that could impede progress.
+
+**Signals**: "blocked by", "waiting on", "risk", "concern", "dependency", "this could be a problem", "we might be stuck"
+
+Output as a bulleted list. For each item include:
+- The risk or blocker (one line)
+- Owner or affected party in brackets (if named)
+- Severity: `High` / `Medium` / `Low`
+
+### Step 6 - Build prioritized action plan
 
 **For Full Transcripts**: Look for commitment language ("I'll", "we need to", "action item")
 **For Gemini Summaries**: Check "Suggested next steps" section and action-oriented items in "Details"
@@ -71,19 +88,55 @@ For each action item extract:
 - **What**: clear imperative description of the work
 - **Who**: assignee (if named; otherwise "Unassigned")
 - **When**: due date or sprint (if mentioned)
-- **Priority**: `High` / `Medium` / `Low` based on urgency language or context
-- **Theme**: which theme from Step 3 this belongs to
+- **Priority**: `High` / `Medium` / `Low` based on urgency language or context. Default to `Low` when no urgency signals are present; append `(inferred)` to flag it.
+- **Type**: `Technical` / `Coordination` / `Documentation` / `Research`
 
-### Step 6 - Build prioritized action plan
+Output as a markdown table sorted by priority (High first):
 
-Output a markdown table sorted by priority (High first):
+| Proposed Action Item | Assignee | Priority | Due | Type |
+|---------------------|----------|----------|-----|------|
+| ...                 | ...      | High     | ... | Technical |
+| ...                 | ...      | Low (inferred) | ... | Coordination |
 
-| # | Proposed Action Item | Assignee | Priority | Due | Type | Notes |
-|---|---------------------|----------|----------|-----|------|-------|
-| 1 | ...                 | ...      | High     | ... | Coordination | -> Slack tracking |
-| 2 | ...                 | ...      | High     | ... | Technical | -> JIRA ticket |
+### Step 7 - Slack summary block
 
-Follow the table with a **Next steps** section: 3-5 bullet points the team should act on immediately.
+Produce a compact, pre-formatted block suitable for pasting directly into Slack. No markdown headers; use plain Slack formatting only.
+
+Structure:
+```
+*<Meeting Title> - <Date>*
+
+*Themes*
+- <theme label>: <key point>, <key point>
+- <theme label>: <key point>, <key point>
+...
+
+*Top Action Items*
+1. <action> (@assignee)
+2. <action> (@assignee)
+3. <action> (@assignee)
+
+*Risks/Blockers*
+- <risk or blocker> [owner]
+
+*Follow-ups*
+- <follow-up meeting or sync>
+```
+
+Keep the entire block under 20 lines. If no risks or follow-ups exist, omit those sections.
+
+### Step 8 - Identify follow-up meetings
+
+Capture any meetings, reviews, or syncs that were agreed to be scheduled.
+
+**Signals**: "let's set up a meeting", "we should sync on", "schedule a review", "I'll send an invite", "follow-up with"
+
+Output as a bulleted list. For each item include:
+- Purpose of the meeting
+- Who should attend (if named)
+- Suggested timing (if mentioned)
+
+If none were mentioned, write: `No follow-up meetings identified.`
 
 ## Output Format
 
@@ -99,25 +152,31 @@ Create `analysis.md` file with this structure:
 [Numbered decisions list]
 
 ## 3. Discussion Themes
-[Named themes with descriptions]
+[Named themes with bullet points — no action items]
 
 ## 4. Unresolved Questions
 [Bulleted questions with owners]
 
-## 5. Action Items
-[Detailed action items with metadata]
+## 5. Risks and Blockers
+[Bulleted risks with owners and severity]
 
 ## 6. Prioritized Action Plan
-[Table and next steps]
+[Table without # column]
+
+## 7. Slack Summary
+[Compact Slack-ready block]
+
+## 8. Follow-up Meetings
+[Bulleted follow-up meetings or "No follow-up meetings identified."]
 ```
 
 ## Post-Review Update
 
-After the user reviews and edits `tickets.md`, sections 5 and 6 of `analysis.md` must be updated to match the final ticket content:
+After the user reviews and edits `tickets.md`, Section 6 of `analysis.md` must be updated to match the final ticket content:
 
 1. Re-read the final `tickets.md` to capture user edits (title changes, priority adjustments, assignee updates, removed items)
-2. Rewrite **Section 5 (Action Items)** to match the final tickets list
-3. Rewrite **Section 6 (Prioritized Action Plan + Next Steps)** table and bullet points to reflect the reviewed tickets
+2. Rewrite **Section 6 (Prioritized Action Plan)** table to reflect the reviewed tickets
+3. Update **Section 7 (Slack Summary)** top action items to match
 
 This ensures `analysis.md` remains the single source of truth after user review.
 
@@ -130,4 +189,4 @@ This skill focuses purely on analysis and does not create tickets or workspaces.
 - **Input**: Meeting content (transcript or summary)
 - **Output**: Structured analysis.md file (updatable after ticket review)
 - **Reusable**: Can be called from `meeting-plan`, standalone analysis, or other workflows
-- **Consistent**: Always produces the same 6-section format
+- **Consistent**: Always produces the same 8-section format

@@ -63,12 +63,28 @@ This mode is used by the `gemini-notes-processor` skill and by users continuing 
    - **Mixed file plus standalone URL**: follow `meeting-summary` style if helpful: `Source: <url>` plus body, or single-line URL file when the workflow is Doc-first (batch mode).
 6. **Write `gemini-link.txt`** whenever you have a Google Docs URL for this meeting: one line, the full URL. The meeting-slack-summary skill checks this file first.
 7. **Create meeting analysis**: Read and follow `.claude/skills/meeting-analysis/SKILL.md` to create `analysis.md`.
-8. **Research unresolved questions**: Read and follow `.claude/skills/meeting-research/SKILL.md`, but first classify each question from **Section 4** of `analysis.md`:
-   - **Research** (run research): architecture, implementation, technical decisions, prior art, existing tickets, design patterns, system behavior.
-   - **Skip** (note only in `research.md`): scheduling, coordination, who will attend, logistics, or questions that need a human decision outside tools.
-   - **Parallel subagents**: For every "Research" item, launch concurrent subagents (one question each) with workspace path as context. Collect all results.
-   - For skipped questions, add a short entry: "Skipped: coordination or scheduling question, not researchable via Slack, Confluence, or JIRA."
-   - Compile into **`research.md`** using the batch format in `meeting-research.md`.
+8. **Research unresolved questions**: Read and follow `.claude/skills/meeting-research/SKILL.md`. First classify each question from **Section 4** of `analysis.md`:
+   - **Skip** (note only in `research.md`, do NOT include in `FAQ.md`): questions that are **exclusively** one of these two types:
+     1. Org coordination / intro brokering ("What should Person A share with Person B?", "Who should be introduced to whom?")
+     2. Scheduling or logistics ("Is next sprint feasible?", "When should we schedule the follow-up?")
+   - **Research** (run research): everything else, including questions requiring code inspection, questions needing a person to check and report back, technical architecture, implementation details, API behavior, system behavior, prior decisions. When ambiguous, default to Research.
+   - **Parallel subagents**: For every "Research" item, launch concurrent subagents (one question each) with workspace path as context. Each subagent must run at least one actual MCP search before reporting. Collect all results.
+   - For Skipped questions, add a short entry in `research.md`: "Skipped: [org coordination | scheduling/logistics] — not researchable via tools."
+   - Compile into **`research.md`** using the batch format in `meeting-research/SKILL.md`.
+8.5. **Write FAQ.md**: After `research.md` is complete, generate `workspaces/.../FAQ.md`. Skip this step entirely if Section 4 of `analysis.md` is empty or all questions were Skipped.
+   - Include ONLY Research-classified questions in FAQ.md. Skipped questions (org coordination, scheduling) do not appear in FAQ.md; they remain in `analysis.md` Section 4 and `research.md` only.
+   - For each Research question, find its corresponding entry in `research.md` and extract:
+     - The 1-3 sentence "Answer" paragraph as the synthesized answer.
+     - The status: `Answered` if research found a definitive answer with at least one source; `Open` if findings are partial, contradictory, gap-heavy, or no results were found.
+   - Format (no Owner line):
+     ```
+     # FAQ: <Meeting Title> (<YYYY-MM-DD>)
+
+     ## Q1: <question text>
+     **Status: <Answered | Open>**
+     **Answer:** <1-3 sentence synthesis, or "No relevant results found." if searches returned nothing.>
+     ```
+   - **Append to Google Doc**: Call `mcp__google-drive__insertText` on document `17Vs-0BGX0A1dMXTJYzEQrcBmtUicWjPY_FcznkiHSio` (tab `t.kfn6xcep65ix`). Insert at end of document: a heading `<Meeting Title> - <YYYY-MM-DD>` followed by the full FAQ.md content. On failure, log a note and continue (local file is the authoritative copy).
 9. **Pause only if critical**: If assignees are unknowable, action items conflict, or context blocks ticket generation, ask the user. Otherwise continue through staging.
 10. **Zero action items**: If analysis has no action items (status-only or demo meeting), skip ticket staging (skip steps that create `tickets.md` content beyond a note if needed), still write `research.md` if questions existed, then go to Phase 1 wrap-up and Phase 2 with **Slack-only** path (no JIRA, no TickTick for tickets). Tell the user clearly.
 11. **Create ticket proposals**: Read and follow `.claude/skills/meeting-tickets/SKILL.md` to create `tickets.md` (epic inference, assignee normalization, story points heuristics, release inference, suggested groupings).
@@ -78,10 +94,12 @@ This mode is used by the `gemini-notes-processor` skill and by users continuing 
     - `tickets.md`
     - `transcript.md`
     - `gemini-link.txt` when a Docs URL exists
+    - `FAQ.md` when open questions exist
 13. **Phase 1 review (no canvas)**: Claude Code may not expose a browser canvas tool. Instead:
     - **Show inferred epic** from `.claude/skills/meeting-tickets/meeting-epic-mapping.json` default for this meeting title.
     - **Markdown table**: Render a read-only summary table in chat parsed from `tickets.md` (title, assignee, priority, tracking, parent_id, release, story_points). Tell the user to edit `tickets.md` directly for changes (the table is for review only).
     - **Google Doc sharing recipients**: If `transcript.md` is a single-line Google Docs URL (or `gemini-link.txt` exists), build the proposed recipient list from analysis Section 1 attendees plus assignees from `tickets.md`, resolve emails via `.claude/skills/meeting-summary/meeting-slack-summary/user-mapping.md` (and Slack profile lookup if allowed). Present the list so the user can note adds or removals before Phase 2.
+    - **Open questions**: If `FAQ.md` was written, show one line: `**Open questions**: N question(s) in FAQ.md (X Answered, Y Open, Z Skipped).`
     - **appliedsync component**: Ask the user: "Add the `appliedsync` component to all tickets? (default: No)". Only set the component on tickets if the user confirms yes. Pass this decision through to the JIRA creation steps in Phase 2.
 
 **Gate**: Do **not** run Phase 2 until the user replies with **`continue`** or **`confirm`** or **`create tickets`** (all mean proceed), or **`stop`** (end with no JIRA, no Slack, no sharing). Treat other messages as still in review unless the user clearly cancels.
@@ -101,7 +119,7 @@ Run only after **`continue`**, **`confirm`**, or **`create tickets`**. On **`sto
    - **KATA epics**: load `.claude/skills/meeting-plan/kata-initiatives.json`, find the initiative entry whose `key` matches the parent, and append to its `epics` array: `{ "key": "<key>", "summary": "<summary>", "status": "<status>" }`. Write the file back.
    - **AVP epics**: same flow with `.claude/skills/meeting-plan/avp-initiatives.json`.
    - Skip if the epic key is already present in the array (idempotent). Skip silently if the parent initiative is not in the JSON (the JSON may be intentionally partial). This step is a no-op when no epics were created.
-5. **Update `analysis.md`**: Re-read final `tickets.md` and align Sections 5 and 6 with final titles and keys.
+5. **Update `analysis.md`**: Re-read final `tickets.md` and align Sections 5 and 6 (Risks and Blockers, Prioritized Action Plan) with final titles and keys.
 6. **Slack summary**: Read and follow `.claude/skills/meeting-summary/meeting-slack-summary/SKILL.md`. Pass Google Doc URL from `gemini-link.txt` or from single-line `transcript.md` if needed. KATA keys only in summary per that skill's rules.
 7. **Share Google Doc** (when `transcript.md` is a one-line Google Docs URL or URL is in `gemini-link.txt`): extract file ID, build recipient list (with Phase 1 adjustments), resolve emails from `user-mapping.md` and Slack if needed, then call Google Drive MCP `shareFile` with `role: writer`, `sendNotificationEmail: true` where supported. Log who was granted access and who was skipped.
 8. **TickTick sync**: Read `.claude/skills/ticktick-sync/SKILL.md` and run:
@@ -110,7 +128,7 @@ Run only after **`continue`**, **`confirm`**, or **`create tickets`**. On **`sto
 
 9. **Workspace bundle**: Read and follow `.claude/skills/meeting-workspace/SKILL.md` to persist artifacts, metadata, and sync results.
 10. **User mapping**: If new Applied attendees were discovered, update `.claude/skills/meeting-summary/meeting-slack-summary/user-mapping.md` and commit with message: `update user-mapping with attendees from <meeting-slug>`.
-11. **Final `analysis.md` pass**: Re-read `tickets.md` and rewrite Sections 5 and 6 with real KATA keys and final wording. Return workspace path and ticket URLs.
+11. **Final `analysis.md` pass**: Re-read `tickets.md` and rewrite Sections 5 and 6 (Risks and Blockers, Prioritized Action Plan) with real KATA keys and final wording. Return workspace path and ticket URLs.
 
 ## Two-phase summary
 

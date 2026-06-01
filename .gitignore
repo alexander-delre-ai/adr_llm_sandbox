@@ -10,3 +10,4 @@ insights/
 .claude/skills/ticktick-sync/.env
 *.pyc
 .claude/skills/ticktick-sync/.task_duplicates.json
+.claude/skills/gemini-notes-processor/logs/

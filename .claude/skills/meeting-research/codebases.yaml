@@ -1,0 +1,16 @@
+# Codebases searched during meeting-research codebase step.
+# Only used when the question involves implementation, architecture, API design,
+# or code-level details (see SKILL.md Step 5 for trigger heuristic).
+#
+# Fields:
+#   path        - absolute or ~ path to the local repo
+#   description - one-line summary of what lives there (used to route questions)
+#   tags        - keywords; codebase is searched when question tokens overlap
+codebases:
+  - path: ~/applied/core-stack
+    description: Main VehicleOS monorepo (firmware, platform, middleware, onboard SDK)
+    tags: [firmware, platform, middleware, onboard, sdk, vos, vehicle_os, core]
+
+  - path: ~/applied/vehicle-os-katana
+    description: Katana customer repo (KATA project, downstream vehicle OS integration)
+    tags: [kata, katana]
