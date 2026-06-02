@@ -9,5 +9,6 @@ insights/
 
 .claude/skills/ticktick-sync/.env
 *.pyc
+scripts/katana_onboarding/constants.py
 .claude/skills/ticktick-sync/.task_duplicates.json
 .claude/skills/gemini-notes-processor/logs/
