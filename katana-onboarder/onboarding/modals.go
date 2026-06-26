@@ -15,6 +15,7 @@ func buildOnboardModal() slack.ModalViewRequest {
 			multilineInput(blockEngineers, actionEngineers, "Engineers", engineersPlaceholder),
 			staticSelect(blockLocation, actionLocation, "Office location", locations, defaultLocation),
 			staticSelect(blockPriority, actionPriority, "Priority", priorities, defaultPriority),
+			optionalInput(blockChannels, actionChannels, "Additional Slack channels (optional)", "#ext-channel1, #ext-channel2"),
 		}},
 	}
 }
@@ -35,6 +36,13 @@ func buildSlackAddModal() slack.ModalViewRequest {
 
 func plainText(s string) *slack.TextBlockObject {
 	return slack.NewTextBlockObject(slack.PlainTextType, s, false, false)
+}
+
+func optionalInput(blockID, actionID, label, placeholder string) *slack.InputBlock {
+	element := slack.NewPlainTextInputBlockElement(plainText(placeholder), actionID)
+	block := slack.NewInputBlock(blockID, plainText(label), nil, element)
+	block.Optional = true
+	return block
 }
 
 func multilineInput(blockID, actionID, label, placeholder string) *slack.InputBlock {

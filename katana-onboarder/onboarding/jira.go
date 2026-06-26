@@ -124,7 +124,8 @@ func postServiceDeskRequest(c creds, requestTypeID, summary, description, locati
 }
 
 // createOnboardRequest files the Okta + Slack provisioning ticket (type 244).
-func createOnboardRequest(c creds, engineers []Engineer, locationSlug, priorityLabel string) (string, error) {
+// extraChannels are appended to the two default channels already in the template.
+func createOnboardRequest(c creds, engineers []Engineer, extraChannels []string, locationSlug, priorityLabel string) (string, error) {
 	locationID, ok := lookupID(locations, locationSlug)
 	if !ok {
 		return "", fmt.Errorf("unknown location %q", locationSlug)
@@ -134,6 +135,9 @@ func createOnboardRequest(c creds, engineers []Engineer, locationSlug, priorityL
 		return "", fmt.Errorf("unknown priority %q", priorityLabel)
 	}
 	description := fmt.Sprintf(onboardDescriptionTemplate, userLines(engineers))
+	if len(extraChannels) > 0 {
+		description += "\n" + strings.Join(extraChannels, "\n")
+	}
 	return postServiceDeskRequest(c, requestTypeOnboard, onboardDefaultSummary, description, locationID, priorityID)
 }
 

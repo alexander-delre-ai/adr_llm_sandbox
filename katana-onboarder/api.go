@@ -40,6 +40,8 @@ func registerAPIRoutes(r *gin.Engine, bot *slacklib.Bot) {
 	api.GET("/user", handleGetUser(bot))
 	api.GET("/events", handleGetEvents())
 	api.GET("/feedback", handleGetFeedback())
+	api.GET("/komatsu-users", handleGetKomatsuUsers())
+	api.GET("/pending-access", handleGetPendingAccess())
 }
 
 type sendMessageRequest struct {

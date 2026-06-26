@@ -6,11 +6,8 @@ interface SidebarProps {
 }
 
 const tabs: { id: Tab; label: string; icon: string }[] = [
-  { id: 'dashboard', label: 'Dashboard', icon: '📊' },
-  { id: 'send-message', label: 'Send Message', icon: '💬' },
-  { id: 'send-dm', label: 'Send DM', icon: '📨' },
-  { id: 'members', label: 'Channel Members', icon: '👥' },
-  { id: 'feedback', label: 'Feedback', icon: '📝' },
+  { id: 'onboarded', label: 'Onboarded - Komatsu', icon: '✅' },
+  { id: 'pending', label: 'Pending Onboarding - Komatsu', icon: '⏳' },
 ]
 
 function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
@@ -19,8 +16,8 @@ function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
   return (
     <aside className="w-64 bg-white shadow-md flex flex-col">
       <div className="p-6 border-b">
-        <h1 className="text-xl font-bold text-gray-800">Slack Bot Demo</h1>
-        <p className="text-sm text-gray-500 mt-1">Go + React</p>
+        <h1 className="text-xl font-bold text-gray-800">Katana Onboarding Bot</h1>
+        <p className="text-sm text-gray-500 mt-1">This bot will help with creating terminal requests and aws account creation</p>
       </div>
 
       {/* Status Indicator */}
@@ -55,13 +52,19 @@ function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
           ))}
         </ul>
       </nav>
-      <div className="p-4 border-t bg-gray-50">
-        <p className="text-xs text-gray-500 font-medium mb-2">
-          Webhook Endpoints:
-        </p>
-        <code className="text-xs text-gray-600 block">/slack/events</code>
-        <code className="text-xs text-gray-600 block">/slack/commands</code>
-        <code className="text-xs text-gray-600 block">/slack/interactions</code>
+      <div className="p-4 border-t bg-gray-50 space-y-3">
+        <div>
+          <p className="text-xs text-gray-500 font-medium mb-2">Slack webhooks:</p>
+          <code className="text-xs text-gray-600 block">POST /slack/events</code>
+          <code className="text-xs text-gray-600 block">POST /slack/commands</code>
+          <code className="text-xs text-gray-600 block">POST /slack/interactions</code>
+          <code className="text-xs text-gray-600 block">GET /slack/status</code>
+        </div>
+        <div>
+          <p className="text-xs text-gray-500 font-medium mb-2">API:</p>
+          <code className="text-xs text-gray-600 block">GET /api/komatsu-users</code>
+          <code className="text-xs text-gray-600 block">GET /api/pending-access</code>
+        </div>
       </div>
     </aside>
   )

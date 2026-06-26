@@ -64,6 +64,12 @@ Example:
 """,
     )
     _add_jira_shared_args(onboard_parser)
+    onboard_parser.add_argument(
+        "--channels",
+        metavar="\"#channel1[, ...]\"",
+        default=None,
+        help="Additional Slack channels to include beyond the defaults",
+    )
 
     # -- slack-add ------------------------------------------------------------
     slack_parser = subparsers.add_parser(
