@@ -37,6 +37,7 @@ func main() {
 	// Katana onboarding: file Jira Service Desk requests from Slack.
 	if err := onboarding.Register(context.Background(), bot); err != nil {
 		zap.L().Warn("katana onboarding disabled: could not load Atlassian credentials", zap.Error(err))
+		onboarding.RegisterUnconfigured(bot, err)
 	} else {
 		zap.L().Info("katana onboarding handlers registered")
 	}
@@ -47,6 +48,8 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{"status": "healthy"})
 	})
 
+	// Registers the Slack webhook routes plus GET /slack/status (the
+	// frontend's connection indicator polls /slack/status).
 	bot.RegisterRoutes(r.Group("/slack"))
 	registerAPIRoutes(r, bot)
 
@@ -104,7 +107,7 @@ func registerSlackHandlers(bot *slacklib.Bot) {
 		eventlog.Add("app_mention", ctx.UserID, ctx.ChannelID, ctx.Text)
 
 		blocks := slacklib.NewBlocks().
-			AddSection(fmt.Sprintf("Hello <@%s>! I'm a Go Slack bot demo.", ctx.UserID)).
+			AddSection(fmt.Sprintf("Hello <@%s>! I'm a Katana Onboarding Bot. This bot will help with creating terminal requests and aws account creation.", ctx.UserID)).
 			AddButton("open_feedback_form", "Submit Feedback", "click").
 			Build()
 

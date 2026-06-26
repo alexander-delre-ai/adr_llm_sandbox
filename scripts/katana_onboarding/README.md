@@ -54,11 +54,11 @@ Files a **Get IT help** request (type 244) in the [INT] IT Operations (CSI) serv
 ```bash
 # Single engineer
 python3 scripts/katana_onboarding/create_service_desk_request.py onboard \
-  --user "Taro Yamamoto taro.yamamoto@global.komatsu"
+  --user "First Last first.last@global.komatsu"
 
 # Multiple engineers
 python3 scripts/katana_onboarding/create_service_desk_request.py onboard \
-  --user "Taro Yamamoto taro.yamamoto@global.komatsu, Jane Doe jane.doe@global.komatsu"
+  --user "First Last first.last@global.komatsu, Second Engineer second.engineer@global.komatsu"
 
 # From a CSV file
 python3 scripts/katana_onboarding/create_service_desk_request.py onboard \
@@ -66,8 +66,13 @@ python3 scripts/katana_onboarding/create_service_desk_request.py onboard \
 
 # Override location or priority
 python3 scripts/katana_onboarding/create_service_desk_request.py onboard \
-  --user "Taro Yamamoto taro.yamamoto@global.komatsu" \
+  --user "First Last first.last@global.komatsu" \
   --location tokyo --priority P2
+
+# Include additional Slack channels beyond the defaults
+python3 scripts/katana_onboarding/create_service_desk_request.py onboard \
+  --user "First Last first.last@global.komatsu" \
+  --channels "#ext-katana-alerts, #general"
 ```
 
 **Output:** URL of the created Jira ticket.
@@ -86,7 +91,7 @@ Files a **Slack Help** request (type 307) to add engineers to channels beyond th
 
 ```bash
 python3 scripts/katana_onboarding/create_service_desk_request.py slack-add \
-  --user "Taro Yamamoto taro.yamamoto@global.komatsu" \
+  --user "First Last first.last@global.komatsu" \
   --channels "#ext-program-katana, #another-channel"
 ```
 
@@ -103,11 +108,11 @@ Creates an IAM user with username `first.last`, adds them to the `katana` IAM gr
 ```bash
 # Credentials sent to the engineer's own email
 python3 scripts/katana_onboarding/create_service_desk_request.py aws-user \
-  --user "Taro Yamamoto taro.yamamoto@global.komatsu"
+  --user "First Last first.last@global.komatsu"
 
 # Send credentials to a different address
 python3 scripts/katana_onboarding/create_service_desk_request.py aws-user \
-  --user "Taro Yamamoto taro.yamamoto@global.komatsu" \
+  --user "First Last first.last@global.komatsu" \
   --send-to manager@applied.co
 
 # Multiple engineers from a CSV
@@ -128,12 +133,17 @@ python3 scripts/katana_onboarding/create_service_desk_request.py aws-user \
 
 ## CSV Format
 
-For `--users-file`, provide a CSV with these columns:
+For `--users-file`, provide a CSV with columns `first_name`, `last_name`, `email`. The header row is optional:
 
 ```csv
 first_name,last_name,email
-Taro,Yamamoto,taro.yamamoto@global.komatsu
-Jane,Doe,jane.doe@global.komatsu
+First,Last,first.last@global.komatsu
+Second,Engineer,second.engineer@global.komatsu
+```
+
+```csv
+First,Last,first.last@global.komatsu
+Second,Engineer,second.engineer@global.komatsu
 ```
 
 ---
@@ -163,3 +173,4 @@ All subcommands accept `--user` and `--users-file`. Jira subcommands additionall
 | `--summary` | Override the default ticket summary |
 | `--description` | Override the default ticket description |
 | `--participants` | Jira account IDs to add as request participants |
+| `--channels` | (`onboard`, `slack-add`) Comma-separated Slack channels. For `onboard`, appended to the two defaults; for `slack-add`, required and used as the full channel list |

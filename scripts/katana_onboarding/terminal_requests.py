@@ -66,15 +66,26 @@ def parse_users(value: str, parser: argparse.ArgumentParser) -> list[Engineer]:
 def load_users_file(path: str, parser: argparse.ArgumentParser) -> list[Engineer]:
     engineers = []
     with open(path, newline="") as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            email = row["email"].strip()
-            validate_komatsu_email(email, path, parser)
-            engineers.append(Engineer(
-                first_name=row["first_name"].strip(),
-                last_name=row["last_name"].strip(),
-                email=email,
-            ))
+        sample = f.read(1024)
+        f.seek(0)
+        has_header = csv.Sniffer().has_header(sample)
+        if has_header:
+            reader = csv.DictReader(f)
+            for row in reader:
+                email = row["email"].strip()
+                validate_komatsu_email(email, path, parser)
+                engineers.append(Engineer(
+                    first_name=row["first_name"].strip(),
+                    last_name=row["last_name"].strip(),
+                    email=email,
+                ))
+        else:
+            for i, row in enumerate(csv.reader(f), start=1):
+                if len(row) != 3:
+                    parser.error(f"{path} row {i}: expected 3 columns (first_name, last_name, email), got {len(row)}")
+                first, last, email = (c.strip() for c in row)
+                validate_komatsu_email(email, path, parser)
+                engineers.append(Engineer(first_name=first, last_name=last, email=email))
     return engineers
 
 
@@ -92,9 +103,12 @@ def _headers(email: str, api_token: str) -> dict:
     }
 
 
-def onboard_description(engineers: list[Engineer]) -> str:
+def onboard_description(engineers: list[Engineer], extra_channels: list[str] | None = None) -> str:
     user_lines = "\n".join(f"{e.first_name} {e.last_name} | {e.email}" for e in engineers)
-    return ONBOARD_DESCRIPTION_TEMPLATE.format(user_lines=user_lines)
+    desc = ONBOARD_DESCRIPTION_TEMPLATE.format(user_lines=user_lines)
+    if extra_channels:
+        desc += "\n" + "\n".join(extra_channels)
+    return desc
 
 
 def slack_description(engineers: list[Engineer], channels: list[str]) -> str:
@@ -146,8 +160,9 @@ def resolve_link(result: dict) -> str:
 
 def run_onboard(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
     engineers = _collect_engineers(args, parser)
+    extra_channels = [c.strip() for c in args.channels.split(",")] if args.channels else None
     summary = args.summary or ONBOARD_DEFAULT_SUMMARY
-    description = args.description or onboard_description(engineers)
+    description = args.description or onboard_description(engineers, extra_channels)
     result = post_request(
         auth_email=args.requestor_email,
         api_token=args.api_token,

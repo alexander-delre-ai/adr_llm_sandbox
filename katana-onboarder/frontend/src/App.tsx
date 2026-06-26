@@ -1,12 +1,9 @@
 import { useState, useEffect, createContext, useContext } from 'react'
 import Sidebar from './components/Sidebar'
-import Dashboard from './components/Dashboard'
-import SendMessage from './components/SendMessage'
-import SendDM from './components/SendDM'
-import ChannelMembers from './components/ChannelMembers'
-import FeedbackList from './components/FeedbackList'
+import OnboardedKomatsu from './components/OnboardedKomatsu'
+import PendingKomatsu from './components/PendingKomatsu'
 
-export type Tab = 'dashboard' | 'send-message' | 'send-dm' | 'members' | 'feedback'
+export type Tab = 'onboarded' | 'pending'
 
 interface BotStatus {
   ready: boolean
@@ -20,7 +17,7 @@ export function useStatus() {
 }
 
 function App() {
-  const [activeTab, setActiveTab] = useState<Tab>('dashboard')
+  const [activeTab, setActiveTab] = useState<Tab>('onboarded')
   const [status, setStatus] = useState<BotStatus>({ ready: false, message: 'Loading...' })
 
   useEffect(() => {
@@ -43,18 +40,12 @@ function App() {
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'dashboard':
-        return <Dashboard />
-      case 'send-message':
-        return <SendMessage />
-      case 'send-dm':
-        return <SendDM />
-      case 'members':
-        return <ChannelMembers />
-      case 'feedback':
-        return <FeedbackList />
+      case 'onboarded':
+        return <OnboardedKomatsu />
+      case 'pending':
+        return <PendingKomatsu />
       default:
-        return <Dashboard />
+        return <OnboardedKomatsu />
     }
   }
 

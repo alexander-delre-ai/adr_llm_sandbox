@@ -32,7 +32,7 @@ const onboardDescriptionTemplate = "Hello, Please provision below users with ext
 	"under the ext-komatsu okta group.\n\n" +
 	"%s\n\n" +
 	"Please also add the komatsu user to the below slack channels:\n\n" +
-	"[#ext-program-katana|https://grid-appliedint.enterprise.slack.com/archives/C098TS704KG]\n\n" +
+	"[#ext-program-katana|https://grid-appliedint.enterprise.slack.com/archives/C098TS704KG]\n" +
 	"[#ext-program-katana-toolchain|https://grid-appliedint.enterprise.slack.com/archives/C09LSNE9Q0Y]"
 
 const slackDescriptionTemplate = "Hello, Please add the below users to the following Slack channels:\n\n" +
