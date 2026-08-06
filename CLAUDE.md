@@ -63,16 +63,17 @@ Persistent meeting artifacts organized by ISO week and date. Structure is `2026.
 
 ### MCP Integrations
 
-Defined in `~/.claude/settings.json`:
+Defined in `~/.claude.json` (top-level `mcpServers` key, user scope):
 
 | Server key | Transport | Purpose | Tool prefix |
 |---|---|---|---|
-| `github` | Docker (github-mcp-server) | GitHub issues, PRs, context | `mcp__github__*` |
-| `buildkite` | Docker (buildkite-mcp-server) | CI/CD pipelines | `mcp__buildkite__*` |
-| `atlassian-mcp-jira-api-token` | SSE (mcp.atlassian.com) | KATA JIRA + Confluence | `mcp__kata-atlassian__*` |
+| `kata-atlassian` | HTTP (mcp.atlassian.com) | KATA JIRA + Confluence | `mcp__kata-atlassian__*` |
 | `avp-atlassian` | HTTP (mcp.atlassian.com) | AVP JIRA + Confluence | `mcp__avp-atlassian__*` |
-| `Slack` | SSE (mcp.slack.com) | Slack messaging | `mcp__Slack__*` |
 | `google-drive` | npx (@piotr-agier/google-drive-mcp) | Google Drive file access | `mcp__google-drive__*` |
+
+`~/.claude/.mcp.json` additionally defines `Slack` (SSE, mcp.slack.com) as `mcp__Slack__*`.
+
+GitHub and Buildkite are **not** configured as MCP servers (removed 2026-08-03: each was a `docker run --rm` stdio server that spawned a fresh container per session and leaked containers across long-lived sessions). Use the `gh` and `bk` CLIs via Bash instead.
 
 **KATA Cloud ID**: `eadd00c6-0d3f-4c89-99e3-ad95a0daaa51`
 **AVP Cloud ID**: `6461690f-d275-4167-8055-cc3dc06e03f2` (site: `appliedintuition.atlassian.net`)
